@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "482827005790",
+    "project_id": "my-bhc-d7078",
+    "storage_bucket": "my-bhc-d7078.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:482827005790:android:82b5f4800fb93d095669cf",
+        "android_client_info": {
+          "package_name": "com.protech.myblackhistorycalendar"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "482827005790-rm48ftk46a47dtg7g3j1lruqecvr4ir6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.protech.myblackhistorycalendar",
+            "certificate_hash": "6d6a925a29baf0f1cd9a7813bd1ae5bf4121ed34"
+          }
+        },
+        {
+          "client_id": "482827005790-c0jemamf4ksgnjn9dqoafagbrodfbdi1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBTF5MZtFSfPubdtdV4h0EO0tUX2GdDhZQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "482827005790-c0jemamf4ksgnjn9dqoafagbrodfbdi1.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "482827005790-f9ohaos3bvddb3jues4jmfsg4vq0lgk6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.protech.blackhisttcalender"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
