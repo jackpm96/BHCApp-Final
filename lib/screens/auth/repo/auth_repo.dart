@@ -1,32 +1,25 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
-import 'package:black_history_calender/globals.dart';
+
 import 'package:black_history_calender/helper/prefs.dart';
 import 'package:black_history_calender/network_module/api_base.dart';
 import 'package:black_history_calender/network_module/api_path.dart';
 import 'package:black_history_calender/network_module/http_client.dart';
-import 'package:black_history_calender/screens/auth/model/Calender_response.dart';
 import 'package:black_history_calender/screens/auth/model/account_details_response.dart';
-import 'package:black_history_calender/screens/auth/model/add_story_response.dart';
 import 'package:black_history_calender/screens/auth/model/addfavourite_response.dart';
 import 'package:black_history_calender/screens/auth/model/addsetting_response.dart';
 import 'package:black_history_calender/screens/auth/model/dob_response.dart';
-import 'package:black_history_calender/screens/auth/model/img_response.dart';
 import 'package:black_history_calender/screens/auth/model/fav_response.dart';
 import 'package:black_history_calender/screens/auth/model/forgot_response.dart';
 import 'package:black_history_calender/screens/auth/model/getcomment_response.dart';
 import 'package:black_history_calender/screens/auth/model/getlike_response.dart';
+import 'package:black_history_calender/screens/auth/model/img_response.dart';
 import 'package:black_history_calender/screens/auth/model/login_response.dart';
 import 'package:black_history_calender/screens/auth/model/newstories_response.dart';
 import 'package:black_history_calender/screens/auth/model/postcomment_response.dart';
-import 'package:black_history_calender/screens/auth/model/postlike_response.dart';
 import 'package:black_history_calender/screens/auth/model/signup_response.dart';
 import 'package:black_history_calender/screens/auth/model/stories_response.dart';
 import 'package:black_history_calender/screens/auth/model/token_validate_response.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:dart_ipify/dart_ipify.dart';
 import 'package:http/http.dart' as http;
 
@@ -50,7 +43,6 @@ class AuthRepo {
     return UpdateDobResponse.fromJson(response as Map<String, dynamic>);
   }
 
-
   Future<UpdateImgResponse> updateImgApi(String userID, String img) async {
     String key = "Pf1PZMTEum3zLBkN2ITu4KdZyHM3WKR0";
     var params = {
@@ -70,10 +62,7 @@ class AuthRepo {
   Future<TokenValidateResponse> checkTokenValidate(var token) async {
     Map<String, String> body = Map<String, String>();
 
-    var header = {
-      HttpHeaders.contentTypeHeader: 'application/x-www-form-urlencoded',
-      'Authorization': 'Bearer $token'
-    };
+    var header = {HttpHeaders.contentTypeHeader: 'application/x-www-form-urlencoded', 'Authorization': 'Bearer $token'};
 
     final response = await HttpClient.instance.postData(
       APIPathHelper.getValue(APIPath.validateToken),
@@ -81,22 +70,16 @@ class AuthRepo {
       header,
     );
 
-    return TokenValidateResponse.fromJson(response  as Map<String, dynamic>);
+    return TokenValidateResponse.fromJson(response as Map<String, dynamic>);
   }
 
-  Future<http.Response> makeMonthlySubscription(
-      userID, token, String level) async {
+  Future<http.Response> makeMonthlySubscription(userID, token, String level) async {
     Map<String, String> body = Map<String, String>();
     Map<String, String> params = {"user_id": userID.toString(), "level_id": level};
-    Map<String, String> header = {
-      HttpHeaders.contentTypeHeader: 'application/x-www-form-urlencoded',
-      'Authorization': 'Bearer $token'
-    };
-    var uri = APIBase.baseURL +
-        APIPathHelper.getValue(APIPath.monthlySubscription) +
-        ((params != null) ? HttpClient.instance.queryParameters(params) : "");
-    final response =
-        await http.post(Uri.parse(uri), body: body, headers: header);
+    Map<String, String> header = {HttpHeaders.contentTypeHeader: 'application/x-www-form-urlencoded', 'Authorization': 'Bearer $token'};
+    var uri =
+        APIBase.baseURL + APIPathHelper.getValue(APIPath.monthlySubscription) + ((params != null) ? HttpClient.instance.queryParameters(params) : "");
+    final response = await http.post(Uri.parse(uri), body: body, headers: header);
 
     return response;
   }
@@ -105,9 +88,8 @@ class AuthRepo {
     Map<String, String> body = Map<String, String>();
     Map<String, String> params = {"user_id": userID.toString(), "level_id": "1"};
 
-    var uri = APIBase.baseURL +
-        APIPathHelper.getValue(APIPath.monthlySubscription) +
-        ((params != null) ? HttpClient.instance.queryParameters(params) : "");
+    var uri =
+        APIBase.baseURL + APIPathHelper.getValue(APIPath.monthlySubscription) + ((params != null) ? HttpClient.instance.queryParameters(params) : "");
     final response = await http.get(Uri.parse(uri));
 
     return response;
@@ -129,8 +111,8 @@ class AuthRepo {
     var header = {
       HttpHeaders.contentTypeHeader: 'application/x-www-form-urlencoded',
     };
-    List response = await HttpClient.instance
-        .fetchData(APIPathHelper.getValue(APIPath.Stories), params: params as Map<String, String>) as List<dynamic>;
+    List response =
+        await HttpClient.instance.fetchData(APIPathHelper.getValue(APIPath.Stories), params: params as Map<String, String>) as List<dynamic>;
 
     return response.map((e) => StoriesResponse.fromJson(e as Map<String, String>)).toList();
   }
@@ -143,8 +125,9 @@ class AuthRepo {
       HttpHeaders.contentTypeHeader: 'application/x-www-form-urlencoded',
     };
     var response = await HttpClient.instance.fetchData(
-        APIPathHelper.getValue(APIPath.account) + "/" + "1",
-        params: params,);
+      APIPathHelper.getValue(APIPath.account) + "/" + "1",
+      params: params,
+    );
     return AccountDetails.fromJson(response as Map<String, dynamic>);
   }
 
@@ -156,8 +139,7 @@ class AuthRepo {
     var header = {
       HttpHeaders.contentTypeHeader: 'application/x-www-form-urlencoded',
     };
-    var response = await HttpClient.instance
-        .fetchData(APIPathHelper.getValue(APIPath.likesdata), params: params);
+    var response = await HttpClient.instance.fetchData(APIPathHelper.getValue(APIPath.likesdata), params: params);
     return LikesData.fromJson(response as Map<String, dynamic>);
   }
 
@@ -177,14 +159,11 @@ class AuthRepo {
     var header = {
       HttpHeaders.contentTypeHeader: 'application/x-www-form-urlencoded',
     };
-    final response = await HttpClient.instance.postData(
-        APIPathHelper.getValue(APIPath.postlike), body, header,
-        params: params);
+    final response = await HttpClient.instance.postData(APIPathHelper.getValue(APIPath.postlike), body, header, params: params);
     return LikesData.fromJson(response as Map<String, dynamic>);
   }
 
-  Future<ForgotResponse> resetPassword(
-      String email, String password, String passcode) async {
+  Future<ForgotResponse> resetPassword(String email, String password, String passcode) async {
     Map<String, String> body = Map<String, String>();
     var params = {
       "email": email,
@@ -196,9 +175,7 @@ class AuthRepo {
       HttpHeaders.contentTypeHeader: 'application/x-www-form-urlencoded',
     };
 
-    final response = await HttpClient.instance.postData(
-        APIPathHelper.getValue(APIPath.resetPassword), body, header,
-        params: params);
+    final response = await HttpClient.instance.postData(APIPathHelper.getValue(APIPath.resetPassword), body, header, params: params);
     return ForgotResponse.fromJson(response as Map<String, dynamic>);
   }
 
@@ -212,34 +189,26 @@ class AuthRepo {
       HttpHeaders.contentTypeHeader: 'application/x-www-form-urlencoded',
     };
 
-    final response = await HttpClient.instance.postData(
-        APIPathHelper.getValue(APIPath.forgot), body, header,
-        params: params);
+    final response = await HttpClient.instance.postData(APIPathHelper.getValue(APIPath.forgot), body, header, params: params);
     return ForgotResponse.fromJson(response as Map<String, dynamic>);
   }
 
-  Future<LoginResponse> loginUser(
-      String userName, String password, String token) async {
+  Future<LoginResponse> loginUser(String userName, String password, String token) async {
     Map<String, String> body = Map<String, String>();
     var params = {
       "username": userName,
       "password": password,
       "noti_token": token,
     };
-
     var header = {
       HttpHeaders.contentTypeHeader: 'application/x-www-form-urlencoded',
     };
 
-    final response = await HttpClient.instance.postData(
-        APIPathHelper.getValue(APIPath.signin), body, header,
-        params: params);
-
+    final response = await HttpClient.instance.postData(APIPathHelper.getValue(APIPath.signin), body, header, params: params);
     return LoginResponse.fromJson(response as Map<String, dynamic>);
   }
 
-  Future<SignupResponse> signupUser(String userName, String email,
-      String password, String name, String firstName, String lastName) async {
+  Future<SignupResponse> signupUser(String userName, String email, String password, String name, String firstName, String lastName) async {
     final Map<String, String> body = <String, String>{};
     final params = {
       "username": userName,
@@ -255,14 +224,11 @@ class AuthRepo {
     //   // 'Authorization': 'Bearer $token'
     // };
 
-    final response = await HttpClient.instance.postData(
-        APIPathHelper.getValue(APIPath.signup), body, null,
-        params: params);
+    final response = await HttpClient.instance.postData(APIPathHelper.getValue(APIPath.signup), body, null, params: params);
     return SignupResponse.fromJson(response as Map<String, dynamic>);
   }
 
-  Future<StoriesResponse> addStory(String token, String title, String content,
-      String author, dynamic image) async {
+  Future<StoriesResponse> addStory(String token, String title, String content, String author, dynamic image) async {
     Map<String, String> body = Map<String, String>();
     var params = {
       "title": title,
@@ -274,18 +240,12 @@ class AuthRepo {
       "status": "publish",
     };
 
-    var header = {
-      HttpHeaders.contentTypeHeader: 'application/x-www-form-urlencoded',
-      'Authorization': 'Bearer $token'
-    };
-    final response = await HttpClient.instance.postData(
-        APIPathHelper.getValue(APIPath.addstories), body, header,
-        params: params);
+    var header = {HttpHeaders.contentTypeHeader: 'application/x-www-form-urlencoded', 'Authorization': 'Bearer $token'};
+    final response = await HttpClient.instance.postData(APIPathHelper.getValue(APIPath.addstories), body, header, params: params);
     return StoriesResponse.fromJson(response as Map<String, dynamic>);
   }
 
-  Future<List<StoryData>> calendarsearch(
-      var from, var until, currentpage) async {
+  Future<List<StoryData>> calendarsearch(var from, var until, currentpage) async {
     Map<String, String> body = Map<String, String>();
     String key = "Pf1PZMTEum3zLBkN2ITu4KdZyHM3WKR0";
     var userid = await Prefs.id;
@@ -298,8 +258,7 @@ class AuthRepo {
       'page': currentpage.toString()
     };
 
-    var response = await HttpClient.instance
-        .fetchData(APIPathHelper.getValue(APIPath.calendar), params: params);
+    var response = await HttpClient.instance.fetchData(APIPathHelper.getValue(APIPath.calendar), params: params);
 
     return TopLevel.fromJson(response as Map<String, dynamic>).data;
   }
@@ -311,8 +270,7 @@ class AuthRepo {
     var header = {
       HttpHeaders.contentTypeHeader: 'application/x-www-form-urlencoded',
     };
-    final List response = await HttpClient.instance
-        .fetchData(APIPathHelper.getValue(APIPath.comments), params: params) as List<dynamic>;
+    final List response = await HttpClient.instance.fetchData(APIPathHelper.getValue(APIPath.comments), params: params) as List<dynamic>;
 
     return response.map((e) => GetCommentResponse.fromJson(e as Map<String, dynamic>)).toList();
   }
@@ -321,25 +279,15 @@ class AuthRepo {
     Map<String, String> body = Map<String, String>();
     var token = await Prefs.token;
     var userid = await Prefs.id;
-    var params = {
-      "post": postid.toString(),
-      "author": userid.toString(),
-      'content': comment.toString()
-    };
+    var params = {"post": postid.toString(), "author": userid.toString(), 'content': comment.toString()};
 
-    var header = {
-      HttpHeaders.contentTypeHeader: 'application/x-www-form-urlencoded',
-      'Authorization': 'Bearer $token'
-    };
-    final response = await HttpClient.instance.postData(
-        APIPathHelper.getValue(APIPath.comments), body, header,
-        params: params);
+    var header = {HttpHeaders.contentTypeHeader: 'application/x-www-form-urlencoded', 'Authorization': 'Bearer $token'};
+    final response = await HttpClient.instance.postData(APIPathHelper.getValue(APIPath.comments), body, header, params: params);
 
     return PostCommentResponse.fromJson(response as Map<String, dynamic>);
   }
 
-  Future<AddSettingResponse> SettingInfo(
-      var noti_status, var email_status) async {
+  Future<AddSettingResponse> SettingInfo(var noti_status, var email_status) async {
     Map<String, String> body = Map<String, String>();
     String key = "Pf1PZMTEum3zLBkN2ITu4KdZyHM3WKR0";
     final ipv4 = await Ipify.ipv4();
@@ -356,9 +304,7 @@ class AuthRepo {
       HttpHeaders.contentTypeHeader: 'application/x-www-form-urlencoded',
     };
 
-    final response = await HttpClient.instance.postData(
-        APIPathHelper.getValue(APIPath.addsetting), body, headers,
-        params: params);
+    final response = await HttpClient.instance.postData(APIPathHelper.getValue(APIPath.addsetting), body, headers, params: params);
     return AddSettingResponse.fromJson(response as Map<String, dynamic>);
   }
 
@@ -373,8 +319,7 @@ class AuthRepo {
     var header = {
       HttpHeaders.contentTypeHeader: 'application/x-www-form-urlencoded',
     };
-    var response = await HttpClient.instance
-        .fetchData(APIPathHelper.getValue(APIPath.newstories), params: params);
+    var response = await HttpClient.instance.fetchData(APIPathHelper.getValue(APIPath.newstories), params: params);
 
     return TopLevel.fromJson(response as Map<String, dynamic>).data;
   }
@@ -389,8 +334,7 @@ class AuthRepo {
     var header = {
       HttpHeaders.contentTypeHeader: 'application/x-www-form-urlencoded',
     };
-    var response = await HttpClient.instance
-        .fetchData(APIPathHelper.getValue(APIPath.favStories), params: params);
+    var response = await HttpClient.instance.fetchData(APIPathHelper.getValue(APIPath.favStories), params: params);
 
     return FavResponse.fromJson(response as Map<String, dynamic>);
   }
@@ -408,8 +352,7 @@ class AuthRepo {
     var header = {
       HttpHeaders.contentTypeHeader: 'application/x-www-form-urlencoded',
     };
-    var response = await HttpClient.instance
-        .fetchData(APIPathHelper.getValue(APIPath.newstories), params: params);
+    var response = await HttpClient.instance.fetchData(APIPathHelper.getValue(APIPath.newstories), params: params);
 
     return TopLevel.fromJson(response as Map<String, dynamic>).data;
   }
@@ -430,9 +373,7 @@ class AuthRepo {
     var header = {
       HttpHeaders.contentTypeHeader: 'application/x-www-form-urlencoded',
     };
-    final response = await HttpClient.instance.postData(
-        APIPathHelper.getValue(APIPath.addfavourite), body, header,
-        params: params);
+    final response = await HttpClient.instance.postData(APIPathHelper.getValue(APIPath.addfavourite), body, header, params: params);
     return AddFavouriteResponse.fromJson(response as Map<String, dynamic>);
   }
 }

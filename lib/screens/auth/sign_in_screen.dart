@@ -1,6 +1,6 @@
 import 'dart:convert';
+
 import 'package:black_history_calender/const/colors.dart';
-import 'package:black_history_calender/helper/firebase_notification.dart';
 import 'package:black_history_calender/helper/prefs.dart';
 import 'package:black_history_calender/screens/auth/forgot_password_screen.dart';
 import 'package:black_history_calender/screens/auth/model/social_login_response.dart';
@@ -12,13 +12,15 @@ import 'package:black_history_calender/services/loca_auth_api.dart';
 import 'package:black_history_calender/widget/snackbar_widget.dart';
 import 'package:black_history_calender/widget/text_field_border.dart';
 import 'package:black_history_calender/widget/utils.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
+
+import '../../helper/firebase_notification.dart';
 import 'provider/auth_provider.dart';
 import 'sign_up_screen.dart';
 
@@ -61,15 +63,14 @@ class _SignInScreenState extends State<SignInScreen> {
   Future<void> _signInWithGoogle() async {
     try {
       GoogleResponse user = await auth.signInWithGoogle();
+      print("user $user");
       if (user != null) {
         var token = await user.user.getIdTokenResult();
-
         var accessToken = {
           "access_token": user.response.accessToken,
           "token_type": "bearer",
           "expires_in": token.expirationTime.millisecondsSinceEpoch.toString()
         };
-
         var body = {
           "name": user.user.displayName,
           "email": user.user.email,
@@ -89,17 +90,14 @@ class _SignInScreenState extends State<SignInScreen> {
             Prefs.setName(value.data.userDisplayName.toString());
             Prefs.setUserName(value.data.userNicename);
             if (user.user.photoURL != "" &&
-                value.data.imgurl.toString() ==
-                    "https://myblackhistorycalendar.com/wp-content/uploads/2022/04/gamer.png") {
+                value.data.imgurl.toString() == "https://myblackhistorycalendar.com/wp-content/uploads/2022/04/gamer.png") {
               Prefs.setImg(user.user.photoURL);
             } else {
               Prefs.setImg(value.data.imgurl.toString());
             }
             if (value.data.userDisplayName.toString().split(" ").length > 0) {
-              Prefs.setFirstName(
-                  value.data.userDisplayName.toString().split(" ").first);
-              Prefs.setLastName(
-                  value.data.userDisplayName.toString().split(" ").last);
+              Prefs.setFirstName(value.data.userDisplayName.toString().split(" ").first);
+              Prefs.setLastName(value.data.userDisplayName.toString().split(" ").last);
             } else {
               Prefs.setFirstName(value.data.userDisplayName.toString());
               Prefs.setLastName("");
@@ -108,9 +106,8 @@ class _SignInScreenState extends State<SignInScreen> {
             Prefs.setMembership(value.data.membershipLevel.toString());
 
             if (value.data.membershipLevel == null) {
-              Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(builder: (context) => SubscriptionScreen()),
-                  (Route<dynamic> route) => false);
+              Navigator.of(context)
+                  .pushAndRemoveUntil(MaterialPageRoute(builder: (context) => SubscriptionScreen()), (Route<dynamic> route) => false);
             } else {
               Navigator.pushAndRemoveUntil(
                   context,
@@ -161,18 +158,15 @@ class _SignInScreenState extends State<SignInScreen> {
             Prefs.setName(value.data.userDisplayName.toString());
             Prefs.setUserName(value.data.userNicename);
             if (user.user.photoURL != "" &&
-                value.data.imgurl.toString() ==
-                    "https://myblackhistorycalendar.com/wp-content/uploads/2022/04/gamer.png") {
+                value.data.imgurl.toString() == "https://myblackhistorycalendar.com/wp-content/uploads/2022/04/gamer.png") {
               Prefs.setImg(user.user.photoURL);
             } else {
               Prefs.setImg(value.data.imgurl.toString());
             }
 
             if (value.data.userDisplayName.toString().split(" ").length > 0) {
-              Prefs.setFirstName(
-                  value.data.userDisplayName.toString().split(" ").first);
-              Prefs.setLastName(
-                  value.data.userDisplayName.toString().split(" ").last);
+              Prefs.setFirstName(value.data.userDisplayName.toString().split(" ").first);
+              Prefs.setLastName(value.data.userDisplayName.toString().split(" ").last);
             } else {
               Prefs.setFirstName(value.data.userDisplayName.toString());
               Prefs.setLastName("");
@@ -182,9 +176,8 @@ class _SignInScreenState extends State<SignInScreen> {
             Prefs.setMembership(value.data.membershipLevel.toString());
 
             if (value.data.membershipLevel == null) {
-              Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(builder: (context) => SubscriptionScreen()),
-                  (Route<dynamic> route) => false);
+              Navigator.of(context)
+                  .pushAndRemoveUntil(MaterialPageRoute(builder: (context) => SubscriptionScreen()), (Route<dynamic> route) => false);
             } else {
               Navigator.pushAndRemoveUntil(
                   context,
@@ -200,11 +193,8 @@ class _SignInScreenState extends State<SignInScreen> {
         });
       } else {}
     } catch (e) {
-      if (e
-          .toString()
-          .contains("An account already exists with the same email address")) {
-        CommonWidgets.buildSnackbar(context,
-            "You are already registered with your google account please sign in using your registered google id");
+      if (e.toString().contains("An account already exists with the same email address")) {
+        CommonWidgets.buildSnackbar(context, "You are already registered with your google account please sign in using your registered google id");
       } else {
         CommonWidgets.buildSnackbar(context, "$e");
       }
@@ -253,9 +243,7 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
   Future validateToken() async {
-    await Provider.of<AuthProvider>(context, listen: false)
-        .checkTokenValidate(token)
-        .then((value) {
+    await Provider.of<AuthProvider>(context, listen: false).checkTokenValidate(token).then((value) {
       if (value.code.contains("jwt_auth_valid_token")) {
         Navigator.pushAndRemoveUntil(
             context,
@@ -277,8 +265,7 @@ class _SignInScreenState extends State<SignInScreen> {
               Navigator.of(context).pop(true);
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(
-                    builder: (context) => WelcomeScreen(auth: auth)),
+                MaterialPageRoute(builder: (context) => WelcomeScreen(auth: auth)),
               );
               return;
             });
@@ -317,25 +304,18 @@ class _SignInScreenState extends State<SignInScreen> {
               Expanded(
                 child: Container(
                   width: MediaQuery.of(context).size.width,
-                  decoration: BoxDecoration(
-                      color: white,
-                      borderRadius: BorderRadius.only(
-                          topRight: Radius.circular(40),
-                          topLeft: Radius.circular(40))),
+                  decoration:
+                      BoxDecoration(color: white, borderRadius: BorderRadius.only(topRight: Radius.circular(40), topLeft: Radius.circular(40))),
                   child: SingleChildScrollView(
                     child: Padding(
-                      padding:
-                          const EdgeInsets.only(top: 25, left: 25, right: 25),
+                      padding: const EdgeInsets.only(top: 25, left: 25, right: 25),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         mainAxisSize: MainAxisSize.max,
                         children: [
                           Text(
                             'Sign In',
-                            style: GoogleFonts.montserrat(
-                                color: Color(0xff666666),
-                                fontSize: 22,
-                                fontWeight: FontWeight.w500),
+                            style: GoogleFonts.montserrat(color: Color(0xff666666), fontSize: 22, fontWeight: FontWeight.w500),
                           ),
                           SizedBox(
                             height: 25,
@@ -349,7 +329,6 @@ class _SignInScreenState extends State<SignInScreen> {
                           SizedBox(
                             height: 30,
                           ),
-
                           TextFieldSideBorder(
                             tfieldController: _passwordController,
                             focus: _passFocus,
@@ -378,27 +357,17 @@ class _SignInScreenState extends State<SignInScreen> {
                                       }),
                                   Text(
                                     'Remember Me',
-                                    style: GoogleFonts.montserrat(
-                                        color: Color(0xff0891d9),
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.w400),
+                                    style: GoogleFonts.montserrat(color: Color(0xff0891d9), fontSize: 13, fontWeight: FontWeight.w400),
                                   ),
                                 ],
                               ),
                               InkWell(
                                 onTap: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              ForgotPassScreen()));
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => ForgotPassScreen()));
                                 },
                                 child: Text(
                                   'Forgot Password?',
-                                  style: GoogleFonts.montserrat(
-                                      color: Color(0xff0891d9),
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w400),
+                                  style: GoogleFonts.montserrat(color: Color(0xff0891d9), fontSize: 13, fontWeight: FontWeight.w400),
                                 ),
                               )
                             ],
@@ -407,16 +376,14 @@ class _SignInScreenState extends State<SignInScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 10),
+                                padding: const EdgeInsets.symmetric(horizontal: 10),
                                 child: Row(
                                   children: [
                                     Card(
                                       color: Color(0xffd5ebf8),
                                       elevation: 4,
                                       shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(4.0),
+                                        borderRadius: BorderRadius.circular(4.0),
                                       ),
                                       child: Padding(
                                         padding: const EdgeInsets.all(4.0),
@@ -434,10 +401,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                     ),
                                     Text(
                                       'Biometric Login',
-                                      style: GoogleFonts.montserrat(
-                                          color: Color(0xff999999),
-                                          fontSize: 13,
-                                          fontWeight: FontWeight.w300),
+                                      style: GoogleFonts.montserrat(color: Color(0xff999999), fontSize: 13, fontWeight: FontWeight.w300),
                                     ),
                                   ],
                                 ),
@@ -458,8 +422,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                             showAlertDialog(
                                                 context: context,
                                                 title: "Alert",
-                                                content:
-                                                    "You need to login first to enable biometric login feature",
+                                                content: "You need to login first to enable biometric login feature",
                                                 cancelActionText: null,
                                                 defaultActionText: "OK",
                                                 defaultFunc: null);
@@ -483,10 +446,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                 child: Text(
                                   'Sign In',
                                   textAlign: TextAlign.center,
-                                  style: GoogleFonts.montserrat(
-                                      color: white,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.normal),
+                                  style: GoogleFonts.montserrat(color: white, fontSize: 16, fontWeight: FontWeight.normal),
                                 ),
                               ),
                             ),
@@ -506,18 +466,14 @@ class _SignInScreenState extends State<SignInScreen> {
                           ),
                           GestureDetector(
                             onTap: _signInWithFacebook,
-
                             child: Container(
                               height: 45,
                               padding: const EdgeInsets.all(8),
                               width: MediaQuery.of(context).size.width,
                               decoration: BoxDecoration(
-                                  color: Colors.transparent,
-                                  borderRadius: BorderRadius.circular(8),
-                                  border: Border.all(color: Color(0xffdddddd))),
+                                  color: Colors.transparent, borderRadius: BorderRadius.circular(8), border: Border.all(color: Color(0xffdddddd))),
                               child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                 children: [
                                   Padding(
                                     padding: const EdgeInsets.only(left: 20.0),
@@ -527,10 +483,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                     child: Text(
                                       'Sign In with Facebook',
                                       textAlign: TextAlign.center,
-                                      style: GoogleFonts.montserrat(
-                                          color: Colors.black,
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w400),
+                                      style: GoogleFonts.montserrat(color: Colors.black, fontSize: 15, fontWeight: FontWeight.w400),
                                     ),
                                   )
                                 ],
@@ -547,26 +500,19 @@ class _SignInScreenState extends State<SignInScreen> {
                               padding: const EdgeInsets.all(8),
                               width: MediaQuery.of(context).size.width,
                               decoration: BoxDecoration(
-                                  color: Colors.transparent,
-                                  borderRadius: BorderRadius.circular(8),
-                                  border: Border.all(color: Color(0xffdddddd))),
+                                  color: Colors.transparent, borderRadius: BorderRadius.circular(8), border: Border.all(color: Color(0xffdddddd))),
                               child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
+                                mainAxisAlignment: MainAxisAlignment.spaceAround,
                                 children: [
                                   Padding(
                                     padding: const EdgeInsets.only(left: 20.0),
-                                    child:
-                                        Image.asset('assets/images/google.png'),
+                                    child: Image.asset('assets/images/google.png'),
                                   ),
                                   Expanded(
                                     child: Text(
                                       'Sign In with Google',
                                       textAlign: TextAlign.center,
-                                      style: GoogleFonts.montserrat(
-                                          color: Colors.black,
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w400),
+                                      style: GoogleFonts.montserrat(color: Colors.black, fontSize: 14, fontWeight: FontWeight.w400),
                                     ),
                                   )
                                 ],
@@ -581,25 +527,15 @@ class _SignInScreenState extends State<SignInScreen> {
                             children: [
                               Text(
                                 'Don\'t have an account?  ',
-                                style: GoogleFonts.montserrat(
-                                    color: Colors.black87,
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.w400),
+                                style: GoogleFonts.montserrat(color: Colors.black87, fontSize: 13, fontWeight: FontWeight.w400),
                               ),
                               GestureDetector(
                                 onTap: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              SignUpScreen()));
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => SignUpScreen()));
                                 },
                                 child: Text(
                                   'Sign Up Now',
-                                  style: GoogleFonts.montserrat(
-                                      color: lightBlue,
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w400),
+                                  style: GoogleFonts.montserrat(color: lightBlue, fontSize: 13, fontWeight: FontWeight.w400),
                                 ),
                               )
                             ],
@@ -621,12 +557,11 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
   Future signIn() async {
-    print("Push Token + ${notification.token}");
     EasyLoading.show(dismissOnTap: false);
+    String ntoken = await FirebaseMessaging.instance.getToken();
     var response = await Provider.of<AuthProvider>(context, listen: false)
-        .loginUser(_emailController.text.trim(),
-            _passwordController.text.trim(), notification.token);
-
+        .loginUser(_emailController.text.trim(), _passwordController.text.trim(), notification.token,context);
+    print("response $response");
     if (response != null) {
       EasyLoading.dismiss();
       Prefs.setToken(response.token.toString());
@@ -642,25 +577,19 @@ class _SignInScreenState extends State<SignInScreen> {
       Prefs.setUserLogin(response.userLogin);
       Prefs.setUserName(response.userNicename);
 
-
       // Prefs.setSubsRole(response.userRole);
 
       CommonWidgets.buildSnackbar(context, "Sign In successful");
 
       if (response.membershipLevel.isEmpty) {
-        Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) => SubscriptionScreen()),
-            (Route<dynamic> route) => false);
+        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => SubscriptionScreen()), (Route<dynamic> route) => false);
       } else {
-        Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) => HomeScreen()),
-            (Route<dynamic> route) => false);
+        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => HomeScreen()), (Route<dynamic> route) => false);
         // Navigator.push(
         //     context, MaterialPageRoute(builder: (context) => HomeScreen()));
       }
     } else {
       EasyLoading.dismiss();
-      CommonWidgets.buildSnackbar(context, "Something went wrong");
     }
   }
 }

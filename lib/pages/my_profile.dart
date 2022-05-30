@@ -1,6 +1,9 @@
 import 'dart:convert';
+import 'dart:io';
+
 import 'package:black_history_calender/const/colors.dart';
 import 'package:black_history_calender/helper/prefs.dart';
+import 'package:black_history_calender/pages/cancelAlert.dart';
 import 'package:black_history_calender/screens/auth/provider/auth_provider.dart';
 import 'package:black_history_calender/screens/story/upload_media_response.dart';
 import 'package:black_history_calender/widget/snackbar_widget.dart';
@@ -8,11 +11,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
-import 'dart:io';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:http/http.dart' as http;
 
 class MyProfile extends StatefulWidget {
   const MyProfile({Key key}) : super(key: key);
@@ -79,8 +81,7 @@ class _MyProfileState extends State<MyProfile> {
   _getFromGallery() async {
     try {
       final ImagePicker _picker = ImagePicker();
-      final XFile imagePick =
-          await _picker.pickImage(source: ImageSource.gallery);
+      final XFile imagePick = await _picker.pickImage(source: ImageSource.gallery);
       if (imagePick == null) return;
       setState(() {
         final imageTemperory = File(imagePick.path);
@@ -98,8 +99,7 @@ class _MyProfileState extends State<MyProfile> {
               id = value;
             }));
         EasyLoading.show(dismissOnTap: false);
-        var response = await Provider.of<AuthProvider>(context, listen: false)
-            .updateImgApi(id, imgg);
+        var response = await Provider.of<AuthProvider>(context, listen: false).updateImgApi(id, imgg);
 
         if (response != null) {
           Prefs.setImg(imgurl);
@@ -192,8 +192,7 @@ class _MyProfileState extends State<MyProfile> {
                         onTap: () {
                           _getFromGallery();
                         },
-                        child:
-                            CircleAvatar(
+                        child: CircleAvatar(
                           radius: 50,
                           child: ClipOval(
                             child: imgurl == "" || imgurl == null
@@ -212,19 +211,14 @@ class _MyProfileState extends State<MyProfile> {
                       ),
                       Text(
                         name,
-                        style: GoogleFonts.montserrat(
-                            color: white,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 14),
+                        style: GoogleFonts.montserrat(color: white, fontWeight: FontWeight.w600, fontSize: 14),
                       ),
                     ],
                   ),
                 ),
               ),
               Padding(
-                padding: EdgeInsets.symmetric(
-                    horizontal: MediaQuery.of(context).size.width * 0.05,
-                    vertical: 25),
+                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05, vertical: 25),
                 child: Column(
                   children: [
                     ListTile(
@@ -258,37 +252,18 @@ class _MyProfileState extends State<MyProfile> {
                           ),
                           GestureDetector(
                             onTap: () async {
-                              EasyLoading.show();
-                              try{
-                               var response =  await http.post(
-                                    Uri.parse(
-                                        "https://myblackhistorycalendar.com/wp-json/pmpro/v1/cancel_membership_level?user_id=$id&level_id=$membership"),
-                                    headers: {
-                                      "content-type": "application/json",
-                                      'Authorization': 'Bearer ' + token
-                                    });
-                               if(response.body=='true') {
-                                  await Prefs.setMembership("0");
-                                  setState(() {
-                                    membership = "0";
-                                  });
-                                }
-                              }catch(e){
-                                print(e);
-                              }
-                              EasyLoading.dismiss();
+                              await cancelAlert(context, cancelSubscription);
                             },
-                            child: membership != "0"?Container(
-                              padding: EdgeInsets.all(10),
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: Colors.red),
-                              child: Text(
-                                "Cancel",
-                                style:
-                                    GoogleFonts.montserrat(color: Colors.white),
-                              ),
-                            ):SizedBox(),
+                            child: membership != "0"
+                                ? Container(
+                                    padding: EdgeInsets.all(10),
+                                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.red),
+                                    child: Text(
+                                      "Cancel",
+                                      style: GoogleFonts.montserrat(color: Colors.white),
+                                    ),
+                                  )
+                                : SizedBox(),
                           ),
                         ],
                       ),
@@ -327,8 +302,7 @@ class _MyProfileState extends State<MyProfile> {
           id = value;
         }));
     EasyLoading.show(dismissOnTap: false);
-    var response = await Provider.of<AuthProvider>(context, listen: false)
-        .updateDobApi(id, dob);
+    var response = await Provider.of<AuthProvider>(context, listen: false).updateDobApi(id, dob);
 
     if (response != null) {
       Prefs.setDob(dob);
@@ -371,5 +345,25 @@ class _MyProfileState extends State<MyProfile> {
       return null;
     }
     return UploadMediaResponse.fromJson(response as Map<String, dynamic>);
+  }
+
+  cancelSubscription() async {
+    try {
+      EasyLoading.show();
+      var response = await http.post(
+          Uri.parse("https://myblackhistorycalendar.com/wp-json/pmpro/v1/cancel_membership_level?user_id=$id&level_id=$membership"),
+          headers: {"content-type": "application/json", 'Authorization': 'Bearer ' + token});
+      if (response.body == 'true') {
+        await Prefs.setMembership("0");
+        setState(() {
+          membership = "0";
+        });
+        EasyLoading.dismiss();
+      }
+      EasyLoading.dismiss();
+    } catch (e) {
+      EasyLoading.dismiss();
+      print(e);
+    }
   }
 }

@@ -1,9 +1,8 @@
 import 'package:black_history_calender/const/colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 
-showPaymentAlert(BuildContext context, Function status) {
+cancelAlert(BuildContext context, Function confirm) {
   showDialog(
       context: context,
       barrierDismissible: false,
@@ -32,7 +31,7 @@ showPaymentAlert(BuildContext context, Function status) {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Text(
-                          "Payment Check!",
+                          "Confirmation Required!",
                           style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w500),
                         ),
                         Spacer(),
@@ -64,7 +63,7 @@ showPaymentAlert(BuildContext context, Function status) {
                               height: 20,
                             ),
                             Text(
-                              "If you have made the payment, tap 'REFRESH' button to update your status!",
+                              "Are you sure to unsubscribe from BHC subscription plan? Kindly Confirm!",
                               textAlign: TextAlign.center,
                               style: TextStyle(color: Colors.black45, fontSize: 16, fontWeight: FontWeight.w400),
                             ),
@@ -87,7 +86,7 @@ showPaymentAlert(BuildContext context, Function status) {
                                         Navigator.pop(context);
                                       },
                                       child: Text(
-                                        'Ok',
+                                        'Cancel',
                                         textAlign: TextAlign.center,
                                         style: TextStyle(color: Colors.white, fontSize: 17, fontWeight: FontWeight.w400),
                                       ),
@@ -106,11 +105,10 @@ showPaymentAlert(BuildContext context, Function status) {
                                     child: InkWell(
                                       onTap: () async {
                                         Navigator.pop(context);
-                                        EasyLoading.show();
-                                        await status();
+                                        await confirm();
                                       },
                                       child: Text(
-                                        'Refresh',
+                                        'Confirm',
                                         textAlign: TextAlign.center,
                                         style: TextStyle(color: Colors.white, fontSize: 17, fontWeight: FontWeight.w400),
                                       ),

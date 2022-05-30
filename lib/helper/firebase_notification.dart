@@ -1,8 +1,8 @@
-import 'dart:convert';
 import 'dart:io';
+
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class Notification {
@@ -11,14 +11,12 @@ class Notification {
   String token;
 
   String get getToken => token;
-
   set setToken(String val) {
     token = val;
   }
 
   Future<void> configure(BuildContext context) async {
-    String newToken = await fcm.getToken();
-    token = newToken;
+    token = await fcm.getToken();
     if (Platform.isIOS) {
       fcm.requestPermission(sound: true, badge: true, alert: true);
     }
@@ -53,7 +51,7 @@ class Notification {
   }
 
   showNotification(Map<String, dynamic> msg) async {
-    const android =  AndroidNotificationDetails(
+    const android = AndroidNotificationDetails(
       'MyGharCustomerApp',
       "MyGharNotificationChannel",
       channelDescription: "MyGhar Notifications for complaints and checkout",
@@ -62,15 +60,16 @@ class Notification {
       showWhen: false,
     );
     const iOS = IOSNotificationDetails();
-    final platform =  NotificationDetails(android: android, iOS: iOS);
+    final platform = NotificationDetails(android: android, iOS: iOS);
     await flutterLocalNotificationsPlugin.show(
-        // ignore: avoid_dynamic_calls
-        0, msg['notification']['title'].toString(), msg['notification']['body'].toString(), platform,);
+      // ignore: avoid_dynamic_calls
+      0, msg['notification']['title'].toString(), msg['notification']['body'].toString(), platform,
+    );
   }
 
   // ignore: always_declare_return_types, type_annotate_public_apis
   showiOSNotification(RemoteMessage msg) async {
-    const android =  AndroidNotificationDetails(
+    const android = AndroidNotificationDetails(
       'MyGharCustomerApp',
       "MyGharNotificationChannel",
       channelDescription: "MyGhar Notifications for complaints and checkout",
@@ -78,23 +77,24 @@ class Notification {
       priority: Priority.high,
       showWhen: false,
     );
-    const iOS =   IOSNotificationDetails();
-    const platform =  NotificationDetails(android: android, iOS: iOS);
+    const iOS = IOSNotificationDetails();
+    const platform = NotificationDetails(android: android, iOS: iOS);
     // await flutterLocalNotificationsPlugin.show(
     //     0, msg.notification.title, msg.notification.body, platform);
 
     flutterLocalNotificationsPlugin.show(
-        notification.hashCode,
-        msg.notification.title,
-        msg.notification.body,
-        NotificationDetails(
-          android: AndroidNotificationDetails(
-            channel.id,
-            channel.name,
-            channelDescription: channel.description,
-            icon: 'some_icon_in_drawable_folder',
-          ),
-        ),);
+      notification.hashCode,
+      msg.notification.title,
+      msg.notification.body,
+      NotificationDetails(
+        android: AndroidNotificationDetails(
+          channel.id,
+          channel.name,
+          channelDescription: channel.description,
+          icon: 'some_icon_in_drawable_folder',
+        ),
+      ),
+    );
   }
 }
 
@@ -105,4 +105,4 @@ const AndroidNotificationChannel channel = AndroidNotificationChannel(
   importance: Importance.high,
 );
 
-Notification notification =  Notification();
+Notification notification = Notification();

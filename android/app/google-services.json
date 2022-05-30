@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "482827005790-btamg9oleluis7dprg8bcp4dsurh5igo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.protech.myblackhistorycalendar",
+            "certificate_hash": "5c9c52bd383400a3a6d7707df46b0a553880d66c"
+          }
+        },
+        {
           "client_id": "482827005790-rm48ftk46a47dtg7g3j1lruqecvr4ir6.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

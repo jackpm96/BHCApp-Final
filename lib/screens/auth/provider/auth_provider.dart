@@ -4,15 +4,14 @@ import 'package:black_history_calender/screens/auth/model/account_details_respon
 import 'package:black_history_calender/screens/auth/model/addfavourite_response.dart';
 import 'package:black_history_calender/screens/auth/model/addsetting_response.dart';
 import 'package:black_history_calender/screens/auth/model/dob_response.dart';
-import 'package:black_history_calender/screens/auth/model/img_response.dart';
 import 'package:black_history_calender/screens/auth/model/fav_response.dart';
 import 'package:black_history_calender/screens/auth/model/forgot_response.dart';
 import 'package:black_history_calender/screens/auth/model/getcomment_response.dart';
 import 'package:black_history_calender/screens/auth/model/getlike_response.dart';
+import 'package:black_history_calender/screens/auth/model/img_response.dart';
 import 'package:black_history_calender/screens/auth/model/login_response.dart';
 import 'package:black_history_calender/screens/auth/model/newstories_response.dart';
 import 'package:black_history_calender/screens/auth/model/postcomment_response.dart';
-import 'package:black_history_calender/screens/auth/model/postlike_response.dart';
 import 'package:black_history_calender/screens/auth/model/signup_response.dart';
 import 'package:black_history_calender/screens/auth/model/stories_response.dart';
 import 'package:black_history_calender/screens/auth/model/token_validate_response.dart';
@@ -20,6 +19,8 @@ import 'package:black_history_calender/screens/auth/repo/auth_repo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:http/http.dart' as http;
+
+import '../../../widget/snackbar_widget.dart';
 
 class AuthProvider extends ChangeNotifier {
   AuthRepo _authRepo;
@@ -78,7 +79,6 @@ class AuthProvider extends ChangeNotifier {
   ApiResponse<UpdateDobResponse> _updateDob;
   ApiResponse<UpdateDobResponse> get updateDob => _updateDob;
 
-
   ApiResponse<UpdateImgResponse> _updateImg;
   ApiResponse<UpdateImgResponse> get updateImg => _updateImg;
 
@@ -90,14 +90,12 @@ class AuthProvider extends ChangeNotifier {
   }
 
   updateStoriesFavStatus(int index) {
-    _newstories.data[index].isFavourite =
-        _newstories.data[index].isFavourite.contains("1") ? "0" : "1";
+    _newstories.data[index].isFavourite = _newstories.data[index].isFavourite.contains("1") ? "0" : "1";
     notifyListeners();
   }
 
   updateFavStatus(int index) {
-    _favStories.data.data.data[index].isFavourite =
-        _favStories.data.data.data[index].isFavourite.contains("1") ? "0" : "1";
+    _favStories.data.data.data[index].isFavourite = _favStories.data.data.data[index].isFavourite.contains("1") ? "0" : "1";
     notifyListeners();
   }
 
@@ -120,10 +118,11 @@ class AuthProvider extends ChangeNotifier {
       return null;
     }
   }
+
   Future<UpdateImgResponse> updateImgApi(
-      String userID,
-      String img,
-      ) async {
+    String userID,
+    String img,
+  ) async {
     _updateImg = ApiResponse.loading('loading... ');
     notifyListeners();
     try {
@@ -163,8 +162,7 @@ class AuthProvider extends ChangeNotifier {
     _tokenValidate = ApiResponse.loading('loading... ');
     notifyListeners();
     try {
-      TokenValidateResponse tokenValidate =
-          await _authRepo.checkTokenValidate(token);
+      TokenValidateResponse tokenValidate = await _authRepo.checkTokenValidate(token);
       _tokenValidate = ApiResponse.completed(tokenValidate);
       notifyListeners();
       EasyLoading.dismiss();
@@ -177,8 +175,7 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
-  Future<http.Response> makeSubscription(
-      String selectedPackage, userID, token) async {
+  Future<http.Response> makeSubscription(String selectedPackage, userID, token) async {
     notifyListeners();
     try {
       http.Response subs = selectedPackage.contains("yearly")
@@ -278,13 +275,11 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<ForgotResponse> resetPassword(
-      String email, String password, String passcode) async {
+  Future<ForgotResponse> resetPassword(String email, String password, String passcode) async {
     _forgot = ApiResponse.loading('loading... ');
     notifyListeners();
     try {
-      ForgotResponse forgot =
-          await _authRepo.resetPassword(email, password, passcode);
+      ForgotResponse forgot = await _authRepo.resetPassword(email, password, passcode);
       _forgot = ApiResponse.completed(forgot);
       notifyListeners();
       EasyLoading.dismiss();
@@ -314,32 +309,31 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
-  Future<LoginResponse> loginUser(
-      String userName, String password, String token) async {
+  Future<LoginResponse> loginUser(String userName, String password, String token, context) async {
     _login = ApiResponse.loading('loading... ');
     notifyListeners();
     try {
-      LoginResponse login =
-          await _authRepo.loginUser(userName, password, token);
+      LoginResponse login = await _authRepo.loginUser(userName, password, token);
+
       _login = ApiResponse.completed(login);
       notifyListeners();
       EasyLoading.dismiss();
       return login;
     } catch (e) {
+      print("e $e");
       _login = ApiResponse.error(e.toString());
       notifyListeners();
+      CommonWidgets.buildSnackbar(context, "Invalid Credentials");
       EasyLoading.dismiss();
       return null;
     }
   }
 
-  Future<SignupResponse> signupUser(String userName, String email,
-      String password, String name, String firstName, String lastName) async {
+  Future<SignupResponse> signupUser(String userName, String email, String password, String name, String firstName, String lastName) async {
     _signup = ApiResponse.loading('loading... ');
     notifyListeners();
     try {
-      SignupResponse signup = await _authRepo.signupUser(
-          userName, email, password, name, firstName, lastName);
+      SignupResponse signup = await _authRepo.signupUser(userName, email, password, name, firstName, lastName);
       _signup = ApiResponse.completed(signup);
       notifyListeners();
       EasyLoading.dismiss();
@@ -352,13 +346,11 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
-  Future<dynamic> addStory(String token, String title, String content,
-      String author, dynamic image) async {
+  Future<dynamic> addStory(String token, String title, String content, String author, dynamic image) async {
     _addstory = ApiResponse.loading('loading... ');
     notifyListeners();
     try {
-      StoriesResponse addstory =
-          await _authRepo.addStory(token, title, content, author, image);
+      StoriesResponse addstory = await _authRepo.addStory(token, title, content, author, image);
       _addstory = ApiResponse.completed(addstory);
       notifyListeners();
       EasyLoading.dismiss();
@@ -371,8 +363,7 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
-  Future<List<StoryData>> calendarsearch(
-      String from, String until, currentpage) async {
+  Future<List<StoryData>> calendarsearch(String from, String until, currentpage) async {
     //_searchdata = ApiResponse.loading('loading... ');
     notifyListeners();
     try {
@@ -427,8 +418,7 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
-  Future<AddSettingResponse> SettingInfo(
-      var noti_status, var email_status) async {
+  Future<AddSettingResponse> SettingInfo(var noti_status, var email_status) async {
     _addsetting = ApiResponse.loading('loading... ');
     notifyListeners();
     try {

@@ -1,21 +1,22 @@
 import 'dart:convert';
 import 'dart:convert' as convert;
-import 'package:black_history_calender/globals.dart';
-import 'package:black_history_calender/pages/paymentAlert.dart';
-import 'package:black_history_calender/widget/payment_not_found_dialog.dart';
-import 'package:http/http.dart' as http;
+
 import 'package:black_history_calender/const/colors.dart';
+import 'package:black_history_calender/globals.dart';
 import 'package:black_history_calender/helper/prefs.dart';
+import 'package:black_history_calender/pages/paymentAlert.dart';
 import 'package:black_history_calender/screens/auth/provider/auth_provider.dart';
 import 'package:black_history_calender/screens/home/home_screen.dart';
 import 'package:black_history_calender/services/auth_services.dart';
 import 'package:black_history_calender/services/payment_service.dart';
+import 'package:black_history_calender/widget/payment_not_found_dialog.dart';
 import 'package:black_history_calender/widget/snackbar_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -23,12 +24,10 @@ class SubscriptionScreenFromHome extends StatefulWidget {
   const SubscriptionScreenFromHome({Key key}) : super(key: key);
 
   @override
-  _SubscriptionScreenFromHomeState createState() =>
-      _SubscriptionScreenFromHomeState();
+  _SubscriptionScreenFromHomeState createState() => _SubscriptionScreenFromHomeState();
 }
 
-class _SubscriptionScreenFromHomeState
-    extends State<SubscriptionScreenFromHome> {
+class _SubscriptionScreenFromHomeState extends State<SubscriptionScreenFromHome> {
   final TextEditingController promoController = TextEditingController();
   String packageSelection = "Monthly";
   String token;
@@ -50,8 +49,8 @@ class _SubscriptionScreenFromHomeState
 
   status() async {
     try {
-      http.Response response = await http.get(Uri.parse(
-          'https://myblackhistorycalendar.com/wp-json/wcra/v1/checkmembership/?secret_key=Pf1PZMTEum3zLBkN2ITu4KdZyHM3WKR0&user_id=$id'));
+      http.Response response = await http.get(
+          Uri.parse('https://myblackhistorycalendar.com/wp-json/wcra/v1/checkmembership/?secret_key=Pf1PZMTEum3zLBkN2ITu4KdZyHM3WKR0&user_id=$id'));
       final responseBody = Map<String, dynamic>.from(jsonDecode(response.body));
       if (responseBody["data"].toString() == '0') {
         EasyLoading.dismiss();
@@ -121,7 +120,6 @@ class _SubscriptionScreenFromHomeState
         Uri.parse(
             "https://myblackhistorycalendar.com/wp-json/wcra/v1/get_promo/?secret_key=Pf1PZMTEum3zLBkN2ITu4KdZyHM3WKR0&code=$code&level_id=$id"),
       );
-
       final body = convert.jsonDecode(response.body);
       if (response.statusCode == 200) {
         EasyLoading.dismiss();
@@ -146,10 +144,7 @@ class _SubscriptionScreenFromHomeState
           SnackBar(
             content: Text('Error validating Promo Code'),
             behavior: SnackBarBehavior.floating,
-            margin: EdgeInsets.only(
-                bottom: MediaQuery.of(context).size.height - 100,
-                right: 20,
-                left: 20),
+            margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height - 100, right: 20, left: 20),
           ),
         );
         return false;
@@ -159,10 +154,7 @@ class _SubscriptionScreenFromHomeState
         SnackBar(
           content: Text('Error validating Promo Code'),
           behavior: SnackBarBehavior.floating,
-          margin: EdgeInsets.only(
-              bottom: MediaQuery.of(context).size.height - 100,
-              right: 20,
-              left: 20),
+          margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height - 100, right: 20, left: 20),
         ),
       );
       print(e);
@@ -185,8 +177,7 @@ class _SubscriptionScreenFromHomeState
           automaticallyImplyLeading: true,
           title: Text(
             'Select a Subscription Plan',
-            style: GoogleFonts.montserrat(
-                color: white, fontSize: 22, fontWeight: FontWeight.w400),
+            style: GoogleFonts.montserrat(color: white, fontSize: 22, fontWeight: FontWeight.w400),
           ),
           centerTitle: true,
         ),
@@ -222,8 +213,7 @@ class _SubscriptionScreenFromHomeState
               Center(
                 child: Text(
                   '365 Days of Black History',
-                  style: GoogleFonts.montserrat(
-                      color: white, fontSize: 25, fontWeight: FontWeight.w400),
+                  style: GoogleFonts.montserrat(color: white, fontSize: 25, fontWeight: FontWeight.w400),
                 ),
               ),
               SizedBox(
@@ -232,15 +222,10 @@ class _SubscriptionScreenFromHomeState
               Text(
                 'Daily updates, unlimited stories\npersonal insights and much more',
                 textAlign: TextAlign.center,
-                style: GoogleFonts.montserrat(
-                    color: white,
-                    fontSize: 13,
-                    height: 1.5,
-                    fontWeight: FontWeight.w400),
+                style: GoogleFonts.montserrat(color: white, fontSize: 13, height: 1.5, fontWeight: FontWeight.w400),
               ),
               Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+                padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
                 child: Container(
                   height: 150,
                   width: MediaQuery.of(context).size.width,
@@ -259,46 +244,34 @@ class _SubscriptionScreenFromHomeState
                             });
                           },
                           child: Card(
-                            elevation:
-                                packageSelection.contains("Monthly") ? 15 : 0,
+                            elevation: packageSelection.contains("Monthly") ? 15 : 0,
                             child: Stack(
                               clipBehavior: Clip.none,
                               children: [
                                 Container(
                                   // width: 115,
                                   height: MediaQuery.of(context).size.height,
-                                  decoration: BoxDecoration(
-                                      color: white,
-                                      borderRadius: BorderRadius.circular(8)),
+                                  decoration: BoxDecoration(color: white, borderRadius: BorderRadius.circular(8)),
                                   child: Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       Expanded(
                                         flex: 1,
                                         child: Container(
-                                          width:
-                                              MediaQuery.of(context).size.width,
+                                          width: MediaQuery.of(context).size.width,
                                           decoration: BoxDecoration(
-                                            color: packageSelection
-                                                    .contains("Monthly")
-                                                ? Color(0xff1ABFDD)
-                                                : white,
+                                            color: packageSelection.contains("Monthly") ? Color(0xff1ABFDD) : white,
                                             borderRadius: BorderRadius.only(
                                               bottomLeft: Radius.circular(8),
                                               bottomRight: Radius.circular(8),
                                             ),
                                           ),
                                           child: Padding(
-                                            padding: const EdgeInsets.only(
-                                                top: 18.0),
+                                            padding: const EdgeInsets.only(top: 18.0),
                                             child: Text(
                                               '1\nMONTH',
                                               textAlign: TextAlign.center,
-                                              style: GoogleFonts.montserrat(
-                                                  color: Colors.black87,
-                                                  fontSize: 17,
-                                                  fontWeight: FontWeight.w400),
+                                              style: GoogleFonts.montserrat(color: Colors.black87, fontSize: 17, fontWeight: FontWeight.w400),
                                             ),
                                           ),
                                         ),
@@ -306,24 +279,17 @@ class _SubscriptionScreenFromHomeState
                                       Expanded(
                                         flex: 1,
                                         child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.end,
+                                          mainAxisAlignment: MainAxisAlignment.end,
                                           children: [
                                             Text(
                                               '\$7.99',
                                               textAlign: TextAlign.center,
-                                              style: GoogleFonts.montserrat(
-                                                  color: Colors.black,
-                                                  fontSize: 25,
-                                                  fontWeight: FontWeight.w400),
+                                              style: GoogleFonts.montserrat(color: Colors.black, fontSize: 25, fontWeight: FontWeight.w400),
                                             ),
                                             Text(
                                               '',
                                               textAlign: TextAlign.center,
-                                              style: GoogleFonts.montserrat(
-                                                  color: Colors.grey,
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.w700),
+                                              style: GoogleFonts.montserrat(color: Colors.grey, fontSize: 12, fontWeight: FontWeight.w700),
                                             ),
                                             SizedBox(
                                               height: 10,
@@ -339,11 +305,9 @@ class _SubscriptionScreenFromHomeState
                           ),
                         ),
                       ),
-
                       SizedBox(
                         width: 20,
                       ),
-
                       SizedBox(
                         height: 130,
                         width: 130,
@@ -356,8 +320,7 @@ class _SubscriptionScreenFromHomeState
                             });
                           },
                           child: Card(
-                            elevation:
-                                packageSelection.contains("Annually") ? 15 : 0,
+                            elevation: packageSelection.contains("Annually") ? 15 : 0,
                             child: Stack(
                               clipBehavior: Clip.none,
                               children: [
@@ -365,23 +328,16 @@ class _SubscriptionScreenFromHomeState
                                   // width: 130,
 
                                   height: MediaQuery.of(context).size.height,
-                                  decoration: BoxDecoration(
-                                      color: white,
-                                      borderRadius: BorderRadius.circular(8)),
+                                  decoration: BoxDecoration(color: white, borderRadius: BorderRadius.circular(8)),
                                   child: Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       Expanded(
                                         flex: 1,
                                         child: Container(
-                                          width:
-                                              MediaQuery.of(context).size.width,
+                                          width: MediaQuery.of(context).size.width,
                                           decoration: BoxDecoration(
-                                            color: packageSelection
-                                                    .contains("Annually")
-                                                ? Color(0xff1ABFDD)
-                                                : white,
+                                            color: packageSelection.contains("Annually") ? Color(0xff1ABFDD) : white,
                                             borderRadius: BorderRadius.only(
                                               bottomLeft: Radius.circular(8),
                                               bottomRight: Radius.circular(8),
@@ -390,15 +346,11 @@ class _SubscriptionScreenFromHomeState
                                             ),
                                           ),
                                           child: Padding(
-                                            padding: const EdgeInsets.only(
-                                                top: 18.0),
+                                            padding: const EdgeInsets.only(top: 18.0),
                                             child: Text(
                                               '12\nMONTHS',
                                               textAlign: TextAlign.center,
-                                              style: GoogleFonts.montserrat(
-                                                  color: Colors.black87,
-                                                  fontSize: 17,
-                                                  fontWeight: FontWeight.w400),
+                                              style: GoogleFonts.montserrat(color: Colors.black87, fontSize: 17, fontWeight: FontWeight.w400),
                                             ),
                                           ),
                                         ),
@@ -406,24 +358,17 @@ class _SubscriptionScreenFromHomeState
                                       Expanded(
                                         flex: 1,
                                         child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.end,
+                                          mainAxisAlignment: MainAxisAlignment.end,
                                           children: [
                                             Text(
                                               '\$49.99',
                                               textAlign: TextAlign.center,
-                                              style: GoogleFonts.montserrat(
-                                                  color: Colors.black,
-                                                  fontSize: 25,
-                                                  fontWeight: FontWeight.w400),
+                                              style: GoogleFonts.montserrat(color: Colors.black, fontSize: 25, fontWeight: FontWeight.w400),
                                             ),
                                             Text(
                                               'Save upto 50%',
                                               textAlign: TextAlign.center,
-                                              style: GoogleFonts.montserrat(
-                                                  color: Colors.grey,
-                                                  fontSize: 10,
-                                                  fontWeight: FontWeight.w700),
+                                              style: GoogleFonts.montserrat(color: Colors.grey, fontSize: 10, fontWeight: FontWeight.w700),
                                             ),
                                             SizedBox(
                                               height: 10,
@@ -442,8 +387,7 @@ class _SubscriptionScreenFromHomeState
                                       elevation: 4,
                                       color: Color(0xff0891d9),
                                       shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(8.0),
+                                        borderRadius: BorderRadius.circular(8.0),
                                       ),
                                       child: Container(
                                         height: 25,
@@ -452,10 +396,7 @@ class _SubscriptionScreenFromHomeState
                                           child: Text(
                                             'Saver',
                                             textAlign: TextAlign.center,
-                                            style: GoogleFonts.montserrat(
-                                                color: white,
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w400),
+                                            style: GoogleFonts.montserrat(color: white, fontSize: 12, fontWeight: FontWeight.w400),
                                           ),
                                         ),
                                       ),
@@ -489,9 +430,7 @@ class _SubscriptionScreenFromHomeState
                           Container(
                             // width: 100,100
                             height: MediaQuery.of(context).size.height,
-                            decoration: BoxDecoration(
-                                color: white,
-                                borderRadius: BorderRadius.circular(8)),
+                            decoration: BoxDecoration(color: white, borderRadius: BorderRadius.circular(8)),
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -500,10 +439,7 @@ class _SubscriptionScreenFromHomeState
                                   child: Container(
                                     width: MediaQuery.of(context).size.width,
                                     decoration: BoxDecoration(
-                                      color:
-                                          packageSelection.contains("lifeTime")
-                                              ? Color(0xff1ABFDD)
-                                              : white,
+                                      color: packageSelection.contains("lifeTime") ? Color(0xff1ABFDD) : white,
                                       borderRadius: BorderRadius.only(
                                         bottomLeft: Radius.circular(8),
                                         bottomRight: Radius.circular(8),
@@ -516,10 +452,7 @@ class _SubscriptionScreenFromHomeState
                                       child: Text(
                                         'Life\nTime',
                                         textAlign: TextAlign.center,
-                                        style: GoogleFonts.montserrat(
-                                            color: Colors.black87,
-                                            fontSize: 17,
-                                            fontWeight: FontWeight.w400),
+                                        style: GoogleFonts.montserrat(color: Colors.black87, fontSize: 17, fontWeight: FontWeight.w400),
                                       ),
                                     ),
                                   ),
@@ -532,18 +465,12 @@ class _SubscriptionScreenFromHomeState
                                       Text(
                                         '\$299',
                                         textAlign: TextAlign.center,
-                                        style: GoogleFonts.montserrat(
-                                            color: Colors.black,
-                                            fontSize: 25,
-                                            fontWeight: FontWeight.w400),
+                                        style: GoogleFonts.montserrat(color: Colors.black, fontSize: 25, fontWeight: FontWeight.w400),
                                       ),
                                       Text(
                                         'Get Started Now!',
                                         textAlign: TextAlign.center,
-                                        style: GoogleFonts.montserrat(
-                                            color: Colors.grey,
-                                            fontSize: 10,
-                                            fontWeight: FontWeight.w700),
+                                        style: GoogleFonts.montserrat(color: Colors.grey, fontSize: 10, fontWeight: FontWeight.w700),
                                       ),
                                       SizedBox(
                                         height: 10,
@@ -571,10 +498,7 @@ class _SubscriptionScreenFromHomeState
                                     child: Text(
                                       'Best Value',
                                       textAlign: TextAlign.center,
-                                      style: GoogleFonts.montserrat(
-                                          color: white,
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w400),
+                                      style: GoogleFonts.montserrat(color: white, fontSize: 12, fontWeight: FontWeight.w400),
                                     ),
                                   ),
                                 ),
@@ -614,32 +538,21 @@ class _SubscriptionScreenFromHomeState
                           focusedBorder: InputBorder.none,
                           isDense: false,
                           hintText: "Enter Code Here...",
-                          hintStyle: GoogleFonts.montserrat(
-                              fontSize: 18,
-                              letterSpacing: 1,
-                              color: Colors.grey,
-                              fontWeight: FontWeight.w400),
+                          hintStyle: GoogleFonts.montserrat(fontSize: 18, letterSpacing: 1, color: Colors.grey, fontWeight: FontWeight.w400),
                         ),
                       ),
                     ),
                     Expanded(
                         child: Container(
                       height: 40,
-                      decoration: BoxDecoration(
-                          border: Border(
-                              left: BorderSide(
-                                  color: Colors.grey.withOpacity(0.5),
-                                  width: 1))),
+                      decoration: BoxDecoration(border: Border(left: BorderSide(color: Colors.grey.withOpacity(0.5), width: 1))),
                       padding: EdgeInsets.symmetric(horizontal: 2),
                       child: Center(
                         child: Text(
                           'PROMO',
                           textAlign: TextAlign.center,
                           style: GoogleFonts.montserrat(
-                              color: Colors.grey.withOpacity(0.5),
-                              fontSize: 18,
-                              letterSpacing: 1,
-                              fontWeight: FontWeight.w400),
+                              color: Colors.grey.withOpacity(0.5), fontSize: 18, letterSpacing: 1, fontWeight: FontWeight.w400),
                         ),
                       ),
                     ))
@@ -666,14 +579,12 @@ class _SubscriptionScreenFromHomeState
                       if (membership != '0') {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: Text(
-                                'Note: Please cancel your current subscription first!'),
+                            content: Text('Note: Please cancel your current subscription first!'),
                             behavior: SnackBarBehavior.floating,
                           ),
                         );
                       } else {
-                        launchUrl(Uri.parse(url),
-                            mode: LaunchMode.externalApplication);
+                        launch(url);
                         checkPayment(context);
                       }
                     }
@@ -686,14 +597,12 @@ class _SubscriptionScreenFromHomeState
                     if (membership != '0') {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text(
-                              'Note: Please cancel your current subscription first!'),
+                          content: Text('Note: Please cancel your current subscription first!'),
                           behavior: SnackBarBehavior.floating,
                         ),
                       );
                     } else {
-                      launchUrl(Uri.parse(url),
-                          mode: LaunchMode.externalApplication);
+                      launch(url);
                       checkPayment(context);
                     }
                   }
@@ -716,11 +625,7 @@ class _SubscriptionScreenFromHomeState
                         child: Text(
                           'CONTINUE',
                           textAlign: TextAlign.center,
-                          style: GoogleFonts.montserrat(
-                              color: Color(0xff1d92d0),
-                              fontSize: 18,
-                              letterSpacing: 1,
-                              fontWeight: FontWeight.w400),
+                          style: GoogleFonts.montserrat(color: Color(0xff1d92d0), fontSize: 18, letterSpacing: 1, fontWeight: FontWeight.w400),
                         ),
                       ),
                     ),
@@ -739,27 +644,14 @@ class _SubscriptionScreenFromHomeState
 
   Future subscribePackage() async {
     EasyLoading.show(dismissOnTap: false);
-    var response = await Provider.of<AuthProvider>(context, listen: false)
-        .makeSubscription(packageSelection, userID, token);
+    var response = await Provider.of<AuthProvider>(context, listen: false).makeSubscription(packageSelection, userID, token);
 
     if (response.statusCode == 200) {
-      packageSelection.contains("yearly")
-          ? Prefs.setMembership("Annually")
-          : Prefs.setMembership("Monthly");
+      packageSelection.contains("yearly") ? Prefs.setMembership("Annually") : Prefs.setMembership("Monthly");
 
       EasyLoading.dismiss();
 
       Navigator.pop(context);
-
-      // CommonWidgets.buildSnackbar(context, "Sign In successful");
-      // Navigator.pushAndRemoveUntil(
-      //     context,
-      //     MaterialPageRoute(
-      //         builder: (BuildContext context) => SubscriptionScreen()),
-      //     ModalRoute.withName('/'));
-      // Navigator.of(context).pushAndRemoveUntil(
-      //     MaterialPageRoute(builder: (context) => SubscriptionScreen()),
-      //     (Route<dynamic> route) => false);
     } else {
       EasyLoading.dismiss();
       CommonWidgets.buildSnackbar(context, "Something went wrong");
