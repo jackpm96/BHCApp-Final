@@ -1,32 +1,25 @@
+import 'dart:ui';
+
 import 'package:black_history_calender/components/mydialog.dart';
 import 'package:black_history_calender/const/colors.dart';
 import 'package:black_history_calender/helper/prefs.dart';
-import 'package:black_history_calender/helper/push_notifications_manager.dart';
 import 'package:black_history_calender/network_module/api_response.dart';
 import 'package:black_history_calender/pages/seemore_page.dart';
-import 'package:black_history_calender/screens/auth/model/getlike_response.dart';
-
-//import 'package:black_history_calender/screens/auth/model/stories_response.dart';
 import 'package:black_history_calender/screens/auth/model/newstories_response.dart';
 import 'package:black_history_calender/screens/auth/provider/auth_provider.dart';
-import 'package:black_history_calender/screens/auth/sign_in_screen.dart';
 import 'package:black_history_calender/screens/home/home_screen.dart';
-import 'package:black_history_calender/services/auth_services.dart';
 import 'package:black_history_calender/widget/snackbar_widget.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:html/parser.dart' show parse;
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'dart:ui';
-import '../subsription_from_home.dart';
+
 import 'detail_screen.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:html/parser.dart' show parse;
-import 'package:html/dom.dart' as dom;
 
 class HomePage extends StatefulWidget {
   const HomePage({Key key}) : super(key: key);
@@ -74,8 +67,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) =>
-        Provider.of<AuthProvider>(context, listen: false).getourstories());
+    WidgetsBinding.instance.addPostFrameCallback((_) => Provider.of<AuthProvider>(context, listen: false).getourstories());
 
     return Stack(
       children: [
@@ -202,15 +194,13 @@ class _HomePageState extends State<HomePage> {
                   builder: (context, provider, child) => FutureBuilder(
                     future: provider.getAllContinueStories(),
                     builder: (context, snapshot) {
-                      if (!snapshot.hasData &&
-                          snapshot.connectionState != ConnectionState.done) {
+                      if (!snapshot.hasData && snapshot.connectionState != ConnectionState.done) {
                         return Center(
                           child: CircularProgressIndicator(),
                         );
                       }
 
-                      List<LocalStoriesResponse> response =
-                          snapshot.data as List<LocalStoriesResponse>;
+                      List<LocalStoriesResponse> response = snapshot.data as List<LocalStoriesResponse>;
 
                       return Visibility(
                         visible: response.length > 0,
@@ -229,15 +219,12 @@ class _HomePageState extends State<HomePage> {
                             //   ),
                             // ),
                             Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 16.0),
+                              padding: const EdgeInsets.symmetric(horizontal: 16.0),
                               child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         'Continue Reading',
@@ -250,15 +237,11 @@ class _HomePageState extends State<HomePage> {
                                         height: 5,
                                       ),
                                       Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 3.0),
+                                        padding: const EdgeInsets.symmetric(horizontal: 3.0),
                                         child: Container(
                                           height: 2,
                                           width: 150,
-                                          decoration: BoxDecoration(
-                                              color: Colors.black,
-                                              borderRadius:
-                                                  BorderRadius.circular(10)),
+                                          decoration: BoxDecoration(color: Colors.black, borderRadius: BorderRadius.circular(10)),
                                         ),
                                       ),
                                     ],
@@ -270,10 +253,7 @@ class _HomePageState extends State<HomePage> {
                                     },
                                     child: Text(
                                       'CLEAR ALL',
-                                      style: GoogleFonts.montserrat(
-                                          color: Colors.black,
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w400),
+                                      style: GoogleFonts.montserrat(color: Colors.black, fontSize: 15, fontWeight: FontWeight.w400),
                                     ),
                                   )
                                 ],
@@ -303,22 +283,15 @@ class _HomePageState extends State<HomePage> {
                                                 Expanded(
                                                   child: GestureDetector(
                                                     onTap: () async {
-                                                      var mem =
-                                                      await Prefs.membership;
+                                                      var mem = await Prefs.membership;
 
                                                       if (mem != '0') {
                                                         Navigator.push(
                                                             context,
                                                             MaterialPageRoute(
                                                                 builder: (context) =>
-                                                                    DetailScreen(
-                                                                        response[
-                                                                            index],
-                                                                        false,
-                                                                        response[index]
-                                                                            .audio,
-                                                                        false)));
-                                                      }  else {
+                                                                    DetailScreen(response[index], false, response[index].audio, false)));
+                                                      } else {
                                                         print("unsubscribed");
                                                         showAlert(context);
                                                       }
@@ -326,62 +299,34 @@ class _HomePageState extends State<HomePage> {
                                                     child: Stack(
                                                       children: [
                                                         Container(
-                                                          height:
-                                                              double.infinity,
-                                                          width:
-                                                              double.infinity,
+                                                          height: double.infinity,
+                                                          width: double.infinity,
                                                           foregroundDecoration:
-                                                              BoxDecoration(
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(
-                                                                              10),
-                                                                  color: Colors
-                                                                      .black12),
-                                                          child:
-                                                              CachedNetworkImage(
+                                                              BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.black12),
+                                                          child: CachedNetworkImage(
                                                             fit: BoxFit.cover,
-                                                            imageUrl: response[
-                                                                    index]
-                                                                .featuredMediaSrcUrl,
-                                                            progressIndicatorBuilder:
-                                                                (context, url,
-                                                                        downloadProgress) =>
-                                                                    Container(
+                                                            imageUrl: response[index].featuredMediaSrcUrl,
+                                                            progressIndicatorBuilder: (context, url, downloadProgress) => Container(
                                                               height: 10,
                                                               width: 10,
-                                                              child: CircularProgressIndicator(
-                                                                  value: downloadProgress
-                                                                      .progress),
+                                                              child: CircularProgressIndicator(value: downloadProgress.progress),
                                                             ),
-                                                            errorWidget:
-                                                                (context, url,
-                                                                        error) =>
-                                                                    Icon(
-                                                              Icons
-                                                                  .photo_library,
+                                                            errorWidget: (context, url, error) => Icon(
+                                                              Icons.photo_library,
                                                               size: 50,
                                                             ),
                                                           ),
-
                                                         ),
                                                         Align(
-                                                          alignment: Alignment
-                                                              .bottomCenter,
+                                                          alignment: Alignment.bottomCenter,
                                                           child: Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .all(8.0),
+                                                            padding: const EdgeInsets.all(8.0),
                                                             child: Text(
-                                                              response[index]
-                                                                  .postTitle,
+                                                              response[index].postTitle,
                                                               maxLines: 2,
-                                                              style: GoogleFonts
-                                                                  .montserrat(
+                                                              style: GoogleFonts.montserrat(
                                                                 color: white,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
+                                                                fontWeight: FontWeight.bold,
                                                                 fontSize: 18,
                                                               ),
                                                             ),
@@ -395,31 +340,17 @@ class _HomePageState extends State<HomePage> {
                                                   children: [
                                                     Expanded(
                                                       child: Container(
-                                                        margin: EdgeInsets
-                                                            .symmetric(
-                                                                vertical: 5),
+                                                        margin: EdgeInsets.symmetric(vertical: 5),
                                                         width: 300,
                                                         height: 10,
                                                         child: ClipRRect(
-                                                          borderRadius:
-                                                              BorderRadius.all(
-                                                                  Radius
-                                                                      .circular(
-                                                                          10)),
-                                                          child:
-                                                              LinearProgressIndicator(
-                                                            value: getPercentageValue(
-                                                                    response[
-                                                                        index])
-                                                                as double,
-                                                            valueColor:
-                                                                AlwaysStoppedAnimation<
-                                                                    Color>(
+                                                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                                                          child: LinearProgressIndicator(
+                                                            value: getPercentageValue(response[index]) as double,
+                                                            valueColor: AlwaysStoppedAnimation<Color>(
                                                               Color(0xff0891d9),
                                                             ),
-                                                            backgroundColor:
-                                                                Colors.lightBlue
-                                                                    .shade50,
+                                                            backgroundColor: Colors.lightBlue.shade50,
                                                           ),
                                                         ),
                                                       ),
@@ -429,10 +360,7 @@ class _HomePageState extends State<HomePage> {
                                                     ),
                                                     Text(
                                                       "${getCompletionPercentage(response[index])} %",
-                                                      style: GoogleFonts
-                                                          .montserrat(
-                                                              color:
-                                                                  Colors.grey),
+                                                      style: GoogleFonts.montserrat(color: Colors.grey),
                                                     )
                                                   ],
                                                 )
@@ -445,24 +373,14 @@ class _HomePageState extends State<HomePage> {
                                           top: 0,
                                           child: GestureDetector(
                                             onTap: () async {
-                                              provider.deleteContinueStory(
-                                                  response[index].id);
-                                              await Prefs.setReadingStories(
-                                                  LocalStoriesResponse.encode([
-                                                ...provider.allContinueStories
-                                              ]));
+                                              provider.deleteContinueStory(response[index].id);
+                                              await Prefs.setReadingStories(LocalStoriesResponse.encode([...provider.allContinueStories]));
                                             },
                                             child: Container(
-                                                decoration: BoxDecoration(
-                                                    color: white,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            20)),
+                                                decoration: BoxDecoration(color: white, borderRadius: BorderRadius.circular(20)),
                                                 child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(8.0),
-                                                  child: Icon(Icons.delete,
-                                                      color: Colors.red),
+                                                  padding: const EdgeInsets.all(8.0),
+                                                  child: Icon(Icons.delete, color: Colors.red),
                                                 )),
                                           ),
                                         )
@@ -489,10 +407,7 @@ class _HomePageState extends State<HomePage> {
                         children: [
                           Text(
                             'Our Stories...',
-                            style: GoogleFonts.montserrat(
-                                color: Colors.black,
-                                fontWeight: FontWeight.w400,
-                                fontSize: 25),
+                            style: GoogleFonts.montserrat(color: Colors.black, fontWeight: FontWeight.w400, fontSize: 25),
                           ),
                           SizedBox(
                             height: 5,
@@ -500,25 +415,17 @@ class _HomePageState extends State<HomePage> {
                           Container(
                             height: 2,
                             width: 100,
-                            decoration: BoxDecoration(
-                                color: Color(0xff0891d9),
-                                borderRadius: BorderRadius.circular(10)),
+                            decoration: BoxDecoration(color: Color(0xff0891d9), borderRadius: BorderRadius.circular(10)),
                           ),
                         ],
                       ),
                       GestureDetector(
                         onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => SeeMore()));
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => SeeMore()));
                         },
                         child: Text(
                           'SEE ALL',
-                          style: GoogleFonts.montserrat(
-                              color: Colors.black,
-                              fontSize: 15,
-                              fontWeight: FontWeight.w400),
+                          style: GoogleFonts.montserrat(color: Colors.black, fontSize: 15, fontWeight: FontWeight.w400),
                         ),
                       )
                     ],
@@ -530,375 +437,282 @@ class _HomePageState extends State<HomePage> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: Consumer<AuthProvider>(
-                      builder:
-                          (context, provider, child) =>
-                              provider.newstories.status == Status.LOADING
-                                  ? Center(
-                                      child: CircularProgressIndicator(),
-                                    )
-                                  : provider.newstories.data.length > 0
-                                      ? ListView.builder(
-                                          shrinkWrap: true,
-                                          physics: BouncingScrollPhysics(),
-                                          itemCount:
-                                              provider.newstories.data.length,
-                                          itemBuilder: (context, index) {
-                                            final user =
-                                                provider.newstories.data[index];
+                      builder: (context, provider, child) => provider.newstories.status == Status.LOADING
+                          ? Center(
+                              child: CircularProgressIndicator(),
+                            )
+                          : provider.newstories.data.length > 0
+                              ? ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: BouncingScrollPhysics(),
+                                  itemCount: provider.newstories.data.length,
+                                  itemBuilder: (context, index) {
+                                    final user = provider.newstories.data[index];
 
-                                            var htmldata =
-                                                parse(user.postContent);
-                                            var myList = htmldata
-                                                .getElementsByTagName('p');
-                                            var audioHtml = htmldata
-                                                .getElementsByTagName('audio');
+                                    var htmldata = parse(user.postContent);
+                                    var myList = htmldata.getElementsByTagName('p');
+                                    var audioHtml = htmldata.getElementsByTagName('audio');
 
-                                            var audio = audioHtml.length > 0
-                                                ? audioHtml[0].attributes['src']
-                                                : '';
-                                            String parsedData;
-                                            if (myList.isNotEmpty) {
-                                              parsedData = myList[2].innerHtml;
-                                            } else {
-                                              parsedData = user.postContent;
-                                            }
-                                            if (index >= 9) {
-                                              return Padding(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                  vertical: 8.0,
-                                                  horizontal: 4,
-                                                ),
-                                                child: GestureDetector(
-                                                  onTap: () {
-                                                    Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                            builder:
-                                                                (context) =>
-                                                                    SeeMore()));
-                                                  },
-                                                  child: Container(
-                                                      decoration: BoxDecoration(
-                                                        color: Colors
-                                                            .lightBlue.shade100,
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(12),
-                                                      ),
-                                                      child: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(8.0),
-                                                        child: Center(
-                                                            child: Text(
-                                                                "See All")),
-                                                      )),
+                                    var audio = audioHtml.length > 0 ? audioHtml[0].attributes['src'] : '';
+                                    String parsedData;
+                                    if (myList.isNotEmpty) {
+                                      parsedData = myList[2].innerHtml;
+                                    } else {
+                                      parsedData = user.postContent;
+                                    }
+                                    if (index >= 9) {
+                                      return Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          vertical: 8.0,
+                                          horizontal: 4,
+                                        ),
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            Navigator.push(context, MaterialPageRoute(builder: (context) => SeeMore()));
+                                          },
+                                          child: Container(
+                                              decoration: BoxDecoration(
+                                                color: Colors.lightBlue.shade100,
+                                                borderRadius: BorderRadius.circular(12),
+                                              ),
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: Center(child: Text("See All")),
+                                              )),
+                                        ),
+                                      );
+                                    } else {
+                                      return Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          vertical: 8.0,
+                                          horizontal: 4,
+                                        ),
+                                        child: GestureDetector(
+                                          onTap: () async {
+                                            var mem = await Prefs.membership;
+
+                                            if (mem != '0') {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (contect) => DetailScreen(user, true, audio, false),
                                                 ),
                                               );
                                             } else {
-                                              return Padding(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                  vertical: 8.0,
-                                                  horizontal: 4,
-                                                ),
-                                                child: GestureDetector(
-                                                  onTap: () async {
-                                                    var mem =
-                                                        await Prefs.membership;
-
-                                                    if (mem != '0') {
-                                                      Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                          builder: (contect) =>
-                                                              DetailScreen(
-                                                                  user,
-                                                                  true,
-                                                                  audio,
-                                                                  false),
-                                                        ),
-                                                      );
-                                                    }
-                                                    else {
-                                                      print("unsubscribed");
-                                                      showAlert(context);
-                                                    }
-                                                  },
-                                                  child: Card(
-                                                    elevation: 4,
-                                                    shape:
-                                                        RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              12),
+                                              print("unsubscribed");
+                                              showAlert(context);
+                                            }
+                                          },
+                                          child: Card(
+                                            elevation: 4,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(12),
+                                            ),
+                                            child: Container(
+                                              height: 120,
+                                              width: MediaQuery.of(context).size.width,
+                                              child: Row(
+                                                children: [
+                                                  Container(
+                                                    width: 120,
+                                                    height: MediaQuery.of(context).size.height,
+                                                    decoration: BoxDecoration(
+                                                      borderRadius: BorderRadius.circular(
+                                                        10,
+                                                      ),
                                                     ),
-                                                    child: Container(
-                                                      height: 120,
-                                                      width:
-                                                          MediaQuery.of(context)
-                                                              .size
-                                                              .width,
-                                                      child: Row(
-                                                        children: [
-                                                          Container(
-                                                            width: 120,
-                                                            height:
-                                                                MediaQuery.of(
-                                                                        context)
-                                                                    .size
-                                                                    .height,
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                10,
-                                                              ),
-                                                            ),
-                                                            child:
-                                                                CachedNetworkImage(
-                                                              color: Colors
-                                                                  .black45,
-                                                              fit: BoxFit.cover,
-                                                              imageUrl: user
-                                                                  .featuredMediaSrcUrl,
-                                                              imageBuilder:
-                                                                  (context,
-                                                                          imageProvider) =>
-                                                                      Container(
-                                                                width: 80.0,
-                                                                height: 80.0,
-                                                                decoration:
-                                                                    BoxDecoration(
-                                                                  shape: BoxShape
-                                                                      .rectangle,
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(
-                                                                              10),
-                                                                  image: DecorationImage(
-                                                                      image:
-                                                                          imageProvider,
-                                                                      fit: BoxFit
-                                                                          .cover),
-                                                                ),
-                                                              ),
-                                                              progressIndicatorBuilder:
-                                                                  (context, url,
-                                                                          downloadProgress) =>
-                                                                      Container(
-                                                                height: 10,
-                                                                width: 10,
-                                                                child: CircularProgressIndicator(
-                                                                    value: downloadProgress
-                                                                        .progress),
-                                                              ),
-                                                              errorWidget:
-                                                                  (context, url,
-                                                                          error) =>
-                                                                      Icon(
-                                                                Icons
-                                                                    .photo_library,
-                                                                size: 50,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          Expanded(
-                                                            child: Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .all(
-                                                                8.0,
-                                                              ),
-                                                              child: Column(
-                                                                children: [
-                                                                  Row(
-                                                                    children: [
-                                                                      Expanded(
-                                                                        child:
-                                                                            Text(
-                                                                          user.postTitle,
-                                                                          style: GoogleFonts.montserrat(
-                                                                              color: Colors.black,
-                                                                              fontWeight: FontWeight.w600,
-                                                                              fontSize: 14),
-                                                                        ),
-                                                                      ),
-                                                                      GestureDetector(
-                                                                        onTap:
-                                                                            () {
-                                                                          EasyLoading
-                                                                              .show();
-                                                                          AuthProvider()
-                                                                              .addfavourite(user.id, 1)
-                                                                              .then((res) {
-                                                                            provider.updateStoriesFavStatus(
-                                                                              index,
-                                                                            );
-
-                                                                            // setState(
-                                                                            //     () {
-                                                                            //   user.isFavourite = user.isFavourite.contains("1")
-                                                                            //       ? "0"
-                                                                            //       : "1";
-                                                                            // });
-
-                                                                            CommonWidgets.buildSnackbar(context,
-                                                                                user.isFavourite == "1" ? 'Added in Favourite stories' : 'Removed Favourite stories');
-                                                                            EasyLoading.dismiss();
-                                                                          });
-                                                                        },
-                                                                        child:
-                                                                            Icon(
-                                                                          user.isFavourite == "1"
-                                                                              ? Icons.favorite
-                                                                              : Icons.favorite_border_outlined,
-                                                                          color: user.isFavourite == "1"
-                                                                              ? Colors.red
-                                                                              : Colors.grey,
-                                                                          size:
-                                                                              20,
-                                                                        ),
-                                                                      )
-                                                                    ],
-                                                                  ),
-                                                                  SizedBox(
-                                                                    height: 6,
-                                                                  ),
-                                                                  Expanded(
-                                                                      child:
-                                                                          Html(
-                                                                    data:
-                                                                        parsedData,
-                                                                    onLinkTap:
-                                                                        (url,
-                                                                            _,
-                                                                            __,
-                                                                            ___) {
-                                                                      launch(
-                                                                          url);
-                                                                    },
-                                                                    onImageTap:
-                                                                        (src,
-                                                                            _,
-                                                                            __,
-                                                                            ___) {
-                                                                      launch(
-                                                                          src);
-                                                                    },
-                                                                  )
-
-                                                                      //     Text(
-                                                                      //   user.excerpt.rendered,
-                                                                      //   overflow: TextOverflow
-                                                                      //       .ellipsis,
-                                                                      //   maxLines: 3,
-                                                                      //   style: GoogleFonts
-                                                                      //       .montserrat(
-                                                                      //           fontSize: 10,
-                                                                      //           color: Color(
-                                                                      //               0xff818181)),
-                                                                      // )),
-                                                                      ),
-                                                                  Row(
-                                                                    children: [
-                                                                      Expanded(
-                                                                        child:
-                                                                            Row(
-                                                                          children: [
-                                                                            Icon(
-                                                                              Icons.access_time,
-                                                                              color: lightBlue,
-                                                                              size: 15,
-                                                                            ),
-                                                                            SizedBox(
-                                                                              width: 4,
-                                                                            ),
-                                                                            Text(
-                                                                              DateFormat.yMMMd().format(user.postDate),
-                                                                              style: GoogleFonts.montserrat(color: lightBlue, fontWeight: FontWeight.w300, fontSize: 12),
-                                                                            ),
-                                                                          ],
-                                                                        ),
-                                                                      ),
-                                                                      GestureDetector(
-                                                                        // onTap: () {
-                                                                        //   setState(() {
-                                                                        //     updatedlike++;
-                                                                        //   });
-                                                                        //   AuthProvider()
-                                                                        //       .postlike(
-                                                                        //           user.id,
-                                                                        //           updatedlike)
-                                                                        //       .then((value) =>
-                                                                        //           setState(
-                                                                        //               () {}));
-                                                                        // },
-                                                                        child:
-                                                                            Row(
-                                                                          crossAxisAlignment:
-                                                                              CrossAxisAlignment.center,
-                                                                          mainAxisAlignment:
-                                                                              MainAxisAlignment.center,
-                                                                          mainAxisSize:
-                                                                              MainAxisSize.max,
-                                                                          children: [
-                                                                            Padding(
-                                                                              padding: const EdgeInsets.only(top: 4.0),
-                                                                              child: Text(
-                                                                                user.likes,
-                                                                                style: GoogleFonts.montserrat(color: Color(0xff999999), fontWeight: FontWeight.w600, fontSize: 13),
-                                                                              ),
-                                                                            ),
-                                                                            Image.asset(
-                                                                              "assets/images/like_thumb.png",
-                                                                              height: 15,
-                                                                              width: 15,
-                                                                              // fit: BoxFit.contain,
-                                                                            ),
-                                                                            SizedBox(
-                                                                              width: 6,
-                                                                            ),
-                                                                            Padding(
-                                                                              padding: const EdgeInsets.only(top: 4.0),
-                                                                              child: Text(
-                                                                                user.commentCount,
-                                                                                style: GoogleFonts.montserrat(color: Color(0xff999999), fontWeight: FontWeight.w600, fontSize: 13),
-                                                                              ),
-                                                                            ),
-                                                                            SizedBox(
-                                                                              width: 1,
-                                                                            ),
-                                                                            Padding(
-                                                                              padding: const EdgeInsets.only(top: 5),
-                                                                              child: Image.asset(
-                                                                                "assets/images/comment.png",
-                                                                                height: 17,
-                                                                                width: 17,
-                                                                                color: Colors.blue,
-                                                                                // fit: BoxFit.contain,
-                                                                              ),
-                                                                            )
-                                                                          ],
-                                                                        ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                          )
-                                                        ],
+                                                    child: CachedNetworkImage(
+                                                      color: Colors.black45,
+                                                      fit: BoxFit.cover,
+                                                      imageUrl: user.featuredMediaSrcUrl,
+                                                      imageBuilder: (context, imageProvider) => Container(
+                                                        width: 80.0,
+                                                        height: 80.0,
+                                                        decoration: BoxDecoration(
+                                                          shape: BoxShape.rectangle,
+                                                          borderRadius: BorderRadius.circular(10),
+                                                          image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
+                                                        ),
+                                                      ),
+                                                      progressIndicatorBuilder: (context, url, downloadProgress) => Container(
+                                                        height: 10,
+                                                        width: 10,
+                                                        child: CircularProgressIndicator(value: downloadProgress.progress),
+                                                      ),
+                                                      errorWidget: (context, url, error) => Icon(
+                                                        Icons.photo_library,
+                                                        size: 50,
                                                       ),
                                                     ),
                                                   ),
-                                                ),
-                                              );
-                                            }
-                                          })
-                                      : CircularProgressIndicator()
+                                                  Expanded(
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.all(
+                                                        8.0,
+                                                      ),
+                                                      child: Column(
+                                                        children: [
+                                                          Row(
+                                                            children: [
+                                                              Expanded(
+                                                                child: Text(
+                                                                  user.postTitle,
+                                                                  style: GoogleFonts.montserrat(
+                                                                      color: Colors.black, fontWeight: FontWeight.w600, fontSize: 14),
+                                                                ),
+                                                              ),
+                                                              GestureDetector(
+                                                                onTap: () {
+                                                                  EasyLoading.show();
+                                                                  AuthProvider().addfavourite(user.id, 1).then((res) {
+                                                                    provider.updateStoriesFavStatus(
+                                                                      index,
+                                                                    );
+
+                                                                    // setState(
+                                                                    //     () {
+                                                                    //   user.isFavourite = user.isFavourite.contains("1")
+                                                                    //       ? "0"
+                                                                    //       : "1";
+                                                                    // });
+
+                                                                    CommonWidgets.buildSnackbar(
+                                                                        context,
+                                                                        user.isFavourite == "1"
+                                                                            ? 'Added in Favourite stories'
+                                                                            : 'Removed Favourite stories');
+                                                                    EasyLoading.dismiss();
+                                                                  });
+                                                                },
+                                                                child: Icon(
+                                                                  user.isFavourite == "1" ? Icons.favorite : Icons.favorite_border_outlined,
+                                                                  color: user.isFavourite == "1" ? Colors.red : Colors.grey,
+                                                                  size: 20,
+                                                                ),
+                                                              )
+                                                            ],
+                                                          ),
+                                                          SizedBox(
+                                                            height: 6,
+                                                          ),
+                                                          Expanded(
+                                                              child: Html(
+                                                            data: parsedData,
+                                                            onLinkTap: (url, _, __, ___) {
+                                                              launch(url);
+                                                            },
+                                                            onImageTap: (src, _, __, ___) {
+                                                              launch(src);
+                                                            },
+                                                          )
+
+                                                              //     Text(
+                                                              //   user.excerpt.rendered,
+                                                              //   overflow: TextOverflow
+                                                              //       .ellipsis,
+                                                              //   maxLines: 3,
+                                                              //   style: GoogleFonts
+                                                              //       .montserrat(
+                                                              //           fontSize: 10,
+                                                              //           color: Color(
+                                                              //               0xff818181)),
+                                                              // )),
+                                                              ),
+                                                          Row(
+                                                            children: [
+                                                              Expanded(
+                                                                child: Row(
+                                                                  children: [
+                                                                    Icon(
+                                                                      Icons.access_time,
+                                                                      color: lightBlue,
+                                                                      size: 15,
+                                                                    ),
+                                                                    SizedBox(
+                                                                      width: 4,
+                                                                    ),
+                                                                    Text(
+                                                                      DateFormat.yMMMd().format(user.postDate),
+                                                                      style: GoogleFonts.montserrat(
+                                                                          color: lightBlue, fontWeight: FontWeight.w300, fontSize: 12),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                              GestureDetector(
+                                                                // onTap: () {
+                                                                //   setState(() {
+                                                                //     updatedlike++;
+                                                                //   });
+                                                                //   AuthProvider()
+                                                                //       .postlike(
+                                                                //           user.id,
+                                                                //           updatedlike)
+                                                                //       .then((value) =>
+                                                                //           setState(
+                                                                //               () {}));
+                                                                // },
+                                                                child: Row(
+                                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                                  mainAxisSize: MainAxisSize.max,
+                                                                  children: [
+                                                                    Padding(
+                                                                      padding: const EdgeInsets.only(top: 4.0),
+                                                                      child: Text(
+                                                                        user.likes,
+                                                                        style: GoogleFonts.montserrat(
+                                                                            color: Color(0xff999999), fontWeight: FontWeight.w600, fontSize: 13),
+                                                                      ),
+                                                                    ),
+                                                                    Image.asset(
+                                                                      "assets/images/like_thumb.png",
+                                                                      height: 15,
+                                                                      width: 15,
+                                                                      // fit: BoxFit.contain,
+                                                                    ),
+                                                                    SizedBox(
+                                                                      width: 6,
+                                                                    ),
+                                                                    Padding(
+                                                                      padding: const EdgeInsets.only(top: 4.0),
+                                                                      child: Text(
+                                                                        user.commentCount,
+                                                                        style: GoogleFonts.montserrat(
+                                                                            color: Color(0xff999999), fontWeight: FontWeight.w600, fontSize: 13),
+                                                                      ),
+                                                                    ),
+                                                                    SizedBox(
+                                                                      width: 1,
+                                                                    ),
+                                                                    Padding(
+                                                                      padding: const EdgeInsets.only(top: 5),
+                                                                      child: Image.asset(
+                                                                        "assets/images/comment.png",
+                                                                        height: 17,
+                                                                        width: 17,
+                                                                        color: Colors.blue,
+                                                                        // fit: BoxFit.contain,
+                                                                      ),
+                                                                    )
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                  })
+                              : CircularProgressIndicator()
                       // }),
                       ),
                 )

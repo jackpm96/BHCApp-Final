@@ -1,20 +1,19 @@
-import 'dart:io';
 import 'package:black_history_calender/components/mydialog.dart';
 import 'package:black_history_calender/const/colors.dart';
+import 'package:black_history_calender/screens/auth/model/newstories_response.dart';
 import 'package:black_history_calender/screens/auth/provider/auth_provider.dart';
 import 'package:black_history_calender/widget/snackbar_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:http/http.dart' as http;
-import 'package:black_history_calender/screens/auth/model/newstories_response.dart';
+import 'package:html/parser.dart' show parse;
 import 'package:intl/intl.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:html/parser.dart' show parse;
+
+import '../helper/prefs.dart';
 import 'detail_screen.dart';
 
 class SeeMore extends StatefulWidget {
@@ -29,8 +28,7 @@ class _SeeMoreState extends State<SeeMore> {
 
   List<StoryData> passengers = [];
 
-  final RefreshController refreshController =
-      RefreshController(initialRefresh: true);
+  final RefreshController refreshController = RefreshController(initialRefresh: true);
 
   Future<bool> getPassengerData({bool isRefresh = false}) async {
     if (isRefresh) {
@@ -51,8 +49,6 @@ class _SeeMoreState extends State<SeeMore> {
     }
 
     currentPage++;
-
-
 
     setState(() {});
     return true;
@@ -99,11 +95,7 @@ class _SeeMoreState extends State<SeeMore> {
                 }
                 var audioHtml = htmldata.getElementsByTagName('audio');
 
-                var audio =
-                    audioHtml.length > 0 ? audioHtml[0].attributes['src'] : '';
-
-
-
+                var audio = audioHtml.length > 0 ? audioHtml[0].attributes['src'] : '';
 
                 return Padding(
                   padding: const EdgeInsets.symmetric(
@@ -112,54 +104,14 @@ class _SeeMoreState extends State<SeeMore> {
                   ),
                   child: GestureDetector(
                     onTap: () async {
-                      if (await FlutterInappPurchase
-                          .instance
-                          .checkSubscribed(
-                        sku: "bhc_monthly_subb",
-                      )) {
-                        print("subscribed");
-                        CommonWidgets
-                            .buildSnackbar(
-                            context,
-                            "subscribed");
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    DetailScreen(
-                                        passengers[
-                                        index],
-                                        false,
-                                       audio,false))).then(
-                                (value) => setState(
-                                    () {}));
-                      }
-                     else if (await FlutterInappPurchase
-                          .instance
-                          .checkSubscribed(
-                        sku: "bhc_yearly_subb",
-                      )) {
-                        print("subscribed");
-                        CommonWidgets
-                            .buildSnackbar(
-                            context,
-                            "subscribed");
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    DetailScreen(
-                                        passengers[
-                                        index],
-                                        false,
-                                        audio,false))).then(
-                                (value) => setState(
-                                    () {}));
-                      }
-                      else
-                      {
+                      var mem = await Prefs.membership;
+                      if (mem != '0') {
+                        CommonWidgets.buildSnackbar(context, "subscribed");
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => DetailScreen(passengers[index], false, audio, false)))
+                            .then((value) => setState(() {}));
+                      } else {
                         print("unsubscribed");
-                      showAlert(context);
+                        showAlert(context);
                       }
                     },
                     child: Card(
@@ -184,25 +136,19 @@ class _SeeMoreState extends State<SeeMore> {
                                 color: Colors.black45,
                                 fit: BoxFit.cover,
                                 imageUrl: user.featuredMediaSrcUrl,
-                                imageBuilder: (context, imageProvider) =>
-                                    Container(
+                                imageBuilder: (context, imageProvider) => Container(
                                   width: 80.0,
                                   height: 80.0,
                                   decoration: BoxDecoration(
                                     shape: BoxShape.rectangle,
                                     borderRadius: BorderRadius.circular(10),
-                                    image: DecorationImage(
-                                        image: imageProvider,
-                                        fit: BoxFit.cover),
+                                    image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
                                   ),
                                 ),
-                                progressIndicatorBuilder:
-                                    (context, url, downloadProgress) =>
-                                        Container(
+                                progressIndicatorBuilder: (context, url, downloadProgress) => Container(
                                   height: 10,
                                   width: 10,
-                                  child: CircularProgressIndicator(
-                                      value: downloadProgress.progress),
+                                  child: CircularProgressIndicator(value: downloadProgress.progress),
                                 ),
                                 errorWidget: (context, url, error) => Icon(
                                   Icons.photo_library,
@@ -222,43 +168,24 @@ class _SeeMoreState extends State<SeeMore> {
                                         Expanded(
                                           child: Text(
                                             user.postTitle,
-                                            style: GoogleFonts.montserrat(
-                                                color: Colors.black,
-                                                fontWeight: FontWeight.w600,
-                                                fontSize: 14),
+                                            style: GoogleFonts.montserrat(color: Colors.black, fontWeight: FontWeight.w600, fontSize: 14),
                                           ),
                                         ),
                                         GestureDetector(
                                           onTap: () {
-                                            EasyLoading.show(
-                                                dismissOnTap: false);
-                                            AuthProvider()
-                                                .addfavourite(user.id, 1)
-                                                .then((value) {
+                                            EasyLoading.show(dismissOnTap: false);
+                                            AuthProvider().addfavourite(user.id, 1).then((value) {
                                               setState(() {
-                                                user.isFavourite = user
-                                                        .isFavourite
-                                                        .contains("1")
-                                                    ? "0"
-                                                    : "1";
+                                                user.isFavourite = user.isFavourite.contains("1") ? "0" : "1";
                                               });
                                               EasyLoading.dismiss();
                                               CommonWidgets.buildSnackbar(
-                                                  context,
-                                                  user.isFavourite == "1"
-                                                      ? 'Added in Favourite stories'
-                                                      : 'Removed Favourite stories');
+                                                  context, user.isFavourite == "1" ? 'Added in Favourite stories' : 'Removed Favourite stories');
                                             });
                                           },
                                           child: Icon(
-                                            user.isFavourite.contains("1")
-                                                ? Icons.favorite
-                                                : Icons
-                                                    .favorite_border_outlined,
-                                            color:
-                                                user.isFavourite.contains("1")
-                                                    ? Colors.red
-                                                    : Colors.grey,
+                                            user.isFavourite.contains("1") ? Icons.favorite : Icons.favorite_border_outlined,
+                                            color: user.isFavourite.contains("1") ? Colors.red : Colors.grey,
                                             size: 20,
                                           ),
                                         )
@@ -304,12 +231,8 @@ class _SeeMoreState extends State<SeeMore> {
                                                 width: 4,
                                               ),
                                               Text(
-                                                DateFormat.yMMMd()
-                                                    .format(user.postDate),
-                                                style: GoogleFonts.montserrat(
-                                                    color: lightBlue,
-                                                    fontWeight: FontWeight.w300,
-                                                    fontSize: 12),
+                                                DateFormat.yMMMd().format(user.postDate),
+                                                style: GoogleFonts.montserrat(color: lightBlue, fontWeight: FontWeight.w300, fontSize: 12),
                                               ),
                                             ],
                                           ),
@@ -328,22 +251,15 @@ class _SeeMoreState extends State<SeeMore> {
                                           //               () {}));
                                           // },
                                           child: Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
+                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                            mainAxisAlignment: MainAxisAlignment.center,
                                             mainAxisSize: MainAxisSize.max,
                                             children: [
                                               Padding(
-                                                padding: const EdgeInsets.only(
-                                                    top: 4.0),
+                                                padding: const EdgeInsets.only(top: 4.0),
                                                 child: Text(
                                                   user.likes,
-                                                  style: GoogleFonts.montserrat(
-                                                      color: Color(0xff999999),
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      fontSize: 13),
+                                                  style: GoogleFonts.montserrat(color: Color(0xff999999), fontWeight: FontWeight.w600, fontSize: 13),
                                                 ),
                                               ),
                                               Image.asset(
@@ -356,23 +272,17 @@ class _SeeMoreState extends State<SeeMore> {
                                                 width: 6,
                                               ),
                                               Padding(
-                                                padding: const EdgeInsets.only(
-                                                    top: 4.0),
+                                                padding: const EdgeInsets.only(top: 4.0),
                                                 child: Text(
                                                   user.commentCount,
-                                                  style: GoogleFonts.montserrat(
-                                                      color: Color(0xff999999),
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      fontSize: 13),
+                                                  style: GoogleFonts.montserrat(color: Color(0xff999999), fontWeight: FontWeight.w600, fontSize: 13),
                                                 ),
                                               ),
                                               SizedBox(
                                                 width: 1,
                                               ),
                                               Padding(
-                                                padding: const EdgeInsets.only(
-                                                    top: 5),
+                                                padding: const EdgeInsets.only(top: 5),
                                                 child: Image.asset(
                                                   "assets/images/comment.png",
                                                   height: 17,

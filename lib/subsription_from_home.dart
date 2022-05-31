@@ -8,13 +8,11 @@ import 'package:black_history_calender/pages/paymentAlert.dart';
 import 'package:black_history_calender/screens/auth/provider/auth_provider.dart';
 import 'package:black_history_calender/screens/home/home_screen.dart';
 import 'package:black_history_calender/services/auth_services.dart';
-import 'package:black_history_calender/services/payment_service.dart';
 import 'package:black_history_calender/widget/payment_not_found_dialog.dart';
 import 'package:black_history_calender/widget/snackbar_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
@@ -32,7 +30,6 @@ class _SubscriptionScreenFromHomeState extends State<SubscriptionScreenFromHome>
   String packageSelection = "Monthly";
   String token;
   String userID;
-  List<IAPItem> iapProducts;
   bool packageSelectionMonthly = true;
   final AuthBase auth = Auth();
   var amount = '7.99';
@@ -89,18 +86,7 @@ class _SubscriptionScreenFromHomeState extends State<SubscriptionScreenFromHome>
           userName = value;
         }));
 
-    PaymentService.instance.addToProStatusChangedListeners(() async {
-      print("Success: ");
-      await subscribePackage();
-    });
-    PaymentService.instance.addToErrorListeners((value) {
-      print("Error: " + value.toString());
-    });
-
-    var res = await PaymentService.instance.products;
-
     setState(() {
-      iapProducts = res;
       packageSelection = "Monthly";
       amount = '7.99';
       discountedAmount = '7.99';

@@ -1,12 +1,7 @@
-//
-import 'package:black_history_calender/helper/prefs.dart';
 import 'package:black_history_calender/components/mydialog.dart';
 import 'package:black_history_calender/const/colors.dart';
-import 'package:black_history_calender/screens/auth/model/Calender_response.dart';
-import 'package:black_history_calender/screens/auth/model/getlike_response.dart';
+import 'package:black_history_calender/helper/prefs.dart';
 import 'package:black_history_calender/screens/auth/model/newstories_response.dart';
-import 'package:black_history_calender/screens/auth/model/postlike_response.dart';
-import 'package:black_history_calender/screens/auth/model/stories_response.dart';
 import 'package:black_history_calender/screens/auth/provider/auth_provider.dart';
 import 'package:black_history_calender/screens/home/home_screen.dart';
 import 'package:black_history_calender/widget/snackbar_widget.dart';
@@ -15,15 +10,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:html/parser.dart' show parse;
 import 'package:intl/intl.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:html/parser.dart' show parse;
 
-import '../globals.dart';
 import 'detail_screen.dart';
 
 class CalenderPage extends StatefulWidget {
@@ -166,8 +158,7 @@ class _CalenderPageState extends State<CalenderPage> {
                             decoration: BoxDecoration(
                               shape: BoxShape.rectangle,
                               borderRadius: BorderRadius.circular(10),
-                              image: DecorationImage(
-                                  image: imageProvider, fit: BoxFit.cover),
+                              image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
                             ),
                           ),
                           placeholder: (context, image) => Image.asset(
@@ -237,20 +228,12 @@ class _CalenderPageState extends State<CalenderPage> {
                 },
               ),
               TextButton(
-                style: ButtonStyle(
-                    foregroundColor:
-                        MaterialStateProperty.all<Color>(Colors.blue)),
+                style: ButtonStyle(foregroundColor: MaterialStateProperty.all<Color>(Colors.blue)),
                 onPressed: () {
-                  String formattedStartDate =
-                      DateFormat('yyyy-MM-dd').format(startDate);
-                  String formattedEndDate =
-                      DateFormat('yyyy-MM-dd').format(endDate);
+                  String formattedStartDate = DateFormat('yyyy-MM-dd').format(startDate);
+                  String formattedEndDate = DateFormat('yyyy-MM-dd').format(endDate);
 
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => SearchList(
-                              formattedStartDate, formattedEndDate)));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => SearchList(formattedStartDate, formattedEndDate)));
                 },
                 child: Container(
                   height: 45,
@@ -263,10 +246,7 @@ class _CalenderPageState extends State<CalenderPage> {
                     child: Text(
                       'Search Now',
                       textAlign: TextAlign.center,
-                      style: GoogleFonts.montserrat(
-                          color: white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.normal),
+                      style: GoogleFonts.montserrat(color: white, fontSize: 16, fontWeight: FontWeight.normal),
                     ),
                   ),
                 ),
@@ -379,8 +359,7 @@ class _SearchListState extends State<SearchList> {
 
   List<StoryData> passengers = [];
 
-  final RefreshController refreshController =
-      RefreshController(initialRefresh: true);
+  final RefreshController refreshController = RefreshController(initialRefresh: true);
 
   Future<bool> getPassengerData({bool isRefresh = false}) async {
     if (isRefresh) {
@@ -392,8 +371,7 @@ class _SearchListState extends State<SearchList> {
       }
     }
 
-    List<StoryData> response = await AuthProvider()
-        .calendarsearch(widget.startDate, widget.endDate, currentPage);
+    List<StoryData> response = await AuthProvider().calendarsearch(widget.startDate, widget.endDate, currentPage);
 
     if (isRefresh) {
       passengers = response;
@@ -447,9 +425,7 @@ class _SearchListState extends State<SearchList> {
                   }
                   var audioHtml = htmldata.getElementsByTagName('audio');
 
-                  var audio = audioHtml.length > 0
-                      ? audioHtml[0].attributes['src']
-                      : '';
+                  var audio = audioHtml.length > 0 ? audioHtml[0].attributes['src'] : '';
                   return Padding(
                     padding: const EdgeInsets.symmetric(
                       vertical: 8.0,
@@ -466,14 +442,8 @@ class _SearchListState extends State<SearchList> {
 
                         if (mem != '0') {
                           CommonWidgets.buildSnackbar(context, "subscribed");
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => DetailScreen(
-                                      passengers[index],
-                                      false,
-                                      audio,
-                                      false))).then((value) => setState(() {}));
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => DetailScreen(passengers[index], false, audio, false)))
+                              .then((value) => setState(() {}));
                         }
                         // else if (await FlutterInappPurchase
                         //      .instance
@@ -523,25 +493,19 @@ class _SearchListState extends State<SearchList> {
                                   color: Colors.black45,
                                   fit: BoxFit.cover,
                                   imageUrl: user.featuredMediaSrcUrl,
-                                  imageBuilder: (context, imageProvider) =>
-                                      Container(
+                                  imageBuilder: (context, imageProvider) => Container(
                                     width: 80.0,
                                     height: 80.0,
                                     decoration: BoxDecoration(
                                       shape: BoxShape.rectangle,
                                       borderRadius: BorderRadius.circular(10),
-                                      image: DecorationImage(
-                                          image: imageProvider,
-                                          fit: BoxFit.cover),
+                                      image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
                                     ),
                                   ),
-                                  progressIndicatorBuilder:
-                                      (context, url, downloadProgress) =>
-                                          Container(
+                                  progressIndicatorBuilder: (context, url, downloadProgress) => Container(
                                     height: 10,
                                     width: 10,
-                                    child: CircularProgressIndicator(
-                                        value: downloadProgress.progress),
+                                    child: CircularProgressIndicator(value: downloadProgress.progress),
                                   ),
                                   errorWidget: (context, url, error) => Icon(
                                     Icons.photo_library,
@@ -561,42 +525,24 @@ class _SearchListState extends State<SearchList> {
                                           Expanded(
                                             child: Text(
                                               user.postTitle,
-                                              style: GoogleFonts.montserrat(
-                                                  color: Colors.black,
-                                                  fontWeight: FontWeight.w600,
-                                                  fontSize: 14),
+                                              style: GoogleFonts.montserrat(color: Colors.black, fontWeight: FontWeight.w600, fontSize: 14),
                                             ),
                                           ),
                                           GestureDetector(
                                             onTap: () {
-                                              EasyLoading.show(
-                                                  dismissOnTap: false);
-                                              AuthProvider()
-                                                  .addfavourite(user.id, 1)
-                                                  .then((value) {
+                                              EasyLoading.show(dismissOnTap: false);
+                                              AuthProvider().addfavourite(user.id, 1).then((value) {
                                                 setState(() {
-                                                  user.isFavourite = user
-                                                          .isFavourite
-                                                          .contains("1")
-                                                      ? "0"
-                                                      : "1";
+                                                  user.isFavourite = user.isFavourite.contains("1") ? "0" : "1";
                                                 });
                                                 EasyLoading.dismiss();
                                                 CommonWidgets.buildSnackbar(
-                                                    context,
-                                                    user.isFavourite == "1"
-                                                        ? 'Added in Favourite stories'
-                                                        : 'Removed Favourite stories');
+                                                    context, user.isFavourite == "1" ? 'Added in Favourite stories' : 'Removed Favourite stories');
                                               });
                                             },
                                             child: Icon(
-                                              user.isFavourite == "1"
-                                                  ? Icons.favorite
-                                                  : Icons
-                                                      .favorite_border_outlined,
-                                              color: user.isFavourite == "1"
-                                                  ? Colors.red
-                                                  : Colors.grey,
+                                              user.isFavourite == "1" ? Icons.favorite : Icons.favorite_border_outlined,
+                                              color: user.isFavourite == "1" ? Colors.red : Colors.grey,
                                               size: 20,
                                             ),
                                           )
@@ -642,13 +588,8 @@ class _SearchListState extends State<SearchList> {
                                                   width: 4,
                                                 ),
                                                 Text(
-                                                  DateFormat.yMMMd()
-                                                      .format(user.postDate),
-                                                  style: GoogleFonts.montserrat(
-                                                      color: lightBlue,
-                                                      fontWeight:
-                                                          FontWeight.w300,
-                                                      fontSize: 12),
+                                                  DateFormat.yMMMd().format(user.postDate),
+                                                  style: GoogleFonts.montserrat(color: lightBlue, fontWeight: FontWeight.w300, fontSize: 12),
                                                 ),
                                               ],
                                             ),
@@ -667,25 +608,16 @@ class _SearchListState extends State<SearchList> {
                                             //               () {}));
                                             // },
                                             child: Row(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
+                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                              mainAxisAlignment: MainAxisAlignment.center,
                                               mainAxisSize: MainAxisSize.max,
                                               children: [
                                                 Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          top: 4.0),
+                                                  padding: const EdgeInsets.only(top: 4.0),
                                                   child: Text(
                                                     user.likes,
                                                     style:
-                                                        GoogleFonts.montserrat(
-                                                            color: Color(
-                                                                0xff999999),
-                                                            fontWeight:
-                                                                FontWeight.w600,
-                                                            fontSize: 13),
+                                                        GoogleFonts.montserrat(color: Color(0xff999999), fontWeight: FontWeight.w600, fontSize: 13),
                                                   ),
                                                 ),
                                                 Image.asset(
@@ -698,27 +630,18 @@ class _SearchListState extends State<SearchList> {
                                                   width: 6,
                                                 ),
                                                 Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          top: 4.0),
+                                                  padding: const EdgeInsets.only(top: 4.0),
                                                   child: Text(
                                                     user.commentCount,
                                                     style:
-                                                        GoogleFonts.montserrat(
-                                                            color: Color(
-                                                                0xff999999),
-                                                            fontWeight:
-                                                                FontWeight.w600,
-                                                            fontSize: 13),
+                                                        GoogleFonts.montserrat(color: Color(0xff999999), fontWeight: FontWeight.w600, fontSize: 13),
                                                   ),
                                                 ),
                                                 SizedBox(
                                                   width: 1,
                                                 ),
                                                 Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          top: 5),
+                                                  padding: const EdgeInsets.only(top: 5),
                                                   child: Image.asset(
                                                     "assets/images/comment.png",
                                                     height: 17,

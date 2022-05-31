@@ -1,16 +1,15 @@
+import 'dart:ui' as ui;
+
 import 'package:black_history_calender/screens/auth/provider/auth_provider.dart';
 import 'package:black_history_calender/screens/splash.dart';
 import 'package:black_history_calender/services/auth_services.dart';
 import 'package:black_history_calender/services/firebase_configurations.dart';
-import 'package:black_history_calender/services/payment_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:provider/provider.dart';
-import 'dart:ui' as ui;
 
 void main() async {
   RenderErrorBox.backgroundColor = Colors.transparent;
@@ -18,12 +17,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await FirebaseMessagingManager().init();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-  await Firebase.initializeApp( );
-
-
-
-  await PaymentService.instance.initConnection();
-
+  await Firebase.initializeApp();
 
   runApp(MyApp());
 }
@@ -41,21 +35,17 @@ class _MyAppState extends State<MyApp> {
     super.initState();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider<AuthProvider>(
-            lazy: false, create: (context) => AuthProvider()),
+        ChangeNotifierProvider<AuthProvider>(lazy: false, create: (context) => AuthProvider()),
       ],
       child: MaterialApp(
-
         title: 'BHC',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          sliderTheme:
-              SliderThemeData(overlayShape: SliderComponentShape.noOverlay),
+          sliderTheme: SliderThemeData(overlayShape: SliderComponentShape.noOverlay),
           primarySwatch: Colors.blue,
         ),
         home: SplashScreen(
@@ -76,21 +66,22 @@ class _MyAppState extends State<MyApp> {
     print("fcm token $token");
   }
 
-  // getTopics() async {
-  //   await FirebaseFirestore.instance
-  //       .collection('topics')
-  //       .get()
-  //       .then((value) => value.docs.forEach((element) {
-  //             if (token == element.id) {
-  //               subscribed = element.data().keys.toList();
-  //             }
-  //           }));
+// getTopics() async {
+//   await FirebaseFirestore.instance
+//       .collection('topics')
+//       .get()
+//       .then((value) => value.docs.forEach((element) {
+//             if (token == element.id) {
+//               subscribed = element.data().keys.toList();
+//             }
+//           }));
 
-  //   setState(() {
-  //     subscribed = subscribed;
-  //   });
-  // }
+//   setState(() {
+//     subscribed = subscribed;
+//   });
+// }
 }
+
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   print('Handling a background message ${message.data}');
 }

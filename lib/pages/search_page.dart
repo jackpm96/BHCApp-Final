@@ -3,26 +3,17 @@ import 'dart:convert';
 import 'package:black_history_calender/components/detailviewWidget.dart';
 import 'package:black_history_calender/const/colors.dart';
 import 'package:black_history_calender/helper/prefs.dart';
-import 'package:black_history_calender/pages/my_profile.dart';
 import 'package:black_history_calender/repository/app_repository.dart';
 import 'package:black_history_calender/screens/auth/model/search_response.dart';
 import 'package:black_history_calender/screens/home/home_screen.dart';
-import 'package:black_history_calender/widget/snackbar_widget.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_html/flutter_html.dart';
-import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:html/parser.dart' show parse;
-import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
 
 import '../globals.dart';
 import 'detailWidgetView.dart';
-import 'detail_screen.dart';
 
 class BookMarkPage extends StatefulWidget {
   final bool showAppBar;
@@ -223,12 +214,8 @@ class _BookMarkPageState extends State<BookMarkPage> {
                       // ),
                       (isSearchRequest)
                           ? FutureBuilder<SearchResponse>(
-                              future: appRepository.searchByKeyword(
-                                  "Pf1PZMTEum3zLBkN2ITu4KdZyHM3WKR0",
-                                  searchQuery,
-                                  "100",
-                                  "1",
-                                  id, (SearchResponse list) {
+                              future: appRepository.searchByKeyword("Pf1PZMTEum3zLBkN2ITu4KdZyHM3WKR0", searchQuery, "100", "1", id,
+                                  (SearchResponse list) {
                                 print("Done Done Done");
                                 isSearchRequest = false;
                                 onceLoaded = true;
@@ -245,8 +232,7 @@ class _BookMarkPageState extends State<BookMarkPage> {
                                 print("failed");
                                 isSearchRequest = false;
                               }),
-                              builder: (BuildContext context,
-                                  AsyncSnapshot<SearchResponse> snapshot) {
+                              builder: (BuildContext context, AsyncSnapshot<SearchResponse> snapshot) {
                                 switch (snapshot.connectionState) {
                                   case ConnectionState.waiting:
                                     return Container(
@@ -266,8 +252,7 @@ class _BookMarkPageState extends State<BookMarkPage> {
                                       dataList = snapshot.data;
 
                                       return DetailWidget(list: dataList);
-                                    } else if (snapshot.data.status == "OK" &&
-                                        snapshot.data.data == null) {
+                                    } else if (snapshot.data.status == "OK" && snapshot.data.data == null) {
                                       isSearchRequest = false;
 
                                       return Container(
@@ -276,14 +261,11 @@ class _BookMarkPageState extends State<BookMarkPage> {
                                         alignment: Alignment.center,
                                         child: Center(
                                           child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
+                                            mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
                                               Text(
                                                 "Nothing Close Found",
-                                                style: TextStyle(
-                                                    color: Colors.red,
-                                                    fontSize: 20),
+                                                style: TextStyle(color: Colors.red, fontSize: 20),
                                               ),
                                             ],
                                           ),
@@ -296,8 +278,7 @@ class _BookMarkPageState extends State<BookMarkPage> {
                                         alignment: Alignment.center,
                                         child: Center(
                                           child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
+                                            mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
                                               InkWell(
                                                 onTap: () {
@@ -307,9 +288,7 @@ class _BookMarkPageState extends State<BookMarkPage> {
                                                 },
                                                 child: Text(
                                                   "Try Again",
-                                                  style: TextStyle(
-                                                      color: Colors.red,
-                                                      fontSize: 20),
+                                                  style: TextStyle(color: Colors.red, fontSize: 20),
                                                 ),
                                               ),
                                               InkWell(
@@ -349,10 +328,7 @@ class _BookMarkPageState extends State<BookMarkPage> {
                                   ),
                                   GestureDetector(
                                     onTap: () {
-                                      showSearch(
-                                              context: context,
-                                              delegate: Search())
-                                          .then((value) {
+                                      showSearch(context: context, delegate: Search()).then((value) {
                                         setState(() {});
                                       });
                                     },
@@ -383,10 +359,7 @@ class _BookMarkPageState extends State<BookMarkPage> {
                                               ),
                                               Text(
                                                 "Search By Name",
-                                                style: GoogleFonts.montserrat(
-                                                    color: Color(0xff999999),
-                                                    fontWeight: FontWeight.w500,
-                                                    fontSize: 16),
+                                                style: GoogleFonts.montserrat(color: Color(0xff999999), fontWeight: FontWeight.w500, fontSize: 16),
                                               ),
                                             ],
                                           ),
@@ -401,18 +374,14 @@ class _BookMarkPageState extends State<BookMarkPage> {
                                     children: [
                                       Text(
                                         "Search By Tags",
-                                        style: GoogleFonts.montserrat(
-                                            color: Colors.lightBlue,
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 16),
+                                        style: GoogleFonts.montserrat(color: Colors.lightBlue, fontWeight: FontWeight.w500, fontSize: 16),
                                       ),
                                       DropdownButton(
                                         // Initial Value
                                         value: dropdownvalue,
 
                                         // Down Arrow Icon
-                                        icon: const Icon(
-                                            Icons.keyboard_arrow_down),
+                                        icon: const Icon(Icons.keyboard_arrow_down),
 
                                         // Array list of items
                                         items: items.map((String item) {
@@ -761,9 +730,7 @@ class Search extends SearchDelegate {
 
   @override
   Widget buildLeading(BuildContext context) {
-    return IconButton(
-        icon: Icon(Icons.arrow_back),
-        onPressed: () => Navigator.pop(context, false));
+    return IconButton(icon: Icon(Icons.arrow_back), onPressed: () => Navigator.pop(context, false));
   }
 
   @override

@@ -2,7 +2,6 @@ import 'package:black_history_calender/const/colors.dart';
 import 'package:black_history_calender/helper/prefs.dart';
 import 'package:black_history_calender/pages/favorites_screen.dart';
 import 'package:black_history_calender/screens/auth/sign_in_screen.dart';
-import 'package:black_history_calender/screens/subscription_screen.dart';
 import 'package:black_history_calender/services/auth_services.dart';
 import 'package:black_history_calender/subsription_from_home.dart';
 import 'package:flutter/cupertino.dart';
@@ -70,8 +69,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
                     ),
                   );
                 }),
-                drawerTile('Payments & Subscriptions', Icons.payments, context,
-                    () {
+                drawerTile('Payments & Subscriptions', Icons.payments, context, () {
                   Navigator.pop(context);
                   Navigator.of(context).push(
                     MaterialPageRoute(
@@ -186,8 +184,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
   }
 }
 
-Widget drawerTile(
-    String text, IconData icon, BuildContext context, void Function() _func) {
+Widget drawerTile(String text, IconData icon, BuildContext context, void Function() _func) {
   return GestureDetector(
     onTap: _func,
     child: Padding(

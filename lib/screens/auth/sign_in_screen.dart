@@ -5,7 +5,6 @@ import 'package:black_history_calender/helper/prefs.dart';
 import 'package:black_history_calender/screens/auth/forgot_password_screen.dart';
 import 'package:black_history_calender/screens/auth/model/social_login_response.dart';
 import 'package:black_history_calender/screens/home/home_screen.dart';
-import 'package:black_history_calender/screens/subscription_screen.dart';
 import 'package:black_history_calender/screens/welcome_screen.dart';
 import 'package:black_history_calender/services/auth_services.dart';
 import 'package:black_history_calender/services/loca_auth_api.dart';
@@ -105,18 +104,13 @@ class _SignInScreenState extends State<SignInScreen> {
             Prefs.setEmail(value.data.userEmail.toString());
             Prefs.setMembership(value.data.membershipLevel.toString());
 
-            if (value.data.membershipLevel == null) {
-              Navigator.of(context)
-                  .pushAndRemoveUntil(MaterialPageRoute(builder: (context) => SubscriptionScreen()), (Route<dynamic> route) => false);
-            } else {
-              Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(
-                      builder: (BuildContext context) => HomeScreen(
-                            auth: auth,
-                          )),
-                  ModalRoute.withName('/'));
-            }
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                    builder: (BuildContext context) => HomeScreen(
+                          auth: auth,
+                        )),
+                ModalRoute.withName('/'));
           } else {
             CommonWidgets.buildSnackbar(context, "Something went wrong");
           }
@@ -175,18 +169,13 @@ class _SignInScreenState extends State<SignInScreen> {
             Prefs.setEmail(value.data.userEmail.toString());
             Prefs.setMembership(value.data.membershipLevel.toString());
 
-            if (value.data.membershipLevel == null) {
-              Navigator.of(context)
-                  .pushAndRemoveUntil(MaterialPageRoute(builder: (context) => SubscriptionScreen()), (Route<dynamic> route) => false);
-            } else {
-              Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(
-                      builder: (BuildContext context) => HomeScreen(
-                            auth: auth,
-                          )),
-                  ModalRoute.withName('/'));
-            }
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                    builder: (BuildContext context) => HomeScreen(
+                          auth: auth,
+                        )),
+                ModalRoute.withName('/'));
           } else {
             CommonWidgets.buildSnackbar(context, "Something went wrong");
           }
@@ -560,8 +549,7 @@ class _SignInScreenState extends State<SignInScreen> {
     EasyLoading.show(dismissOnTap: false);
     String ntoken = await FirebaseMessaging.instance.getToken();
     var response = await Provider.of<AuthProvider>(context, listen: false)
-        .loginUser(_emailController.text.trim(), _passwordController.text.trim(), notification.token,context);
-    print("response $response");
+        .loginUser(_emailController.text.trim(), _passwordController.text.trim(), notification.token, context);
     if (response != null) {
       EasyLoading.dismiss();
       Prefs.setToken(response.token.toString());
@@ -576,18 +564,9 @@ class _SignInScreenState extends State<SignInScreen> {
       Prefs.setImg(response.imgurl);
       Prefs.setUserLogin(response.userLogin);
       Prefs.setUserName(response.userNicename);
-
-      // Prefs.setSubsRole(response.userRole);
-
       CommonWidgets.buildSnackbar(context, "Sign In successful");
 
-      if (response.membershipLevel.isEmpty) {
-        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => SubscriptionScreen()), (Route<dynamic> route) => false);
-      } else {
-        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => HomeScreen()), (Route<dynamic> route) => false);
-        // Navigator.push(
-        //     context, MaterialPageRoute(builder: (context) => HomeScreen()));
-      }
+      Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => HomeScreen()), (Route<dynamic> route) => false);
     } else {
       EasyLoading.dismiss();
     }

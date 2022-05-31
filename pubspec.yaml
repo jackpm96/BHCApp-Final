@@ -63,11 +63,7 @@ dependencies:
   wifi_info_flutter: 2.0.2
   change_app_package_name: 1.0.0
   flutter_facebook_auth: 4.0.1
-  flutter_inapp_purchase: 5.1.2
   sizer: 2.0.15
-  flutter_paypal: 0.0.8
-  #  webviewx:  0.2.1
-  webview_flutter_plus: 0.2.4
 
 
 flutter_icons:
