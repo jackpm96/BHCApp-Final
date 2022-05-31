@@ -10,6 +10,8 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../helper/prefs.dart';
+
 class CommentScreen extends StatefulWidget {
   var postid;
 
@@ -22,6 +24,20 @@ class CommentScreen extends StatefulWidget {
 class _CommentScreenState extends State<CommentScreen> {
   final formKey = GlobalKey<FormState>();
   final TextEditingController commentController = TextEditingController();
+
+  String img = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT7csvPWMdfAHEAnhIRTdJKCK5SPK4cHfskow&usqp=CAU";
+
+  @override
+  void initState() {
+    super.initState();
+    initData();
+  }
+
+  initData() async {
+    await Prefs.imgurl.then((value) => setState(() {
+          img = value;
+        }));
+  }
 
   Widget commentChild() {
     return FutureBuilder(
@@ -61,9 +77,7 @@ class _CommentScreenState extends State<CommentScreen> {
                                   fit: BoxFit.contain,
                                   // ignore: avoid_dynamic_calls
                                   image: NetworkImage(
-                                    response[i]
-                                        .authorAvatarUrls["24"]
-                                        .toString(),
+                                    response[i].authorAvatarUrls["24"].toString(),
                                   ),
                                 ),
                               ),
@@ -121,100 +135,10 @@ class _CommentScreenState extends State<CommentScreen> {
                     ],
                   ),
                 ),
-
-                // ListTile(
-                //   tileColor: Colors.grey.shade100,
-                //     leading: Container(
-                //       width: 60.0,
-                //       decoration: new BoxDecoration(
-                //         image: DecorationImage(fit: BoxFit.cover,
-                //           image:NetworkImage(
-                //               response[i].authorAvatarUrls["24"])
-                //         ),
-                //           color: Colors.blue,
-                //           shape: BoxShape.circle,
-                //         border: Border.all(color: lightBlue,width: 3)
-                //         ),
-                //       // child: CircleAvatar(
-                //       //     radius: 50,
-                //       //     backgroundImage: NetworkImage(
-                //       //         response[i].authorAvatarUrls["24"])),
-                //     ),
-                //     title: Column(
-                //       crossAxisAlignment: CrossAxisAlignment.start,
-                //       mainAxisAlignment: MainAxisAlignment.center,
-                //       children: [
-                //         Text(
-                //           response[i].authorName,
-                //           style: TextStyle(fontWeight: FontWeight.bold),
-                //         ),
-                //         Text(
-                //           DateFormat.yMMMd().format(response[i].date),
-                //           style: TextStyle(color: Colors.grey, fontSize: 12),
-                //         ),
-                //
-                //       ],
-                //     ),
-                //     subtitle: Html(
-                //       data: response[i].content.rendered,
-                //       onLinkTap: (url, _, __, ___) {
-                //         launch(url);
-                //       },
-                //       onImageTap: (src, _, __, ___) {
-                //         launch(src);
-                //       },
-                //     )
-                //     // Text(response[i].content.rendered),
-                //     ),
               ],
             );
           },
         );
-
-        // return ListView(
-        //   children: [
-        //     for (var i = 0; i < response.length; i++)
-        //       Padding(
-        //         padding: const EdgeInsets.fromLTRB(2.0, 8.0, 2.0, 0.0),
-        //         child: ListTile(
-        //           leading: GestureDetector(
-        //             onTap: () async {
-        //               print("Comment Clicked");
-        //             },
-        //             child: Container(
-        //               height: 60.0,
-        //               width: 50.0,
-        //               decoration: new BoxDecoration(
-        //                   color: Colors.blue,
-        //                   borderRadius:
-        //                       new BorderRadius.all(Radius.circular(50))),
-        //               child: CircleAvatar(
-        //                   radius: 50,
-        //                   backgroundImage: NetworkImage(
-        //                       response[i].authorAvatarUrls["24"])),
-        //             ),
-        //           ),
-        //           title: Column(
-        //             crossAxisAlignment: CrossAxisAlignment.start,
-        //             children: [
-        //               Text(
-        //                 response[i].authorName,
-        //                 style: TextStyle(fontWeight: FontWeight.bold),
-        //               ),
-        //               Text(
-        //                 DateFormat.yMMMd().format(response[i].date),
-        //                 style: TextStyle(color: Colors.grey, fontSize: 12),
-        //               ),
-        //               SizedBox(
-        //                 height: 5,
-        //               )
-        //             ],
-        //           ),
-        //           subtitle: Text(response[i].content.rendered),
-        //         ),
-        //       )
-        //   ],
-        // );
       },
     );
   }
@@ -227,17 +151,14 @@ class _CommentScreenState extends State<CommentScreen> {
         backgroundColor: lightBlue,
       ),
       body: CommentBox(
-        userImage:
-            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT7csvPWMdfAHEAnhIRTdJKCK5SPK4cHfskow&usqp=CAU",
+        userImage: img,
         labelText: 'Write a comment...',
         withBorder: false,
         errorText: 'Comment cannot be blank',
         sendButtonMethod: () async {
           if (commentController.text.trim().isNotEmpty) {
             EasyLoading.show();
-            await AuthProvider()
-                .postcomments(widget.postid, commentController.text)
-                .then(
+            await AuthProvider().postcomments(widget.postid, commentController.text).then(
               (value) {
                 EasyLoading.dismiss();
                 setState(() {});

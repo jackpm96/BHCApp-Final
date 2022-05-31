@@ -271,7 +271,6 @@ class AuthRepo {
       HttpHeaders.contentTypeHeader: 'application/x-www-form-urlencoded',
     };
     final List response = await HttpClient.instance.fetchData(APIPathHelper.getValue(APIPath.comments), params: params) as List<dynamic>;
-
     return response.map((e) => GetCommentResponse.fromJson(e as Map<String, dynamic>)).toList();
   }
 

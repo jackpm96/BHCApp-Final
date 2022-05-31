@@ -48,22 +48,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    // PushNotificationsManager().init();
     super.initState();
   }
-
-  // Future<List<LocalStoriesResponse>> allStories() async {
-  //   List<LocalStoriesResponse> allStories;
-  //   await Prefs.readingStories.then((value) {
-  //     if (value != null && value.isNotEmpty) {
-  //       List<LocalStoriesResponse> res = LocalStoriesResponse.decode(value);
-  //       allStories = res.reversed.toList();
-  //     } else {
-  //       allStories = [];
-  //     }
-  //   });
-  //   return allStories;
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -101,87 +87,6 @@ class _HomePageState extends State<HomePage> {
             elevation: 0.0,
             title: Text('HOME'),
             centerTitle: true,
-            // actions: [
-            //   Padding(
-            //     padding: const EdgeInsets.symmetric(horizontal: 18.0),
-            //     child: GestureDetector(
-            //         onTap: () {
-            //           showGeneralDialog(
-            //               context: context,
-            //               pageBuilder: (context, animation,
-            //                       secondaryAnimation) =>
-            //                   Scaffold(
-            //                       backgroundColor: Colors.transparent,
-            //                       body: BackdropFilter(
-            //                         filter:
-            //                             ImageFilter.blur(sigmaX: 2, sigmaY: 2),
-            //                         child: Container(
-            //                           decoration: BoxDecoration(
-            //                               color:
-            //                                   white.withOpacity(0.15)),
-            //                           child: Container(
-            //                             child: Column(
-            //                               mainAxisAlignment:
-            //                                   MainAxisAlignment.center,
-            //                               children: [
-            //                                 Padding(
-            //                                   padding:
-            //                                       const EdgeInsets.all(20.0),
-            //                                   child: Container(
-            //                                     decoration: BoxDecoration(
-            //                                         color: white,
-            //                                         borderRadius:
-            //                                             BorderRadius.circular(
-            //                                                 20)),
-            //                                     child: ClipRRect(
-            //                                       borderRadius:
-            //                                           BorderRadius.circular(20),
-            //                                       child: Calendar(
-            //                                         pageController:
-            //                                             PageController(),
-            //                                       ),
-            //                                     ),
-            //                                   ),
-            //                                 ),
-            //                                 Padding(
-            //                                   padding:
-            //                                       const EdgeInsets.symmetric(
-            //                                           horizontal: 20),
-            //                                   child: Container(
-            //                                     height: 50,
-            //                                     width: MediaQuery.of(context)
-            //                                         .size
-            //                                         .width,
-            //                                     decoration: BoxDecoration(
-            //                                         color: lightBlue,
-            //                                         borderRadius:
-            //                                             BorderRadius.circular(
-            //                                                 15)),
-            //                                     child: Center(
-            //                                       child: Text(
-            //                                         'Search',
-            //                                         style: TextStyle(
-            //                                             color: white,
-            //                                             fontWeight:
-            //                                                 FontWeight.w400,
-            //                                             fontSize: 18),
-            //                                       ),
-            //                                     ),
-            //                                   ),
-            //                                 )
-            //                               ],
-            //                             ),
-            //                           ),
-            //                         ),
-            //                       )));
-            //         },
-            //         child: Image.asset(
-            //           'assets/images/calendar.png',
-            //           height: 30,
-            //           width: 30,
-            //         )),
-            //   )
-            // ],
           ),
           body: SingleChildScrollView(
             child: Column(
@@ -207,17 +112,6 @@ class _HomePageState extends State<HomePage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // Padding(
-                            //   padding:
-                            //       const EdgeInsets.symmetric(horizontal: 16.0),
-                            //   child: Text(
-                            //     'Continue Reading',
-                            //     style: GoogleFonts.montserrat(
-                            //         // color: black,
-                            //         fontWeight: FontWeight.w600,
-                            //         fontSize: 22),
-                            //   ),
-                            // ),
                             Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 16.0),
                               child: Row(
@@ -259,7 +153,6 @@ class _HomePageState extends State<HomePage> {
                                 ],
                               ),
                             ),
-
                             SizedBox(
                               height: 10,
                             ),
@@ -534,9 +427,9 @@ class _HomePageState extends State<HomePage> {
                                                           image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
                                                         ),
                                                       ),
-                                                      progressIndicatorBuilder: (context, url, downloadProgress) => Container(
-                                                        height: 10,
-                                                        width: 10,
+                                                      progressIndicatorBuilder: (context, url, downloadProgress) => SizedBox(
+                                                        height: 30,
+                                                        width: 30,
                                                         child: CircularProgressIndicator(value: downloadProgress.progress),
                                                       ),
                                                       errorWidget: (context, url, error) => Icon(
@@ -569,13 +462,6 @@ class _HomePageState extends State<HomePage> {
                                                                       index,
                                                                     );
 
-                                                                    // setState(
-                                                                    //     () {
-                                                                    //   user.isFavourite = user.isFavourite.contains("1")
-                                                                    //       ? "0"
-                                                                    //       : "1";
-                                                                    // });
-
                                                                     CommonWidgets.buildSnackbar(
                                                                         context,
                                                                         user.isFavourite == "1"
@@ -604,20 +490,7 @@ class _HomePageState extends State<HomePage> {
                                                             onImageTap: (src, _, __, ___) {
                                                               launch(src);
                                                             },
-                                                          )
-
-                                                              //     Text(
-                                                              //   user.excerpt.rendered,
-                                                              //   overflow: TextOverflow
-                                                              //       .ellipsis,
-                                                              //   maxLines: 3,
-                                                              //   style: GoogleFonts
-                                                              //       .montserrat(
-                                                              //           fontSize: 10,
-                                                              //           color: Color(
-                                                              //               0xff818181)),
-                                                              // )),
-                                                              ),
+                                                          )),
                                                           Row(
                                                             children: [
                                                               Expanded(
@@ -640,18 +513,12 @@ class _HomePageState extends State<HomePage> {
                                                                 ),
                                                               ),
                                                               GestureDetector(
-                                                                // onTap: () {
-                                                                //   setState(() {
-                                                                //     updatedlike++;
-                                                                //   });
-                                                                //   AuthProvider()
-                                                                //       .postlike(
-                                                                //           user.id,
-                                                                //           updatedlike)
-                                                                //       .then((value) =>
-                                                                //           setState(
-                                                                //               () {}));
-                                                                // },
+                                                                onTap: () {
+                                                                  // setState(() {
+                                                                  //   updatedlike++;
+                                                                  // });
+                                                                  // AuthProvider().postlike(user.id, updatedlike).then((value) => setState(() {}));
+                                                                },
                                                                 child: Row(
                                                                   crossAxisAlignment: CrossAxisAlignment.center,
                                                                   mainAxisAlignment: MainAxisAlignment.center,
