@@ -512,58 +512,50 @@ class _HomePageState extends State<HomePage> {
                                                                   ],
                                                                 ),
                                                               ),
-                                                              GestureDetector(
-                                                                onTap: () {
-                                                                  // setState(() {
-                                                                  //   updatedlike++;
-                                                                  // });
-                                                                  // AuthProvider().postlike(user.id, updatedlike).then((value) => setState(() {}));
-                                                                },
-                                                                child: Row(
-                                                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                                  mainAxisSize: MainAxisSize.max,
-                                                                  children: [
-                                                                    Padding(
-                                                                      padding: const EdgeInsets.only(top: 4.0),
-                                                                      child: Text(
-                                                                        user.likes,
-                                                                        style: GoogleFonts.montserrat(
-                                                                            color: Color(0xff999999), fontWeight: FontWeight.w600, fontSize: 13),
-                                                                      ),
+                                                              Row(
+                                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                                mainAxisSize: MainAxisSize.max,
+                                                                children: [
+                                                                  Padding(
+                                                                    padding: const EdgeInsets.only(top: 4.0),
+                                                                    child: Text(
+                                                                      user.likes,
+                                                                      style: GoogleFonts.montserrat(
+                                                                          color: Color(0xff999999), fontWeight: FontWeight.w600, fontSize: 13),
                                                                     ),
-                                                                    Image.asset(
-                                                                      "assets/images/like_thumb.png",
-                                                                      height: 15,
-                                                                      width: 15,
+                                                                  ),
+                                                                  Image.asset(
+                                                                    "assets/images/like_thumb.png",
+                                                                    height: 15,
+                                                                    width: 15,
+                                                                    // fit: BoxFit.contain,
+                                                                  ),
+                                                                  SizedBox(
+                                                                    width: 6,
+                                                                  ),
+                                                                  Padding(
+                                                                    padding: const EdgeInsets.only(top: 4.0),
+                                                                    child: Text(
+                                                                      user.commentCount,
+                                                                      style: GoogleFonts.montserrat(
+                                                                          color: Color(0xff999999), fontWeight: FontWeight.w600, fontSize: 13),
+                                                                    ),
+                                                                  ),
+                                                                  SizedBox(
+                                                                    width: 1,
+                                                                  ),
+                                                                  Padding(
+                                                                    padding: const EdgeInsets.only(top: 5),
+                                                                    child: Image.asset(
+                                                                      "assets/images/comment.png",
+                                                                      height: 17,
+                                                                      width: 17,
+                                                                      color: Colors.blue,
                                                                       // fit: BoxFit.contain,
                                                                     ),
-                                                                    SizedBox(
-                                                                      width: 6,
-                                                                    ),
-                                                                    Padding(
-                                                                      padding: const EdgeInsets.only(top: 4.0),
-                                                                      child: Text(
-                                                                        user.commentCount,
-                                                                        style: GoogleFonts.montserrat(
-                                                                            color: Color(0xff999999), fontWeight: FontWeight.w600, fontSize: 13),
-                                                                      ),
-                                                                    ),
-                                                                    SizedBox(
-                                                                      width: 1,
-                                                                    ),
-                                                                    Padding(
-                                                                      padding: const EdgeInsets.only(top: 5),
-                                                                      child: Image.asset(
-                                                                        "assets/images/comment.png",
-                                                                        height: 17,
-                                                                        width: 17,
-                                                                        color: Colors.blue,
-                                                                        // fit: BoxFit.contain,
-                                                                      ),
-                                                                    )
-                                                                  ],
-                                                                ),
+                                                                  )
+                                                                ],
                                                               ),
                                                             ],
                                                           ),

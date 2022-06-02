@@ -243,25 +243,6 @@ class _DetailScreenState extends State<DetailScreen> {
                                         Row(
                                           mainAxisAlignment: MainAxisAlignment.end,
                                           children: [
-                                            Expanded(
-                                              child: Row(
-                                                children: [
-                                                  Icon(
-                                                    Icons.access_time,
-                                                    color: Color(0xff999999),
-                                                    size: 15,
-                                                  ),
-                                                  SizedBox(
-                                                    width: 4,
-                                                  ),
-                                                  Text(
-                                                    widget.user.postDate.toString(),
-                                                    style:
-                                                        GoogleFonts.montserrat(color: Color(0xff999999), fontWeight: FontWeight.w600, fontSize: 13),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
                                             Consumer<AuthProvider>(builder: (BuildContext context, AuthProvider provider, Widget child) {
                                               if (provider.likesdata == null) {
                                                 return Center(

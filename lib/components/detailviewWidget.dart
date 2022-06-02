@@ -11,6 +11,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:html/parser.dart' show parse;
+import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class DetailWidget extends StatelessWidget {
@@ -31,6 +32,7 @@ class DetailWidget extends StatelessWidget {
           itemCount: list.data.length,
           itemBuilder: (context, index) {
             final user = list.data;
+            print("list.data.length ${list.data.length}");
             // provider.favStories
             //     .data.data.data[index];
 
@@ -190,82 +192,64 @@ class ListContent extends StatelessWidget {
                                     width: 4,
                                   ),
                                   Text(
-                                    user.postDate,
-                                    style: GoogleFonts.montserrat(
-                                      color: lightBlue,
-                                      fontWeight: FontWeight.w300,
-                                      fontSize: 12,
-                                    ),
+                                    DateFormat.yMMMd().format(DateTime.parse(user.postDate)),
+                                    style: GoogleFonts.montserrat(color: lightBlue, fontWeight: FontWeight.w300, fontSize: 12),
                                   ),
                                 ],
                               ),
                             ),
-                            GestureDetector(
-                              onTap: () {
-                                // setState(() {
-                                //   updatedlike++;
-                                // });
-                                // AuthProvider()
-                                //     .postlike(
-                                //         user[index].id,
-                                //         updatedlike)
-                                //     .then((value) =>
-                                //         setState(
-                                //             () {}));
-                              },
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                      top: 4.0,
-                                    ),
-                                    child: Text(
-                                      user.likes,
-                                      style: GoogleFonts.montserrat(
-                                        color: const Color(0xff999999),
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 13,
-                                      ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                    top: 4.0,
+                                  ),
+                                  child: Text(
+                                    user.likes,
+                                    style: GoogleFonts.montserrat(
+                                      color: const Color(0xff999999),
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 13,
                                     ),
                                   ),
-                                  Image.asset(
-                                    "assets/images/like_thumb.png",
-                                    height: 15,
-                                    width: 15,
+                                ),
+                                Image.asset(
+                                  "assets/images/like_thumb.png",
+                                  height: 15,
+                                  width: 15,
+                                  // fit: BoxFit.contain,
+                                ),
+                                const SizedBox(
+                                  width: 6,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                    top: 4.0,
+                                  ),
+                                  child: Text(
+                                    user.commentCount,
+                                    style: GoogleFonts.montserrat(
+                                      color: const Color(0xff999999),
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 13,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 1,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 5),
+                                  child: Image.asset(
+                                    "assets/images/comment.png",
+                                    height: 17,
+                                    width: 17,
+                                    color: Colors.blue,
                                     // fit: BoxFit.contain,
                                   ),
-                                  const SizedBox(
-                                    width: 6,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                      top: 4.0,
-                                    ),
-                                    child: Text(
-                                      user.commentCount,
-                                      style: GoogleFonts.montserrat(
-                                        color: const Color(0xff999999),
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 13,
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    width: 1,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 5),
-                                    child: Image.asset(
-                                      "assets/images/comment.png",
-                                      height: 17,
-                                      width: 17,
-                                      color: Colors.blue,
-                                      // fit: BoxFit.contain,
-                                    ),
-                                  )
-                                ],
-                              ),
+                                )
+                              ],
                             ),
                           ],
                         ),
