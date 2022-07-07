@@ -178,7 +178,7 @@ class _HomePageState extends State<HomePage> {
                                                     onTap: () async {
                                                       var mem = await Prefs.membership;
 
-                                                      if (mem != '0') {
+                                                      if (mem == '1' || mem == '2' || mem == '3' || mem == '4') {
                                                         Navigator.push(
                                                             context,
                                                             MaterialPageRoute(
@@ -384,7 +384,7 @@ class _HomePageState extends State<HomePage> {
                                           onTap: () async {
                                             var mem = await Prefs.membership;
 
-                                            if (mem != '0') {
+                                            if (mem == '1' || mem == '2' || mem == '3' || mem == '4') {
                                               Navigator.push(
                                                 context,
                                                 MaterialPageRoute(

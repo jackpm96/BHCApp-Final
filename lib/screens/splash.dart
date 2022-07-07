@@ -57,27 +57,20 @@ class _SplashScreenState extends State<SplashScreen> {
       await _biofunction(touchID);
     }
 
-    if (remember != null && remember && token != null && token.isNotEmpty) {
-      Timer(
-          Duration(seconds: 3),
-          () =>   Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => HomeScreen(auth: widget.auth)),
-              ModalRoute.withName('')
-          )
-      );
-    } else {
-      Timer(
-        Duration(seconds: 3),
-        () =>  Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(
-                builder: (context) => WelcomeScreen(auth: widget.auth)),
-            ModalRoute.withName('')
-        )
-      );
-    }
+    // if (remember != null && remember && token != null && token.isNotEmpty) {
+    Timer(Duration(seconds: 3),
+        () => Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => HomeScreen(auth: widget.auth)), ModalRoute.withName('')));
+    // } else {
+    //   Timer(
+    //     Duration(seconds: 3),
+    //     () =>  Navigator.pushAndRemoveUntil(
+    //         context,
+    //         MaterialPageRoute(
+    //             builder: (context) => WelcomeScreen(auth: widget.auth)),
+    //         ModalRoute.withName('')
+    //     )
+    //   );
+    // }
   }
 
   Future<void> _biofunction(switchValue) async {
@@ -106,9 +99,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future validateToken() async {
-    await Provider.of<AuthProvider>(context, listen: false)
-        .checkTokenValidate(token)
-        .then((value) {
+    await Provider.of<AuthProvider>(context, listen: false).checkTokenValidate(token).then((value) {
       if (value.code.contains("jwt_auth_valid_token")) {
         Navigator.pushAndRemoveUntil(
             context,
@@ -135,11 +126,7 @@ class _SplashScreenState extends State<SplashScreen> {
               //       builder: (context) => WelcomeScreen(auth: widget.auth)),
               // );
               Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => WelcomeScreen(auth: widget.auth)),
-                  ModalRoute.withName('')
-              );
+                  context, MaterialPageRoute(builder: (context) => WelcomeScreen(auth: widget.auth)), ModalRoute.withName(''));
               return;
             });
       }
