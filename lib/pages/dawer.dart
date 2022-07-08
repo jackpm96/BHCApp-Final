@@ -50,13 +50,15 @@ class _DrawerScreenState extends State<DrawerScreen> {
           Expanded(
             child: Column(
               children: [
-                drawerTile('My Account', Icons.person, context, () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const MyProfile()),
-                  );
-                }),
+                Auth().currentUser == null
+                    ? Container()
+                    : drawerTile('My Account', Icons.person, context, () {
+                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const MyProfile()),
+                        );
+                      }),
                 drawerTile('Favorites', Icons.favorite, context, () {
                   Navigator.pop(context);
 
@@ -146,35 +148,39 @@ class _DrawerScreenState extends State<DrawerScreen> {
                   Navigator.pop(context);
                   launch("https://myblackhistorycalendar.com/privacy-policy/");
                 }),
-                drawerTile('Log Out', Icons.logout, context, () async {
-                  // await Prefs().clear();
-                  EasyLoading.show(dismissOnTap: false);
-                  await Prefs.setID('');
-                  await Prefs.setUserName('');
-                  await Prefs.setName('');
-                  await Prefs.setFirstName('');
-                  await Prefs.setLastName('');
-                  await Prefs.setReadingStories('');
-                  await Prefs.setSubsRole('');
-                  await Prefs.setUserLogin('');
-                  await Prefs.setDob('');
-                  await Prefs.setImg('');
-                  await Prefs.setRememberMe(false);
-                  await Prefs.setNotiStatus(false);
-                  await Prefs.setEmailStatus(false);
-                  await Prefs.setManageTouch(false);
-                  final auth = Auth();
-                  await auth.signOut();
-                  EasyLoading.dismiss();
-                  // ignore: use_build_context_synchronously
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                      builder: (BuildContext context) => const SignInScreen(),
-                    ),
-                    ModalRoute.withName('/'),
-                  );
-                })
+                Auth().currentUser == null
+                    ? Container()
+                    : drawerTile('Log Out', Icons.logout, context, () async {
+                        // await Prefs().clear();
+                        if (Auth().currentUser != null) {
+                          EasyLoading.show(dismissOnTap: false);
+                          await Prefs.setID('');
+                          await Prefs.setUserName('');
+                          await Prefs.setName('');
+                          await Prefs.setFirstName('');
+                          await Prefs.setLastName('');
+                          await Prefs.setReadingStories('');
+                          await Prefs.setSubsRole('');
+                          await Prefs.setUserLogin('');
+                          await Prefs.setDob('');
+                          await Prefs.setImg('');
+                          await Prefs.setRememberMe(false);
+                          await Prefs.setNotiStatus(false);
+                          await Prefs.setEmailStatus(false);
+                          await Prefs.setManageTouch(false);
+                          final auth = Auth();
+                          await auth.signOut();
+                          EasyLoading.dismiss();
+                          // ignore: use_build_context_synchronously
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                              builder: (BuildContext context) => const SignInScreen(),
+                            ),
+                            ModalRoute.withName('/'),
+                          );
+                        }
+                      })
               ],
             ),
           )
