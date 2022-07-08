@@ -20,11 +20,14 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
 import '../../helper/firebase_notification.dart';
+import '../../subsription_from_home.dart';
 import 'provider/auth_provider.dart';
 import 'sign_up_screen.dart';
 
 class SignInScreen extends StatefulWidget {
-  const SignInScreen({Key key}) : super(key: key);
+  const SignInScreen({Key key, this.goToSubscriptions = false}) : super(key: key);
+
+  final bool goToSubscriptions;
 
   @override
   _SignInScreenState createState() => _SignInScreenState();
@@ -565,8 +568,16 @@ class _SignInScreenState extends State<SignInScreen> {
       Prefs.setUserLogin(response.userLogin);
       Prefs.setUserName(response.userNicename);
       CommonWidgets.buildSnackbar(context, "Sign In successful");
-
-      Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => HomeScreen()), (Route<dynamic> route) => false);
+      if (widget.goToSubscriptions) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const SubscriptionScreenFromHome(),
+          ),
+        );
+      } else {
+        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => HomeScreen()), (Route<dynamic> route) => false);
+      }
     } else {
       EasyLoading.dismiss();
     }
