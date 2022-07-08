@@ -580,7 +580,7 @@ class _SubscriptionScreenFromHomeState extends State<SubscriptionScreenFromHome>
                     });
                     var url =
                         'https://myblackhistorycalendar.com/membership-account/membership-checkout/?level=${packageSelection.contains("lifeTime") ? "4" : packageSelection.contains("Annually") ? "2" : "1"}&username=$userID';
-                    if (membership != '0') {
+                    if (membership == '1' || membership == '2' || membership == '3' || membership == '4') {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text('Note: Please cancel your current subscription first!'),
