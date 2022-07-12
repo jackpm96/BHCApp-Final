@@ -8,6 +8,8 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
+import '../../widget/privacyPolicy.dart';
+
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key key, this.goToSubscriptions = false}) : super(key: key);
 
@@ -154,8 +156,40 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             // ),
                           ),
                           Text(
-                            " I have agreed to terms and conditions",
+                            " I accept",
                             style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.w300),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => PrivacyPolicy(
+                                            url: 'https://myblackhistorycalendar.com/privacy-policy/',
+                                          )));
+                            },
+                            child: Text(
+                              " Privacy Policy",
+                              style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.w600),
+                            ),
+                          ),
+                          Text(
+                            " and",
+                            style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.w300),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => PrivacyPolicy(
+                                            url: 'https://myblackhistorycalendar.com/privacy-policy/',
+                                          )));
+                            },
+                            child: Text(
+                              " Terms & Conditions.",
+                              style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.w600),
+                            ),
                           )
                         ],
                       ),
@@ -163,7 +197,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         height: 10,
                       ),
                       GestureDetector(
-                        onTap: () => signup(),
+                        onTap: () {
+                          if (agreedTerms)
+                            signup();
+                          else
+                            CommonWidgets.buildSnackbar(context, "Please accept Privacy Policy and Terms & Conditions!");
+                        },
                         child: Container(
                           height: 45,
                           width: MediaQuery.of(context).size.width,
