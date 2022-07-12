@@ -504,7 +504,36 @@ class _SignInScreenState extends State<SignInScreen> {
                                     child: Text(
                                       'Sign In with Google',
                                       textAlign: TextAlign.center,
-                                      style: GoogleFonts.montserrat(color: Colors.black, fontSize: 14, fontWeight: FontWeight.w400),
+                                      style: GoogleFonts.montserrat(color: Colors.black, fontSize: 15, fontWeight: FontWeight.w400),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 8,
+                          ),
+                          GestureDetector(
+                            onTap: _signInWithGoogle,
+                            child: Container(
+                              height: 45,
+                              padding: const EdgeInsets.all(8),
+                              width: MediaQuery.of(context).size.width,
+                              decoration: BoxDecoration(
+                                  color: Colors.transparent, borderRadius: BorderRadius.circular(8), border: Border.all(color: Color(0xffdddddd))),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 20.0),
+                                    child: SizedBox(width: 25, height: 25, child: Image.asset('assets/images/apple.png')),
+                                  ),
+                                  Expanded(
+                                    child: Text(
+                                      'Sign In with Apple',
+                                      textAlign: TextAlign.center,
+                                      style: GoogleFonts.montserrat(color: Colors.black, fontSize: 15, fontWeight: FontWeight.w400),
                                     ),
                                   )
                                 ],
