@@ -20,11 +20,14 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
 import '../../helper/firebase_notification.dart';
+import '../../subsription_from_home.dart';
 import 'provider/auth_provider.dart';
 import 'sign_up_screen.dart';
 
 class SignInScreen extends StatefulWidget {
-  const SignInScreen({Key key}) : super(key: key);
+  const SignInScreen({Key key, this.goToSubscriptions = false}) : super(key: key);
+
+  final bool goToSubscriptions;
 
   @override
   _SignInScreenState createState() => _SignInScreenState();
@@ -501,7 +504,36 @@ class _SignInScreenState extends State<SignInScreen> {
                                     child: Text(
                                       'Sign In with Google',
                                       textAlign: TextAlign.center,
-                                      style: GoogleFonts.montserrat(color: Colors.black, fontSize: 14, fontWeight: FontWeight.w400),
+                                      style: GoogleFonts.montserrat(color: Colors.black, fontSize: 15, fontWeight: FontWeight.w400),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 8,
+                          ),
+                          GestureDetector(
+                            onTap: _signInWithGoogle,
+                            child: Container(
+                              height: 45,
+                              padding: const EdgeInsets.all(8),
+                              width: MediaQuery.of(context).size.width,
+                              decoration: BoxDecoration(
+                                  color: Colors.transparent, borderRadius: BorderRadius.circular(8), border: Border.all(color: Color(0xffdddddd))),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 20.0),
+                                    child: SizedBox(width: 25, height: 25, child: Image.asset('assets/images/apple.png')),
+                                  ),
+                                  Expanded(
+                                    child: Text(
+                                      'Sign In with Apple',
+                                      textAlign: TextAlign.center,
+                                      style: GoogleFonts.montserrat(color: Colors.black, fontSize: 15, fontWeight: FontWeight.w400),
                                     ),
                                   )
                                 ],
@@ -565,8 +597,16 @@ class _SignInScreenState extends State<SignInScreen> {
       Prefs.setUserLogin(response.userLogin);
       Prefs.setUserName(response.userNicename);
       CommonWidgets.buildSnackbar(context, "Sign In successful");
-
-      Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => HomeScreen()), (Route<dynamic> route) => false);
+      if (widget.goToSubscriptions) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const SubscriptionScreenFromHome(),
+          ),
+        );
+      } else {
+        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => HomeScreen()), (Route<dynamic> route) => false);
+      }
     } else {
       EasyLoading.dismiss();
     }

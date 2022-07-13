@@ -110,10 +110,10 @@ class _CalenderPageState extends State<CalenderPage> {
   }
 
   initData() async {
-    setState(() {
-      startDate = DateTime.parse(dob);
-      endDate = DateTime.parse(dob);
-    });
+    // setState(() {
+    //   startDate = DateTime.now();
+    //   endDate = DateTime.now();
+    // });
   }
 
   @override
@@ -440,7 +440,7 @@ class _SearchListState extends State<SearchList> {
                         // ))
                         var mem = await Prefs.membership;
 
-                        if (mem != '0') {
+                        if (mem == '1' || mem == '2' || mem == '3' || mem == '4') {
                           CommonWidgets.buildSnackbar(context, "subscribed");
                           Navigator.push(context, MaterialPageRoute(builder: (context) => DetailScreen(passengers[index], false, audio, false)))
                               .then((value) => setState(() {}));

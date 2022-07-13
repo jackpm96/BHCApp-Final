@@ -64,6 +64,7 @@ dependencies:
   change_app_package_name: 1.0.0
   flutter_facebook_auth: 4.0.1
   sizer: 2.0.15
+  webview_flutter: 2.0.4
 
 
 flutter_icons:

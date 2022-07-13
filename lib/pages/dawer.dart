@@ -1,7 +1,6 @@
 import 'package:black_history_calender/const/colors.dart';
 import 'package:black_history_calender/helper/prefs.dart';
 import 'package:black_history_calender/pages/favorites_screen.dart';
-import 'package:black_history_calender/screens/auth/sign_in_screen.dart';
 import 'package:black_history_calender/services/auth_services.dart';
 import 'package:black_history_calender/subsription_from_home.dart';
 import 'package:flutter/cupertino.dart';
@@ -10,6 +9,8 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../screens/auth/sign_in_screen.dart';
+import '../screens/splash.dart';
 import 'my_profile.dart';
 
 class DrawerScreen extends StatefulWidget {
@@ -21,6 +22,7 @@ class DrawerScreen extends StatefulWidget {
 
 class _DrawerScreenState extends State<DrawerScreen> {
   bool touchSwitch = false;
+  bool isUserLoggedIn = false;
 
   @override
   initState() {
@@ -32,6 +34,12 @@ class _DrawerScreenState extends State<DrawerScreen> {
     await Prefs.manageTouch.then((value) => setState(() {
           touchSwitch = value;
         }));
+
+    if (await Prefs.id != "") {
+      setState(() {
+        isUserLoggedIn = true;
+      });
+    }
   }
 
   @override
@@ -50,13 +58,24 @@ class _DrawerScreenState extends State<DrawerScreen> {
           Expanded(
             child: Column(
               children: [
-                drawerTile('My Account', Icons.person, context, () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const MyProfile()),
-                  );
-                }),
+                !isUserLoggedIn
+                    ? drawerTile('Sign In', Icons.login, context, () async {
+                        Navigator.pop(context);
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                            builder: (BuildContext context) => const SignInScreen(),
+                          ),
+                          ModalRoute.withName('/'),
+                        );
+                      })
+                    : drawerTile('My Account', Icons.person, context, () async {
+                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const MyProfile()),
+                        );
+                      }),
                 drawerTile('Favorites', Icons.favorite, context, () {
                   Navigator.pop(context);
 
@@ -146,35 +165,39 @@ class _DrawerScreenState extends State<DrawerScreen> {
                   Navigator.pop(context);
                   launch("https://myblackhistorycalendar.com/privacy-policy/");
                 }),
-                drawerTile('Log Out', Icons.logout, context, () async {
-                  // await Prefs().clear();
-                  EasyLoading.show(dismissOnTap: false);
-                  await Prefs.setID('');
-                  await Prefs.setUserName('');
-                  await Prefs.setName('');
-                  await Prefs.setFirstName('');
-                  await Prefs.setLastName('');
-                  await Prefs.setReadingStories('');
-                  await Prefs.setSubsRole('');
-                  await Prefs.setUserLogin('');
-                  await Prefs.setDob('');
-                  await Prefs.setImg('');
-                  await Prefs.setRememberMe(false);
-                  await Prefs.setNotiStatus(false);
-                  await Prefs.setEmailStatus(false);
-                  await Prefs.setManageTouch(false);
-                  final auth = Auth();
-                  await auth.signOut();
-                  EasyLoading.dismiss();
-                  // ignore: use_build_context_synchronously
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                      builder: (BuildContext context) => const SignInScreen(),
-                    ),
-                    ModalRoute.withName('/'),
-                  );
-                })
+                !isUserLoggedIn
+                    ? Container()
+                    : drawerTile('Log Out', Icons.logout, context, () async {
+                        // await Prefs().clear();
+                        EasyLoading.show(dismissOnTap: false);
+                        await Prefs.setID('');
+                        await Prefs.setUserName('');
+                        await Prefs.setName('');
+                        await Prefs.setFirstName('');
+                        await Prefs.setLastName('');
+                        await Prefs.setReadingStories('');
+                        await Prefs.setSubsRole('');
+                        await Prefs.setUserLogin('');
+                        await Prefs.setDob('');
+                        await Prefs.setImg('');
+                        await Prefs.setRememberMe(false);
+                        await Prefs.setNotiStatus(false);
+                        await Prefs.setEmailStatus(false);
+                        await Prefs.setManageTouch(false);
+                        final auth = Auth();
+                        await auth.signOut();
+                        EasyLoading.dismiss();
+                        // ignore: use_build_context_synchronously
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                            builder: (BuildContext context) => SplashScreen(
+                              auth: Auth(),
+                            ),
+                          ),
+                          ModalRoute.withName('/'),
+                        );
+                      })
               ],
             ),
           )

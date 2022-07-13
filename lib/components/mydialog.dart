@@ -5,6 +5,7 @@ import 'package:black_history_calender/services/auth_services.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../screens/auth/sign_up_screen.dart';
 import '../subsription_from_home.dart';
 
 class LoadingDialog extends StatelessWidget {
@@ -25,9 +26,9 @@ showAlert(BuildContext context) {
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
-        return Dialog(backgroundColor: lightBlue,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+        return Dialog(
+          backgroundColor: lightBlue,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
           child: Container(
             height: 250,
             child: Column(
@@ -39,9 +40,7 @@ showAlert(BuildContext context) {
                   //  width: MediaQuery.of(context).size.width,
                   decoration: BoxDecoration(
                     color: lightBlue,
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(10),
-                        topRight: Radius.circular(10)),
+                    borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(12.0),
@@ -51,14 +50,11 @@ showAlert(BuildContext context) {
                       children: [
                         Text(
                           "Subscription Check",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16.5,
-                              fontWeight: FontWeight.w500),
+                          style: TextStyle(color: Colors.white, fontSize: 16.5, fontWeight: FontWeight.w500),
                         ),
                         Spacer(),
                         GestureDetector(
-                          onTap: (){
+                          onTap: () {
                             Navigator.pop(context);
                           },
                           child: Icon(
@@ -73,10 +69,7 @@ showAlert(BuildContext context) {
                 ),
                 Container(
                   height: 195,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10)
-                  ),
+                  decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10)),
                   child: Column(
                     children: [
                       Expanded(
@@ -87,10 +80,7 @@ showAlert(BuildContext context) {
                             children: [
                               Text(
                                 "You are not Subscribed!",
-                                style: TextStyle(
-                                    color: Colors.red,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w400),
+                                style: TextStyle(color: Colors.red, fontSize: 20, fontWeight: FontWeight.w400),
                               ),
                               SizedBox(
                                 height: 20,
@@ -100,24 +90,28 @@ showAlert(BuildContext context) {
                                   borderRadius: BorderRadius.circular(10),
                                   color: lightBlue,
                                 ),
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 15, vertical: 10),
+                                padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                                 child: InkWell(
-                                  onTap: () {
+                                  onTap: () async {
                                     Navigator.pop(context);
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            const SubscriptionScreenFromHome(),
-                                      ),
-                                    );
+                                    if (await Prefs.id != "") {
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (context) => const SubscriptionScreenFromHome(),
+                                        ),
+                                      );
+                                    } else {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => SignUpScreen(
+                                                    goToSubscriptions: true,
+                                                  )));
+                                    }
                                   },
                                   child: Text(
                                     "Subscribe Now",
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 17,
-                                        fontWeight: FontWeight.w400),
+                                    style: TextStyle(color: Colors.white, fontSize: 17, fontWeight: FontWeight.w400),
                                   ),
                                 ),
                               ),
@@ -133,10 +127,7 @@ showAlert(BuildContext context) {
                           children: [
                             Text(
                               "If you already have a subscription ",
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w400),
+                              style: TextStyle(color: Colors.black, fontSize: 10, fontWeight: FontWeight.w400),
                             ),
                             InkWell(
                               onTap: () async {
@@ -161,18 +152,14 @@ showAlert(BuildContext context) {
                                 Navigator.pushAndRemoveUntil(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (BuildContext context) =>
-                                        const SignInScreen(),
+                                    builder: (BuildContext context) => const SignInScreen(),
                                   ),
                                   ModalRoute.withName('/'),
                                 );
                               },
                               child: Text(
                                 "Login Now",
-                                style: TextStyle(
-                                    color: Colors.blue[900],
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w400),
+                                style: TextStyle(color: Colors.blue[900], fontSize: 12, fontWeight: FontWeight.w400),
                               ),
                             ),
                           ],
