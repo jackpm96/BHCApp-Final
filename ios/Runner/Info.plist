@@ -6,6 +6,8 @@
 	<array>
 		<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	</array>
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
@@ -31,7 +33,7 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.googleusercontent.apps.482827005790-f9ohaos3bvddb3jues4jmfsg4vq0lgk6</string>
+				<string>com.googleusercontent.apps.482827005790-69ie7nejm9optsmq9crt2vv1jshp21qo</string>
 			</array>
 		</dict>
 		<dict>
@@ -83,13 +85,14 @@
 	<key>NSFaceIDUsageDescription</key>
 	<string>Allow Fingerprint scan access for quick login</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>BHC needs Location access to show you nearBy news feed!</string>
+	<string>BHC needs Location access to show you nearby news feed!</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>This permission is not used in app and it comes bundled with other libraries</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Allow Photo library access required to allow select files for your stories</string>
+	<string>Photo library access required to allow select files for your stories</string>
 	<key>UIBackgroundModes</key>
 	<array>
+		<string>audio</string>
 		<string>fetch</string>
 		<string>processing</string>
 		<string>remote-notification</string>
@@ -113,7 +116,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>CADisableMinimumFrameDurationOnPhone</key>
-	<true/>
 </dict>
 </plist>

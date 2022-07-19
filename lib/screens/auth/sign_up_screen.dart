@@ -124,74 +124,67 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       SizedBox(
                         height: 10,
                       ),
-                      Row(
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                agreedTerms = !agreedTerms;
-                              });
-                            },
-                            child: agreedTerms
-                                ? Icon(
-                                    Icons.check_box_outlined,
-                                    color: Colors.black54,
-                                  )
-                                : Icon(
-                                    Icons.check_box_outline_blank,
-                                    color: Colors.black54,
-                                  ),
-                            // Container(
-                            //   alignment: Alignment.center,
-                            //   height: 18,
-                            //   width: 18,
-                            //   decoration: BoxDecoration(border: Border.all(color: Colors.black54), borderRadius: BorderRadius.circular(2)),
-                            //   child: Container(
-                            //     child: Icon(Icons.check_box),
-                            //     // height: 14,
-                            //     // width: 14,
-                            //     // decoration:
-                            //     //     BoxDecoration(color: agreedTerms ? Colors.black87 : Colors.transparent, borderRadius: BorderRadius.circular(2)),
-                            //   ),
-                            // ),
-                          ),
-                          Text(
-                            " I accept",
-                            style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.w300),
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => PrivacyPolicy(
-                                            url: 'https://myblackhistorycalendar.com/privacy-policy/',
-                                          )));
-                            },
-                            child: Text(
-                              " Privacy Policy",
-                              style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.w600),
+                      Container(
+                        alignment: Alignment.centerLeft,
+                        child: Wrap(
+                          crossAxisAlignment:WrapCrossAlignment.center,
+                          alignment: WrapAlignment.start,
+                          runAlignment: WrapAlignment.start,
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  agreedTerms = !agreedTerms;
+                                });
+                              },
+                              child: agreedTerms
+                                  ? Icon(
+                                      Icons.check_box_outlined,
+                                      color: Colors.black54,
+                                    )
+                                  : Icon(
+                                      Icons.check_box_outline_blank,
+                                      color: Colors.black54,
+                                    ),
                             ),
-                          ),
-                          Text(
-                            " and",
-                            style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.w300),
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => PrivacyPolicy(
-                                            url: 'https://myblackhistorycalendar.com/privacy-policy/',
-                                          )));
-                            },
-                            child: Text(
-                              " Terms & Conditions.",
-                              style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.w600),
+                            Text(
+                              " I accept ",
+                              style: TextStyle(color: Colors.black, fontSize: 14, fontWeight: FontWeight.w300),
                             ),
-                          )
-                        ],
+                             GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => PrivacyPolicy(
+                                          url: 'https://myblackhistorycalendar.com/terms-conditions/',
+                                        )));
+                              },
+                              child: Text(
+                                "Terms & Conditions",overflow: TextOverflow.ellipsis,
+                                style: TextStyle(color: Colors.lightBlue, fontSize: 14, fontWeight: FontWeight.w600,decoration: TextDecoration.underline),
+                              ),
+                            ),
+                            Text(
+                              " and ",
+                              style: TextStyle(color: Colors.black, fontSize: 14, fontWeight: FontWeight.w300),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => PrivacyPolicy(
+                                          url: 'https://myblackhistorycalendar.com/privacy-policy/',
+                                        )));
+                              },
+                              child: Text(
+                                "Privacy Policy.",
+                                style: TextStyle(color: Colors.lightBlue, fontSize: 14, fontWeight: FontWeight.w600,decoration: TextDecoration.underline),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                       SizedBox(
                         height: 10,

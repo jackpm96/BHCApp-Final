@@ -61,12 +61,11 @@ class _DrawerScreenState extends State<DrawerScreen> {
                 !isUserLoggedIn
                     ? drawerTile('Sign In', Icons.login, context, () async {
                         Navigator.pop(context);
-                        Navigator.pushAndRemoveUntil(
+                        Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (BuildContext context) => const SignInScreen(),
                           ),
-                          ModalRoute.withName('/'),
                         );
                       })
                     : drawerTile('My Account', Icons.person, context, () async {

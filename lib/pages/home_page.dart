@@ -199,10 +199,12 @@ class _HomePageState extends State<HomePage> {
                                                           child: CachedNetworkImage(
                                                             fit: BoxFit.cover,
                                                             imageUrl: response[index].featuredMediaSrcUrl,
-                                                            progressIndicatorBuilder: (context, url, downloadProgress) => Container(
-                                                              height: 10,
-                                                              width: 10,
-                                                              child: CircularProgressIndicator(value: downloadProgress.progress),
+                                                            progressIndicatorBuilder: (context, url, downloadProgress) => Center(
+                                                              child: SizedBox(
+                                                                height: 10,
+                                                                width: 10,
+                                                                child: CircularProgressIndicator(value: downloadProgress.progress),
+                                                              ),
                                                             ),
                                                             errorWidget: (context, url, error) => Icon(
                                                               Icons.photo_library,

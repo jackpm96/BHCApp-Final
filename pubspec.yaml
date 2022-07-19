@@ -65,6 +65,8 @@ dependencies:
   flutter_facebook_auth: 4.0.1
   sizer: 2.0.15
   webview_flutter: 2.0.4
+  sign_in_with_apple: ^3.0.0
+  crypto: ^3.0.1
 
 
 flutter_icons:
