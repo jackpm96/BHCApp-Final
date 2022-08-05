@@ -178,43 +178,45 @@ class _MyProfileState extends State<MyProfile> {
       }),
     );
 
-    try {
-      if (await Prefs.membership != '0') {
-        List<PurchasedItem> purchases =
-            await FlutterInappPurchase.instance.getAvailablePurchases();
-        print(FirebaseAuth.instance.currentUser.displayName);
-        for (int i = 0; i < purchases.length; i++) {
-          print(purchases[i].originalTransactionDateIOS);
-          print(purchases[i].transactionStateIOS);
+    if(Platform.isIOS){
+      try {
+        if (await Prefs.membership != '0') {
+          List<PurchasedItem> purchases =
+              await FlutterInappPurchase.instance.getAvailablePurchases();
+          print(FirebaseAuth.instance.currentUser.displayName);
+          for (int i = 0; i < purchases.length; i++) {
+            print(purchases[i].originalTransactionDateIOS);
+            print(purchases[i].transactionStateIOS);
+          }
+          print(purchases.last.productId);
+          if (await Prefs.membership == '1') {
+            setState(() {
+              renewalDate = DateTime(
+                      purchases.last.originalTransactionDateIOS.year,
+                      purchases.last.originalTransactionDateIOS.month + 1,
+                      purchases.last.originalTransactionDateIOS.day)
+                  .toString()
+                  .split(' ')[0];
+            });
+          } else if (await Prefs.membership == '2') {
+            setState(() {
+              renewalDate = DateTime(
+                      purchases.last.originalTransactionDateIOS.year + 1,
+                      purchases.last.originalTransactionDateIOS.month,
+                      purchases.last.originalTransactionDateIOS.day)
+                  .toString()
+                  .split(' ')[0];
+            });
+          } else if (await Prefs.membership == '3') {
+            setState(() {
+              renewalDate = 'You have Lifetime subscriptions';
+            });
+          }
         }
-        print(purchases.last.productId);
-        if (await Prefs.membership == '1') {
-          setState(() {
-            renewalDate = DateTime(
-                    purchases.last.originalTransactionDateIOS.year,
-                    purchases.last.originalTransactionDateIOS.month + 1,
-                    purchases.last.originalTransactionDateIOS.day)
-                .toString()
-                .split(' ')[0];
-          });
-        } else if (await Prefs.membership == '2') {
-          setState(() {
-            renewalDate = DateTime(
-                    purchases.last.originalTransactionDateIOS.year + 1,
-                    purchases.last.originalTransactionDateIOS.month,
-                    purchases.last.originalTransactionDateIOS.day)
-                .toString()
-                .split(' ')[0];
-          });
-        } else if (await Prefs.membership == '3') {
-          setState(() {
-            renewalDate = 'You have Lifetime subscriptions';
-          });
-        }
+      } catch (e) {
+        print(e);
+        EasyLoading.dismiss();
       }
-    } catch (e) {
-      print(e);
-      EasyLoading.dismiss();
     }
     EasyLoading.dismiss();
   }
@@ -307,26 +309,26 @@ class _MyProfileState extends State<MyProfile> {
                               "Membership Plan: ${membership == '1' ? "1 Month" : membership == '2' ? '12 Months' : membership == '4' ? 'Life Time' : 'No Membership'}",
                               style: GoogleFonts.montserrat(),
                             ),
-                            // GestureDetector(
-                            //   onTap: () async {
-                            //     await cancelAlert(context, cancelSubscription);
-                            //   },
-                            //   child: membership != "0"
-                            //       ? Container(
-                            //           padding: EdgeInsets.all(10),
-                            //           decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.red),
-                            //           child: Text(
-                            //             "Cancel",
-                            //             style: GoogleFonts.montserrat(color: Colors.white),
-                            //           ),
-                            //         )
-                            //       : SizedBox(),
-                            // ),
+                            Platform.isAndroid? GestureDetector(
+                              onTap: () async {
+                                await cancelAlert(context, cancelSubscription);
+                              },
+                              child: membership != "0"
+                                  ? Container(
+                                      padding: EdgeInsets.all(10),
+                                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.red),
+                                      child: Text(
+                                        "Cancel",
+                                        style: GoogleFonts.montserrat(color: Colors.white),
+                                      ),
+                                    )
+                                  : SizedBox(),
+                            ):Container(),
                           ],
                         ),
                       ),
-                      membership == '0' ? SizedBox() : Divider(),
-                      membership == '0'
+                      membership == '0' || Platform.isAndroid? SizedBox() : Divider(),
+                      membership == '0' || Platform.isAndroid
                           ? SizedBox()
                           : ListTile(
                               title: Row(
@@ -337,21 +339,6 @@ class _MyProfileState extends State<MyProfile> {
                                     "Renewal Date: $renewalDate",
                                     style: GoogleFonts.montserrat(),
                                   ),
-                                  // GestureDetector(
-                                  //   onTap: () async {
-                                  //     await cancelAlert(context, cancelSubscription);
-                                  //   },
-                                  //   child: membership != "0"
-                                  //       ? Container(
-                                  //           padding: EdgeInsets.all(10),
-                                  //           decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.red),
-                                  //           child: Text(
-                                  //             "Cancel",
-                                  //             style: GoogleFonts.montserrat(color: Colors.white),
-                                  //           ),
-                                  //         )
-                                  //       : SizedBox(),
-                                  // ),
                                 ],
                               ),
                             ),

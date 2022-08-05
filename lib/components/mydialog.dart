@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:black_history_calender/const/colors.dart';
@@ -16,6 +17,7 @@ import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 import '../screens/auth/sign_up_screen.dart';
 import '../screens/splash.dart';
+import '../subscription_from_home_android.dart';
 import '../subsription_from_home.dart';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
@@ -122,8 +124,9 @@ showAlert(BuildContext context) {
                                     if (await Prefs.id != "") {
                                       Navigator.of(context).push(
                                         MaterialPageRoute(
-                                          builder: (context) =>
-                                              const SubscriptionScreenFromHome(),
+                                          builder: (context) => Platform.isAndroid
+                                              ? SubscriptionScreenFromHomeAndroid()
+                                              : SubscriptionScreenFromHome(),
                                         ),
                                       );
                                     } else {

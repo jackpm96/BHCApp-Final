@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:black_history_calender/const/colors.dart';
 import 'package:black_history_calender/helper/prefs.dart';
 import 'package:black_history_calender/pages/favorites_screen.dart';
@@ -11,6 +13,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../screens/auth/sign_in_screen.dart';
 import '../screens/splash.dart';
+import '../subscription_from_home_android.dart';
 import 'my_profile.dart';
 
 class DrawerScreen extends StatefulWidget {
@@ -64,7 +67,8 @@ class _DrawerScreenState extends State<DrawerScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (BuildContext context) => const SignInScreen(),
+                            builder: (BuildContext context) =>
+                                const SignInScreen(),
                           ),
                         );
                       })
@@ -72,7 +76,8 @@ class _DrawerScreenState extends State<DrawerScreen> {
                         Navigator.pop(context);
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const MyProfile()),
+                          MaterialPageRoute(
+                              builder: (context) => const MyProfile()),
                         );
                       }),
                 drawerTile('Favorites', Icons.favorite, context, () {
@@ -87,11 +92,14 @@ class _DrawerScreenState extends State<DrawerScreen> {
                     ),
                   );
                 }),
-                drawerTile('Payments & Subscriptions', Icons.payments, context, () {
+                drawerTile('Payments & Subscriptions', Icons.payments, context,
+                    () {
                   Navigator.pop(context);
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => const SubscriptionScreenFromHome(),
+                      builder: (context) => Platform.isAndroid
+                          ? SubscriptionScreenFromHomeAndroid()
+                          : SubscriptionScreenFromHome(),
                     ),
                   );
                 }),
@@ -207,7 +215,8 @@ class _DrawerScreenState extends State<DrawerScreen> {
   }
 }
 
-Widget drawerTile(String text, IconData icon, BuildContext context, void Function() _func) {
+Widget drawerTile(
+    String text, IconData icon, BuildContext context, void Function() _func) {
   return GestureDetector(
     onTap: _func,
     child: Padding(

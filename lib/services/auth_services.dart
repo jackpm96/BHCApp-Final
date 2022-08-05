@@ -45,13 +45,19 @@ class Auth implements AuthBase {
     final googleSignIn = GoogleSignIn();
     final googleUser = await googleSignIn.signIn();
     if (googleUser != null) {
-      final googleAuth = await googleUser.authentication;
-      // if (googleAuth.idToken != null) {
-      final userCredential = await _firebaseAuth.signInWithCredential(
-          GoogleAuthProvider.credential(
-              idToken: googleAuth.idToken,
-              accessToken: googleAuth.accessToken));
-      return GoogleResponse(userCredential.user, googleAuth);
+      List providers = await FirebaseAuth.instance.fetchSignInMethodsForEmail(googleUser.email);
+      if(providers.contains('facebook.com') ) {
+        throw FirebaseAuthException(
+            code: 'FACEBOOK_PROVIDER_ALREADY_PRESENT',
+            message: 'You already have account with facebook login! Please login with facebook!');
+      }else {
+        final googleAuth = await googleUser.authentication;
+        final userCredential = await _firebaseAuth.signInWithCredential(
+            GoogleAuthProvider.credential(
+                idToken: googleAuth.idToken,
+                accessToken: googleAuth.accessToken));
+        return GoogleResponse(userCredential.user, googleAuth);
+      }
     } else {
       throw FirebaseAuthException(
           code: 'ERROR_MISSING_GOOGLE_ID_TOKEN',

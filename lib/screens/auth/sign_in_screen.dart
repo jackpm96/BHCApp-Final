@@ -25,6 +25,7 @@ import 'package:provider/provider.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 import '../../helper/firebase_notification.dart';
+import '../../subscription_from_home_android.dart';
 import '../../subsription_from_home.dart';
 import 'provider/auth_provider.dart';
 import 'sign_up_screen.dart';
@@ -88,7 +89,7 @@ class _SignInScreenState extends State<SignInScreen> {
           await FirebaseAuth.instance.signInWithCredential(oauthCredential);
 
       if (FirebaseAuth.instance.currentUser.displayName == "" ||
-          FirebaseAuth.instance.currentUser.displayName == null ) {
+          FirebaseAuth.instance.currentUser.displayName == null) {
         await FirebaseAuth.instance.currentUser.updateDisplayName(
             "${appleCredential.givenName} ${appleCredential.familyName}");
       }
@@ -243,6 +244,14 @@ class _SignInScreenState extends State<SignInScreen> {
         });
       }
     } catch (e) {
+      if (e
+          .toString()
+          .contains("FACEBOOK_PROVIDER_ALREADY_PRESENT")) {
+        CommonWidgets.buildSnackbar(context,
+            "You are already registered with your Facebook account, please sign in using your Facebook!");
+      } else {
+        CommonWidgets.buildSnackbar(context, "$e");
+      }
       print("error in google login");
       print(e.toString());
     }
@@ -808,7 +817,9 @@ class _SignInScreenState extends State<SignInScreen> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => const SubscriptionScreenFromHome(),
+            builder: (context) => Platform.isAndroid
+                ? SubscriptionScreenFromHomeAndroid()
+                : SubscriptionScreenFromHome(),
           ),
         );
       } else {
