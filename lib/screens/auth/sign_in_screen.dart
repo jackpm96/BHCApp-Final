@@ -533,70 +533,70 @@ class _SignInScreenState extends State<SignInScreen> {
                               )
                             ],
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 10),
-                                child: Row(
-                                  children: [
-                                    Card(
-                                      color: Color(0xffd5ebf8),
-                                      elevation: 4,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(4.0),
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(4.0),
-                                        child: Image.asset(
-                                          'assets/images/fingerprintt.png',
-                                          width: 16,
-                                          height: 16,
-                                          fit: BoxFit.cover,
-                                          color: Colors.blue,
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    Text(
-                                      'Biometric Login',
-                                      style: GoogleFonts.montserrat(
-                                          color: Color(0xff999999),
-                                          fontSize: 13,
-                                          fontWeight: FontWeight.w300),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Transform.scale(
-                                scale: 0.7,
-                                child: CupertinoSwitch(
-                                    activeColor: Colors.blue,
-                                    value: switchValue,
-                                    onChanged: token != null && token.isNotEmpty
-                                        ? (val) {
-                                            setState(() {
-                                              switchValue = val;
-                                              _biofunction(switchValue);
-                                            });
-                                          }
-                                        : (val) {
-                                            showAlertDialog(
-                                                context: context,
-                                                title: "Alert",
-                                                content:
-                                                    "You need to login first to enable biometric login feature",
-                                                cancelActionText: null,
-                                                defaultActionText: "OK",
-                                                defaultFunc: null);
-                                          }),
-                              )
-                            ],
-                          ),
+                          // Row(
+                          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          //   children: [
+                          //     Padding(
+                          //       padding:
+                          //           const EdgeInsets.symmetric(horizontal: 10),
+                          //       child: Row(
+                          //         children: [
+                          //           Card(
+                          //             color: Color(0xffd5ebf8),
+                          //             elevation: 4,
+                          //             shape: RoundedRectangleBorder(
+                          //               borderRadius:
+                          //                   BorderRadius.circular(4.0),
+                          //             ),
+                          //             child: Padding(
+                          //               padding: const EdgeInsets.all(4.0),
+                          //               child: Image.asset(
+                          //                 'assets/images/fingerprintt.png',
+                          //                 width: 16,
+                          //                 height: 16,
+                          //                 fit: BoxFit.cover,
+                          //                 color: Colors.blue,
+                          //               ),
+                          //             ),
+                          //           ),
+                          //           SizedBox(
+                          //             width: 10,
+                          //           ),
+                          //           Text(
+                          //             'Biometric Login',
+                          //             style: GoogleFonts.montserrat(
+                          //                 color: Color(0xff999999),
+                          //                 fontSize: 13,
+                          //                 fontWeight: FontWeight.w300),
+                          //           ),
+                          //         ],
+                          //       ),
+                          //     ),
+                          //     Transform.scale(
+                          //       scale: 0.7,
+                          //       child: CupertinoSwitch(
+                          //           activeColor: Colors.blue,
+                          //           value: switchValue,
+                          //           onChanged: token != null && token.isNotEmpty
+                          //               ? (val) {
+                          //                   setState(() {
+                          //                     switchValue = val;
+                          //                     _biofunction(switchValue);
+                          //                   });
+                          //                 }
+                          //               : (val) {
+                          //                   showAlertDialog(
+                          //                       context: context,
+                          //                       title: "Alert",
+                          //                       content:
+                          //                           "You need to login first to enable biometric login feature",
+                          //                       cancelActionText: null,
+                          //                       defaultActionText: "OK",
+                          //                       defaultFunc: null);
+                          //                 }),
+                          //     )
+                          //   ],
+                          // ),
                           SizedBox(
                             height: 25,
                           ),

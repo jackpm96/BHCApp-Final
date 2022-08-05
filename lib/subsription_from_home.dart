@@ -18,6 +18,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 
+import 'helper/push_notifications_manager.dart';
+
 class SubscriptionScreenFromHome extends StatefulWidget {
   const SubscriptionScreenFromHome({Key key}) : super(key: key);
 
@@ -76,6 +78,18 @@ class _SubscriptionScreenFromHomeState
       amount = '7.99';
       discountedAmount = '7.99';
     });
+  }
+
+  Future update(id)async{
+    Map<String, String> body = Map<String, String>();
+    Map<String, String> header = {
+      HttpHeaders.contentTypeHeader: 'application/x-www-form-urlencoded',
+      'Authorization': 'Bearer $token'
+    };
+    var uri =
+        "https://myblackhistorycalendar.com/wp-json/pmpro/v1/change_membership_level?user_id=$userID&level_id=$id";
+    final response =
+        await http.post(Uri.parse(uri), body: body, headers: header);
   }
 
   Future updateMembership(levelId) async {
@@ -160,18 +174,6 @@ class _SubscriptionScreenFromHomeState
           }
         }
       }
-
-      // try{
-
-      //   FlutterInappPurchase.instance.validateReceiptAndroid(packageName: 'com.protech.myblackhistorycalendar', productId: productItem.productId, productToken: productItem.purchaseToken, accessToken: accessToken,isSubscription: true);
-      //   final response = await http.post(Uri.parse(
-      //       'https://androidpublisher.googleapis.com/androidpublisher/v3/applications/com.protech.myblackhistorycalendar/purchases/subscriptions/${productItem.productId}/tokens/${productItem.purchaseToken}:acknowledge'));
-      //   if (response.statusCode == 200) {
-      //     print(response.body);
-      //   }
-      // }catch(e){
-      //   print("response $e");
-      // }
     });
 
     _purchaseErrorSubscription =
@@ -725,12 +727,15 @@ class _SubscriptionScreenFromHomeState
                         ),
                       );
                     } else {
+                      EasyLoading.show();
                       try {
                         List<PurchasedItem> purchases =
                             await FlutterInappPurchase.instance
                                 .getAvailablePurchases();
                         if (purchases.last.productId == 'lifetime_subs') {
                           await Prefs.setMembership('4');
+                          await update('4');
+                          EasyLoading.dismiss();
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
@@ -738,12 +743,21 @@ class _SubscriptionScreenFromHomeState
                               behavior: SnackBarBehavior.floating,
                             ),
                           );
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                              builder: (BuildContext context) => HomeScreen(),
+                            ),
+                            ModalRoute.withName('/'),
+                          );
                         } else if (await FlutterInappPurchase.instance
                             .checkSubscribed(
                                 sku: 'yearly_subs',
                                 duration: Duration(days: 365),
                                 grace: Duration(days: 7))) {
                           await Prefs.setMembership('2');
+                          await update('2');
+                          EasyLoading.dismiss();
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
@@ -751,12 +765,21 @@ class _SubscriptionScreenFromHomeState
                               behavior: SnackBarBehavior.floating,
                             ),
                           );
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                              builder: (BuildContext context) => HomeScreen(),
+                            ),
+                            ModalRoute.withName('/'),
+                          );
                         } else if (await FlutterInappPurchase.instance
                             .checkSubscribed(
                                 sku: 'monthly_subs',
                                 duration: Duration(days: 30),
                                 grace: Duration(days: 7))) {
                           await Prefs.setMembership('1');
+                          await update('1');
+                          EasyLoading.dismiss();
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
@@ -764,8 +787,16 @@ class _SubscriptionScreenFromHomeState
                               behavior: SnackBarBehavior.floating,
                             ),
                           );
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                              builder: (BuildContext context) => HomeScreen(),
+                            ),
+                            ModalRoute.withName('/'),
+                          );
                         } else {
                           await Prefs.setMembership('0');
+                          EasyLoading.dismiss();
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
@@ -773,8 +804,16 @@ class _SubscriptionScreenFromHomeState
                               behavior: SnackBarBehavior.floating,
                             ),
                           );
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                              builder: (BuildContext context) => HomeScreen(),
+                            ),
+                            ModalRoute.withName('/'),
+                          );
                         }
                       } catch (e) {
+                        EasyLoading.dismiss();
                         print("error in getPurchaseHistory: $e");
                       }
                     }

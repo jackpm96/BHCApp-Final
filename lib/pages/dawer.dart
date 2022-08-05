@@ -106,64 +106,64 @@ class _DrawerScreenState extends State<DrawerScreen> {
                 // drawerTile('Activity Log', Icons.local_activity, context, () {
                 //   Navigator.pop(context);
                 // }),
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Container(
-                    height: 40,
-                    decoration: const BoxDecoration(
-                      //   color: Colors.blue.shade50,
-                      //  borderRadius: BorderRadius.all(Radius.circular(5))
-                      border: Border(
-                        bottom: BorderSide(
-                          color: Colors.grey, //_focus.hasFocus ? Colors.blue :
-                          width: 0.2,
-                        ),
-                      ),
-                    ),
-                    width: MediaQuery.of(context).size.width,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              const Icon(
-                                Icons.notifications,
-                                color: Colors.grey,
-                              ),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              Text(
-                                'Manage Touch ID',
-                                style: GoogleFonts.montserrat(
-                                  color: Colors.grey,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ],
-                          ),
-                          Transform.scale(
-                            scale: 0.7,
-                            child: CupertinoSwitch(
-                              activeColor: Colors.blue,
-                              value: touchSwitch,
-                              onChanged: (val) {
-                                setState(() {
-                                  touchSwitch = val;
-                                });
-
-                                Prefs.setManageTouch(touchSwitch);
-                              },
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+                // Padding(
+                //   padding: const EdgeInsets.all(10.0),
+                //   child: Container(
+                //     height: 40,
+                //     decoration: const BoxDecoration(
+                //       //   color: Colors.blue.shade50,
+                //       //  borderRadius: BorderRadius.all(Radius.circular(5))
+                //       border: Border(
+                //         bottom: BorderSide(
+                //           color: Colors.grey, //_focus.hasFocus ? Colors.blue :
+                //           width: 0.2,
+                //         ),
+                //       ),
+                //     ),
+                //     width: MediaQuery.of(context).size.width,
+                //     child: Padding(
+                //       padding: const EdgeInsets.all(8.0),
+                //       child: Row(
+                //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //         children: [
+                //           Row(
+                //             children: [
+                //               const Icon(
+                //                 Icons.notifications,
+                //                 color: Colors.grey,
+                //               ),
+                //               const SizedBox(
+                //                 width: 10,
+                //               ),
+                //               Text(
+                //                 'Manage Touch ID',
+                //                 style: GoogleFonts.montserrat(
+                //                   color: Colors.grey,
+                //                   fontSize: 18,
+                //                   fontWeight: FontWeight.w500,
+                //                 ),
+                //               ),
+                //             ],
+                //           ),
+                //           Transform.scale(
+                //             scale: 0.7,
+                //             child: CupertinoSwitch(
+                //               activeColor: Colors.blue,
+                //               value: touchSwitch,
+                //               onChanged: (val) {
+                //                 setState(() {
+                //                   touchSwitch = val;
+                //                 });
+                //
+                //                 Prefs.setManageTouch(touchSwitch);
+                //               },
+                //             ),
+                //           )
+                //         ],
+                //       ),
+                //     ),
+                //   ),
+                // ),
                 drawerTile('Contact Us', Icons.contact_support, context, () {
                   Navigator.pop(context);
                   launch("https://myblackhistorycalendar.com/contact-us/");
