@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:black_history_calender/const/colors.dart';
 import 'package:black_history_calender/helper/prefs.dart';
@@ -8,13 +9,17 @@ import 'package:black_history_calender/screens/welcome_screen.dart';
 import 'package:black_history_calender/services/auth_services.dart';
 import 'package:black_history_calender/services/loca_auth_api.dart';
 import 'package:black_history_calender/widget/utils.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
+import 'package:flutter_inapp_purchase/modules.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key key, this.auth}) : super(key: key);
   final AuthBase auth;
+
   @override
   _SplashScreenState createState() => _SplashScreenState();
 }
@@ -58,8 +63,48 @@ class _SplashScreenState extends State<SplashScreen> {
     }
 
     // if (remember != null && remember && token != null && token.isNotEmpty) {
-    Timer(Duration(seconds: 3),
-        () => Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => HomeScreen(auth: widget.auth)), ModalRoute.withName('')));
+
+
+    if (FirebaseAuth.instance.currentUser != null) {
+      print(FirebaseAuth.instance.currentUser.email);
+      if (await Prefs.membership == '0' && Platform.isIOS) {
+        try {
+          await FlutterInappPurchase.instance.initialize();
+          List<PurchasedItem> purchases =
+              await FlutterInappPurchase.instance.getAvailablePurchases();
+          print(FirebaseAuth.instance.currentUser.displayName);
+          for (int i = 0; i < purchases.length; i++) {
+            print(purchases[i].originalTransactionDateIOS);
+            print(purchases[i].transactionStateIOS);
+          }
+          if (purchases.last.productId == 'lifetime_subs') {
+            await Prefs.setMembership('4');
+          } else if (await FlutterInappPurchase.instance.checkSubscribed(
+              sku: 'yearly_subs',
+              duration: Duration(days: 365),
+              grace: Duration(days: 7))) {
+            await Prefs.setMembership('2');
+          } else if (await FlutterInappPurchase.instance.checkSubscribed(
+              sku: 'monthly_subs',
+              duration: Duration(days: 30),
+              grace: Duration(days: 7))) {
+            await Prefs.setMembership('1');
+          } else {
+            await Prefs.setMembership('0');
+          }
+        } catch (e) {
+          print("error in getPurchaseHistory: $e");
+        }
+      }
+    }
+
+    Timer(
+        Duration(seconds: 3),
+        () => Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+                builder: (context) => HomeScreen(auth: widget.auth)),
+            ModalRoute.withName('')));
     // } else {
     //   Timer(
     //     Duration(seconds: 3),
@@ -99,7 +144,9 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future validateToken() async {
-    await Provider.of<AuthProvider>(context, listen: false).checkTokenValidate(token).then((value) {
+    await Provider.of<AuthProvider>(context, listen: false)
+        .checkTokenValidate(token)
+        .then((value) {
       if (value.code.contains("jwt_auth_valid_token")) {
         Navigator.pushAndRemoveUntil(
             context,
@@ -126,7 +173,10 @@ class _SplashScreenState extends State<SplashScreen> {
               //       builder: (context) => WelcomeScreen(auth: widget.auth)),
               // );
               Navigator.pushAndRemoveUntil(
-                  context, MaterialPageRoute(builder: (context) => WelcomeScreen(auth: widget.auth)), ModalRoute.withName(''));
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => WelcomeScreen(auth: widget.auth)),
+                  ModalRoute.withName(''));
               return;
             });
       }

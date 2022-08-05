@@ -19,7 +19,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>black_history_calender</string>
+	<string>black_history_calendar</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -81,15 +81,19 @@
 		<true/>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>Allow Camera access required to allow capture images for your stories</string>
+	<string>Camera access required to allow capture images for your stories</string>
 	<key>NSFaceIDUsageDescription</key>
 	<string>Allow Fingerprint scan access for quick login</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>BHC needs Location access to show you nearby news feed!</string>
+	<string>Your location is not needed. This request has popped up due to a 3rd party framework. Do not require access.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Your location is not needed. This request has popped up due to a 3rd party framework. Do not require access.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Your location is not needed. This request has popped up due to a 3rd party framework. Do not require access.</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>This permission is not used in app and it comes bundled with other libraries</string>
+	<string>This permission is not used in app and it comes bundled with other libraries.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Photo library access required to allow select files for your stories</string>
+	<string>Photo library access required to allow select files for your Profile Picture.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>audio</string>

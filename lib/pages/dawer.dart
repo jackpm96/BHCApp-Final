@@ -183,6 +183,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
                         await Prefs.setNotiStatus(false);
                         await Prefs.setEmailStatus(false);
                         await Prefs.setManageTouch(false);
+                        await Prefs.setMembership('0');
                         final auth = Auth();
                         await auth.signOut();
                         EasyLoading.dismiss();

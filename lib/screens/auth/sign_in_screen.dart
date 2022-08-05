@@ -86,8 +86,9 @@ class _SignInScreenState extends State<SignInScreen> {
       );
       UserCredential user =
           await FirebaseAuth.instance.signInWithCredential(oauthCredential);
+
       if (FirebaseAuth.instance.currentUser.displayName == "" ||
-          FirebaseAuth.instance.currentUser.displayName == null) {
+          FirebaseAuth.instance.currentUser.displayName == null ) {
         await FirebaseAuth.instance.currentUser.updateDisplayName(
             "${appleCredential.givenName} ${appleCredential.familyName}");
       }

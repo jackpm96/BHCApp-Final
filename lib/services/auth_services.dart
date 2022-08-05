@@ -3,6 +3,7 @@ import 'package:flutter_login_facebook/flutter_login_facebook.dart';
 
 //import 'package:flutter_login_facebook/flutter_login_facebook.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 class FacebookResponse {
   User user;
@@ -96,11 +97,15 @@ class Auth implements AuthBase {
 
   @override
   Future<void> signOut() async {
-    await GoogleSignIn().isSignedIn()
-        ? await GoogleSignIn().signOut()
-        : await FacebookLogin().isLoggedIn
-            ? await FacebookLogin().logOut()
-            : await _firebaseAuth.signOut();
+   try {
+      await GoogleSignIn().isSignedIn()
+          ? await GoogleSignIn().signOut()
+          : await FacebookLogin().isLoggedIn
+              ? await FacebookLogin().logOut()
+              : await _firebaseAuth.signOut();
+    }catch(e){
+     print(e);
+   }
     // final googleSignIn = GoogleSignIn();
     // await googleSignIn.signOut();
     // final facebookLogin = FacebookLogin();
