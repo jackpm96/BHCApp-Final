@@ -10,13 +10,10 @@ import 'package:black_history_calender/pages/settings_page.dart';
 import 'package:black_history_calender/services/auth_services.dart';
 import 'package:black_history_calender/widget/snackbar_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
-import 'package:table_calendar/table_calendar.dart';
 
 import '../../globals.dart';
 
- GlobalKey<ScaffoldState> scaffoldKey =  GlobalKey<ScaffoldState>();
+GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 PageController pageController;
 
 class HomeScreen extends StatefulWidget {
@@ -32,6 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
   // FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
   //     new FlutterLocalNotificationsPlugin();
   int selectedPage = 0;
+
   @override
   void initState() {
     super.initState();
@@ -42,7 +40,6 @@ class _HomeScreenState extends State<HomeScreen> {
     // print(await fcm.getToken());
     //
     pageController = PageController(keepPage: false);
-
     await Prefs.id.then((value) {
       setState(() {
         id = value;
@@ -165,8 +162,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<bool> onWillPop() {
     pageController.jumpToPage(0);
     DateTime now = DateTime.now();
-    if (currentBackPressTime == null ||
-        now.difference(currentBackPressTime) > Duration(seconds: 2)) {
+    if (currentBackPressTime == null || now.difference(currentBackPressTime) > Duration(seconds: 2)) {
       currentBackPressTime = now;
       CommonWidgets.buildSnackbar(context, "Press Again To Exit");
       return Future.value(false);
@@ -252,11 +248,7 @@ class _HomeScreenState extends State<HomeScreen> {
         // shape: CircularNotchedRectangle(),
         // notchMargin: 10,
         child: Container(
-            decoration: BoxDecoration(
-                color: lightBlue,
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(20),
-                    topRight: Radius.circular(20))),
+            decoration: BoxDecoration(color: lightBlue, borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))),
             height: 60,
             child: BottomNavigationBar(
               type: BottomNavigationBarType.fixed,
@@ -304,21 +296,20 @@ class _HomeScreenState extends State<HomeScreen> {
                   _currentIndex = index;
                   pageController.jumpToPage(index);
                 });
-
               },
             )),
       ),
     );
   }
-  //
-  // Widget _navigationTab({GlobalKey<NavigatorState> naviKey, Widget widget}) {
-  //   return Navigator(
-  //     key: naviKey,
-  //     onGenerateRoute: (routeSettings) {
-  //       return MaterialPageRoute(builder: (context) => widget);
-  //     },
-  //   );
-  // }
+//
+// Widget _navigationTab({GlobalKey<NavigatorState> naviKey, Widget widget}) {
+//   return Navigator(
+//     key: naviKey,
+//     onGenerateRoute: (routeSettings) {
+//       return MaterialPageRoute(builder: (context) => widget);
+//     },
+//   );
+// }
 
 // void _selectTab(int index) {
 //   if (index == selectedPage) {

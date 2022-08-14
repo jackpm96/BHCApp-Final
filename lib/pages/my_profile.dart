@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:math';
 
 import 'package:black_history_calender/const/colors.dart';
 import 'package:black_history_calender/helper/prefs.dart';
@@ -8,7 +7,6 @@ import 'package:black_history_calender/pages/cancelAlert.dart';
 import 'package:black_history_calender/screens/auth/provider/auth_provider.dart';
 import 'package:black_history_calender/screens/story/upload_media_response.dart';
 import 'package:black_history_calender/widget/snackbar_widget.dart';
-import 'package:crypto/crypto.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +17,6 @@ import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 import '../components/mydialog.dart';
 
@@ -88,8 +85,7 @@ class _MyProfileState extends State<MyProfile> {
   _getFromGallery() async {
     try {
       final ImagePicker _picker = ImagePicker();
-      final XFile imagePick =
-          await _picker.pickImage(source: ImageSource.gallery);
+      final XFile imagePick = await _picker.pickImage(source: ImageSource.gallery);
       if (imagePick == null) return;
       setState(() {
         final imageTemperory = File(imagePick.path);
@@ -107,8 +103,7 @@ class _MyProfileState extends State<MyProfile> {
               id = value;
             }));
         EasyLoading.show(dismissOnTap: false);
-        var response = await Provider.of<AuthProvider>(context, listen: false)
-            .updateImgApi(id, imgg);
+        var response = await Provider.of<AuthProvider>(context, listen: false).updateImgApi(id, imgg);
 
         if (response != null) {
           Prefs.setImg(imgurl);
@@ -178,11 +173,10 @@ class _MyProfileState extends State<MyProfile> {
       }),
     );
 
-    if(Platform.isIOS){
+    if (Platform.isIOS) {
       try {
         if (await Prefs.membership != '0') {
-          List<PurchasedItem> purchases =
-              await FlutterInappPurchase.instance.getAvailablePurchases();
+          List<PurchasedItem> purchases = await FlutterInappPurchase.instance.getAvailablePurchases();
           print(FirebaseAuth.instance.currentUser.displayName);
           for (int i = 0; i < purchases.length; i++) {
             print(purchases[i].originalTransactionDateIOS);
@@ -191,18 +185,14 @@ class _MyProfileState extends State<MyProfile> {
           print(purchases.last.productId);
           if (await Prefs.membership == '1') {
             setState(() {
-              renewalDate = DateTime(
-                      purchases.last.originalTransactionDateIOS.year,
-                      purchases.last.originalTransactionDateIOS.month + 1,
+              renewalDate = DateTime(purchases.last.originalTransactionDateIOS.year, purchases.last.originalTransactionDateIOS.month + 1,
                       purchases.last.originalTransactionDateIOS.day)
                   .toString()
                   .split(' ')[0];
             });
           } else if (await Prefs.membership == '2') {
             setState(() {
-              renewalDate = DateTime(
-                      purchases.last.originalTransactionDateIOS.year + 1,
-                      purchases.last.originalTransactionDateIOS.month,
+              renewalDate = DateTime(purchases.last.originalTransactionDateIOS.year + 1, purchases.last.originalTransactionDateIOS.month,
                       purchases.last.originalTransactionDateIOS.day)
                   .toString()
                   .split(' ')[0];
@@ -220,8 +210,6 @@ class _MyProfileState extends State<MyProfile> {
     }
     EasyLoading.dismiss();
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -267,10 +255,7 @@ class _MyProfileState extends State<MyProfile> {
                         ),
                         Text(
                           name,
-                          style: GoogleFonts.montserrat(
-                              color: white,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 14),
+                          style: GoogleFonts.montserrat(color: white, fontWeight: FontWeight.w600, fontSize: 14),
                         ),
                       ],
                     ),
@@ -309,31 +294,32 @@ class _MyProfileState extends State<MyProfile> {
                               "Membership Plan: ${membership == '1' ? "1 Month" : membership == '2' ? '12 Months' : membership == '4' ? 'Life Time' : 'No Membership'}",
                               style: GoogleFonts.montserrat(),
                             ),
-                            Platform.isAndroid? GestureDetector(
-                              onTap: () async {
-                                await cancelAlert(context, cancelSubscription);
-                              },
-                              child: membership != "0"
-                                  ? Container(
-                                      padding: EdgeInsets.all(10),
-                                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.red),
-                                      child: Text(
-                                        "Cancel",
-                                        style: GoogleFonts.montserrat(color: Colors.white),
-                                      ),
-                                    )
-                                  : SizedBox(),
-                            ):Container(),
+                            Platform.isAndroid
+                                ? GestureDetector(
+                                    onTap: () async {
+                                      await cancelAlert(context, cancelSubscription);
+                                    },
+                                    child: membership != "0"
+                                        ? Container(
+                                            padding: EdgeInsets.all(10),
+                                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.red),
+                                            child: Text(
+                                              "Cancel",
+                                              style: GoogleFonts.montserrat(color: Colors.white),
+                                            ),
+                                          )
+                                        : SizedBox(),
+                                  )
+                                : Container(),
                           ],
                         ),
                       ),
-                      membership == '0' || Platform.isAndroid? SizedBox() : Divider(),
+                      membership == '0' || Platform.isAndroid ? SizedBox() : Divider(),
                       membership == '0' || Platform.isAndroid
                           ? SizedBox()
                           : ListTile(
                               title: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
                                     "Renewal Date: $renewalDate",
@@ -359,26 +345,25 @@ class _MyProfileState extends State<MyProfile> {
                       TextButton(
                         child: Text("Update Date Of Birth"),
                         onPressed: () {
-                          updateDob(
-                              DateFormat("dd-MM-y").format(_chosenDateTime));
+                          updateDob(DateFormat("dd-MM-y").format(_chosenDateTime));
                         },
                       ),
                     ],
                   ),
                 ),
                 GestureDetector(
-                  onTap: (){
+                  onTap: () {
                     var text = "";
-                    if(membership=='0'){
-                       text = "Your account will be permanently deleted!";
-                    }else if(membership=='1'){
+                    if (membership == '0') {
+                      text = "Your account will be permanently deleted!";
+                    } else if (membership == '1') {
                       text = "Your monthly subscription is valid till $renewalDate.Please cancel your subscription before deleting your account.";
-                    }else if(membership=='2'){
+                    } else if (membership == '2') {
                       text = "Your annual subscription is valid till $renewalDate.Please cancel your subscription before deleting your account.";
-                    }else if(membership=='4'){
+                    } else if (membership == '4') {
                       text = "You have purchased lifetime subscription, by deleting your account you will lose your subscription!";
                     }
-                    showDeleteAccountAlert(context,text,id);
+                    showDeleteAccountAlert(context, text, id);
                   },
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 40),
@@ -398,11 +383,7 @@ class _MyProfileState extends State<MyProfile> {
                           child: Text(
                             'DELETE ACCOUNT',
                             textAlign: TextAlign.center,
-                            style: GoogleFonts.montserrat(
-                                color: Colors.white,
-                                fontSize: 18,
-                                letterSpacing: 1,
-                                fontWeight: FontWeight.w400),
+                            style: GoogleFonts.montserrat(color: Colors.white, fontSize: 18, letterSpacing: 1, fontWeight: FontWeight.w400),
                           ),
                         ),
                       ),
@@ -424,8 +405,7 @@ class _MyProfileState extends State<MyProfile> {
           id = value;
         }));
     EasyLoading.show(dismissOnTap: false);
-    var response = await Provider.of<AuthProvider>(context, listen: false)
-        .updateDobApi(id, dob);
+    var response = await Provider.of<AuthProvider>(context, listen: false).updateDobApi(id, dob);
 
     if (response != null) {
       Prefs.setDob(dob);
@@ -474,12 +454,8 @@ class _MyProfileState extends State<MyProfile> {
     try {
       EasyLoading.show();
       var response = await http.post(
-          Uri.parse(
-              "https://myblackhistorycalendar.com/wp-json/pmpro/v1/cancel_membership_level?user_id=$id&level_id=$membership"),
-          headers: {
-            "content-type": "application/json",
-            'Authorization': 'Bearer ' + token
-          });
+          Uri.parse("https://myblackhistorycalendar.com/wp-json/pmpro/v1/cancel_membership_level?user_id=$id&level_id=$membership"),
+          headers: {"content-type": "application/json", 'Authorization': 'Bearer ' + token});
       if (response.body == 'true') {
         await Prefs.setMembership("0");
         setState(() {

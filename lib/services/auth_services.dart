@@ -1,9 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_login_facebook/flutter_login_facebook.dart';
-
 //import 'package:flutter_login_facebook/flutter_login_facebook.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 class FacebookResponse {
   User user;
@@ -46,22 +44,17 @@ class Auth implements AuthBase {
     final googleUser = await googleSignIn.signIn();
     if (googleUser != null) {
       List providers = await FirebaseAuth.instance.fetchSignInMethodsForEmail(googleUser.email);
-      if(providers.contains('facebook.com') ) {
+      if (providers.contains('facebook.com')) {
         throw FirebaseAuthException(
-            code: 'FACEBOOK_PROVIDER_ALREADY_PRESENT',
-            message: 'You already have account with facebook login! Please login with facebook!');
-      }else {
+            code: 'FACEBOOK_PROVIDER_ALREADY_PRESENT', message: 'You already have account with facebook login! Please login with facebook!');
+      } else {
         final googleAuth = await googleUser.authentication;
-        final userCredential = await _firebaseAuth.signInWithCredential(
-            GoogleAuthProvider.credential(
-                idToken: googleAuth.idToken,
-                accessToken: googleAuth.accessToken));
+        final userCredential =
+            await _firebaseAuth.signInWithCredential(GoogleAuthProvider.credential(idToken: googleAuth.idToken, accessToken: googleAuth.accessToken));
         return GoogleResponse(userCredential.user, googleAuth);
       }
     } else {
-      throw FirebaseAuthException(
-          code: 'ERROR_MISSING_GOOGLE_ID_TOKEN',
-          message: 'Missing Google ID Token');
+      throw FirebaseAuthException(code: 'ERROR_MISSING_GOOGLE_ID_TOKEN', message: 'Missing Google ID Token');
     }
     // } else {
     //   throw FirebaseAuthException(
@@ -103,15 +96,16 @@ class Auth implements AuthBase {
 
   @override
   Future<void> signOut() async {
-   try {
+    try {
+      await FirebaseAuth.instance.signOut();
       await GoogleSignIn().isSignedIn()
           ? await GoogleSignIn().signOut()
           : await FacebookLogin().isLoggedIn
               ? await FacebookLogin().logOut()
               : await _firebaseAuth.signOut();
-    }catch(e){
-     print(e);
-   }
+    } catch (e) {
+      print(e);
+    }
     // final googleSignIn = GoogleSignIn();
     // await googleSignIn.signOut();
     // final facebookLogin = FacebookLogin();

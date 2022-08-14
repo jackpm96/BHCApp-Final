@@ -3,13 +3,12 @@ import 'package:black_history_calender/helper/prefs.dart';
 import 'package:black_history_calender/screens/auth/provider/auth_provider.dart';
 import 'package:black_history_calender/screens/home/home_screen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-import 'dawer.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key key}) : super(key: key);
@@ -81,8 +80,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           decoration: BoxDecoration(
                             shape: BoxShape.rectangle,
                             borderRadius: BorderRadius.circular(10),
-                            image: DecorationImage(
-                                image: imageProvider, fit: BoxFit.cover),
+                            image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
                           ),
                         ),
                         placeholder: (context, image) => Image.asset(
@@ -116,8 +114,7 @@ class _SettingsPageState extends State<SettingsPage> {
               children: [
                 GestureDetector(
                   onTap: () {
-                    launch(
-                        "https://myblackhistorycalendar.com/terms-conditions/");
+                    launch("https://myblackhistorycalendar.com/terms-conditions/");
                   },
                   child: Padding(
                     padding: const EdgeInsets.all(10.0),
@@ -145,10 +142,7 @@ class _SettingsPageState extends State<SettingsPage> {
                             ),
                             Text(
                               'Terms & Conditions',
-                              style: GoogleFonts.montserrat(
-                                  color: Colors.grey,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w500),
+                              style: GoogleFonts.montserrat(color: Colors.grey, fontSize: 18, fontWeight: FontWeight.w500),
                             ),
                           ],
                         ),
@@ -185,10 +179,7 @@ class _SettingsPageState extends State<SettingsPage> {
                             ),
                             Text(
                               'Push Notification',
-                              style: GoogleFonts.montserrat(
-                                  color: Colors.grey,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w500),
+                              style: GoogleFonts.montserrat(color: Colors.grey, fontSize: 18, fontWeight: FontWeight.w500),
                             ),
                           ],
                         ),
@@ -237,10 +228,7 @@ class _SettingsPageState extends State<SettingsPage> {
                             ),
                             Text(
                               'Receive Emails ',
-                              style: GoogleFonts.montserrat(
-                                  color: Colors.grey,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w500),
+                              style: GoogleFonts.montserrat(color: Colors.grey, fontSize: 18, fontWeight: FontWeight.w500),
                             ),
                           ],
                         ),
@@ -287,8 +275,12 @@ class _SettingsPageState extends State<SettingsPage> {
   Future tempfunction() async {
     getnotistatus();
     getEmailstatus();
-    var response = await Provider.of<AuthProvider>(context, listen: false)
-        .SettingInfo(Nstatus, Estatus);
+    var response = await Provider.of<AuthProvider>(context, listen: false).SettingInfo(Nstatus, Estatus);
+    if (Nstatus == 1) {
+      await FirebaseMessaging.instance.subscribeToTopic('new_post');
+    } else {
+      await FirebaseMessaging.instance.unsubscribeFromTopic('new_post');
+    }
     Prefs.setNotiStatus(switchValue);
     Prefs.setEmailStatus(switchEmailValue);
   }
