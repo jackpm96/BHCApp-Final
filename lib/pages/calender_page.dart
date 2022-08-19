@@ -391,6 +391,7 @@ class _SearchListState extends State<SearchList> {
       child: Scaffold(
           appBar: AppBar(
             backgroundColor: lightBlue,
+            title: Text("${widget.startDate} - ${widget.endDate}"),
           ),
           body: SmartRefresher(
             controller: refreshController,
