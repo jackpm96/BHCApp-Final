@@ -19,5 +19,6 @@ class Const {
   static const String dob = "user_dob";
   static const String imgurl = "user_img";
   static const String user_login = "user_login";
+  static const String status = "false";
 
 }

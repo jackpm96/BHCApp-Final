@@ -1,7 +1,8 @@
+import 'dart:io';
+
 import 'package:black_history_calender/const/colors.dart';
 import 'package:black_history_calender/helper/prefs.dart';
 import 'package:black_history_calender/pages/favorites_screen.dart';
-import 'package:black_history_calender/screens/auth/sign_in_screen.dart';
 import 'package:black_history_calender/services/auth_services.dart';
 import 'package:black_history_calender/subsription_from_home.dart';
 import 'package:flutter/cupertino.dart';
@@ -10,6 +11,9 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../screens/auth/sign_in_screen.dart';
+import '../screens/splash.dart';
+import '../subscription_from_home_android.dart';
 import 'my_profile.dart';
 
 class DrawerScreen extends StatefulWidget {
@@ -21,6 +25,7 @@ class DrawerScreen extends StatefulWidget {
 
 class _DrawerScreenState extends State<DrawerScreen> {
   bool touchSwitch = false;
+  bool isUserLoggedIn = false;
 
   @override
   initState() {
@@ -32,6 +37,12 @@ class _DrawerScreenState extends State<DrawerScreen> {
     await Prefs.manageTouch.then((value) => setState(() {
           touchSwitch = value;
         }));
+
+    if (await Prefs.id != "") {
+      setState(() {
+        isUserLoggedIn = true;
+      });
+    }
   }
 
   @override
@@ -50,13 +61,25 @@ class _DrawerScreenState extends State<DrawerScreen> {
           Expanded(
             child: Column(
               children: [
-                drawerTile('My Account', Icons.person, context, () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const MyProfile()),
-                  );
-                }),
+                !isUserLoggedIn
+                    ? drawerTile('Sign In', Icons.login, context, () async {
+                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (BuildContext context) =>
+                                const SignInScreen(),
+                          ),
+                        );
+                      })
+                    : drawerTile('My Account', Icons.person, context, () async {
+                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const MyProfile()),
+                        );
+                      }),
                 drawerTile('Favorites', Icons.favorite, context, () {
                   Navigator.pop(context);
 
@@ -69,75 +92,78 @@ class _DrawerScreenState extends State<DrawerScreen> {
                     ),
                   );
                 }),
-                drawerTile('Payments & Subscriptions', Icons.payments, context, () {
+                drawerTile('Payments & Subscriptions', Icons.payments, context,
+                    () {
                   Navigator.pop(context);
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => const SubscriptionScreenFromHome(),
+                      builder: (context) => Platform.isAndroid
+                          ? SubscriptionScreenFromHomeAndroid()
+                          : SubscriptionScreenFromHome(),
                     ),
                   );
                 }),
                 // drawerTile('Activity Log', Icons.local_activity, context, () {
                 //   Navigator.pop(context);
                 // }),
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Container(
-                    height: 40,
-                    decoration: const BoxDecoration(
-                      //   color: Colors.blue.shade50,
-                      //  borderRadius: BorderRadius.all(Radius.circular(5))
-                      border: Border(
-                        bottom: BorderSide(
-                          color: Colors.grey, //_focus.hasFocus ? Colors.blue :
-                          width: 0.2,
-                        ),
-                      ),
-                    ),
-                    width: MediaQuery.of(context).size.width,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              const Icon(
-                                Icons.notifications,
-                                color: Colors.grey,
-                              ),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              Text(
-                                'Manage Touch ID',
-                                style: GoogleFonts.montserrat(
-                                  color: Colors.grey,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ],
-                          ),
-                          Transform.scale(
-                            scale: 0.7,
-                            child: CupertinoSwitch(
-                              activeColor: Colors.blue,
-                              value: touchSwitch,
-                              onChanged: (val) {
-                                setState(() {
-                                  touchSwitch = val;
-                                });
-
-                                Prefs.setManageTouch(touchSwitch);
-                              },
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+                // Padding(
+                //   padding: const EdgeInsets.all(10.0),
+                //   child: Container(
+                //     height: 40,
+                //     decoration: const BoxDecoration(
+                //       //   color: Colors.blue.shade50,
+                //       //  borderRadius: BorderRadius.all(Radius.circular(5))
+                //       border: Border(
+                //         bottom: BorderSide(
+                //           color: Colors.grey, //_focus.hasFocus ? Colors.blue :
+                //           width: 0.2,
+                //         ),
+                //       ),
+                //     ),
+                //     width: MediaQuery.of(context).size.width,
+                //     child: Padding(
+                //       padding: const EdgeInsets.all(8.0),
+                //       child: Row(
+                //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //         children: [
+                //           Row(
+                //             children: [
+                //               const Icon(
+                //                 Icons.notifications,
+                //                 color: Colors.grey,
+                //               ),
+                //               const SizedBox(
+                //                 width: 10,
+                //               ),
+                //               Text(
+                //                 'Manage Touch ID',
+                //                 style: GoogleFonts.montserrat(
+                //                   color: Colors.grey,
+                //                   fontSize: 18,
+                //                   fontWeight: FontWeight.w500,
+                //                 ),
+                //               ),
+                //             ],
+                //           ),
+                //           Transform.scale(
+                //             scale: 0.7,
+                //             child: CupertinoSwitch(
+                //               activeColor: Colors.blue,
+                //               value: touchSwitch,
+                //               onChanged: (val) {
+                //                 setState(() {
+                //                   touchSwitch = val;
+                //                 });
+                //
+                //                 Prefs.setManageTouch(touchSwitch);
+                //               },
+                //             ),
+                //           )
+                //         ],
+                //       ),
+                //     ),
+                //   ),
+                // ),
                 drawerTile('Contact Us', Icons.contact_support, context, () {
                   Navigator.pop(context);
                   launch("https://myblackhistorycalendar.com/contact-us/");
@@ -146,35 +172,40 @@ class _DrawerScreenState extends State<DrawerScreen> {
                   Navigator.pop(context);
                   launch("https://myblackhistorycalendar.com/privacy-policy/");
                 }),
-                drawerTile('Log Out', Icons.logout, context, () async {
-                  // await Prefs().clear();
-                  EasyLoading.show(dismissOnTap: false);
-                  await Prefs.setID('');
-                  await Prefs.setUserName('');
-                  await Prefs.setName('');
-                  await Prefs.setFirstName('');
-                  await Prefs.setLastName('');
-                  await Prefs.setReadingStories('');
-                  await Prefs.setSubsRole('');
-                  await Prefs.setUserLogin('');
-                  await Prefs.setDob('');
-                  await Prefs.setImg('');
-                  await Prefs.setRememberMe(false);
-                  await Prefs.setNotiStatus(false);
-                  await Prefs.setEmailStatus(false);
-                  await Prefs.setManageTouch(false);
-                  final auth = Auth();
-                  await auth.signOut();
-                  EasyLoading.dismiss();
-                  // ignore: use_build_context_synchronously
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                      builder: (BuildContext context) => const SignInScreen(),
-                    ),
-                    ModalRoute.withName('/'),
-                  );
-                })
+                !isUserLoggedIn
+                    ? Container()
+                    : drawerTile('Log Out', Icons.logout, context, () async {
+                        // await Prefs().clear();
+                        EasyLoading.show(dismissOnTap: false);
+                        await Prefs.setID('');
+                        await Prefs.setUserName('');
+                        await Prefs.setName('');
+                        await Prefs.setFirstName('');
+                        await Prefs.setLastName('');
+                        await Prefs.setReadingStories('');
+                        await Prefs.setSubsRole('');
+                        await Prefs.setUserLogin('');
+                        await Prefs.setDob('');
+                        await Prefs.setImg('');
+                        await Prefs.setRememberMe(false);
+                        await Prefs.setNotiStatus(false);
+                        await Prefs.setEmailStatus(false);
+                        await Prefs.setManageTouch(false);
+                        await Prefs.setMembership('0');
+                        final auth = Auth();
+                        await auth.signOut();
+                        EasyLoading.dismiss();
+                        // ignore: use_build_context_synchronously
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                            builder: (BuildContext context) => SplashScreen(
+                              auth: Auth(),
+                            ),
+                          ),
+                          ModalRoute.withName('/'),
+                        );
+                      })
               ],
             ),
           )
@@ -184,7 +215,8 @@ class _DrawerScreenState extends State<DrawerScreen> {
   }
 }
 
-Widget drawerTile(String text, IconData icon, BuildContext context, void Function() _func) {
+Widget drawerTile(
+    String text, IconData icon, BuildContext context, void Function() _func) {
   return GestureDetector(
     onTap: _func,
     child: Padding(

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:ui';
 
 import 'package:black_history_calender/components/mydialog.dart';
@@ -15,6 +16,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:html/parser.dart' show parse;
+import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -45,16 +47,45 @@ class _HomePageState extends State<HomePage> {
   ];
 
   int updatedlike;
+  bool allowPostView = false;
 
   @override
   void initState() {
     super.initState();
   }
 
+  checkStatus(context) async {
+    String uid = await Prefs.id;
+    print("uid $uid");
+    if (uid != "") {
+      var url = 'https://myblackhistorycalendar.com/wp-json/wcra/v1/regdate/?secret_key=Pf1PZMTEum3zLBkN2ITu4KdZyHM3WKR0&user_id=$uid';
+      final response = await http.post(
+        Uri.parse(url),
+      );
+      var result = jsonDecode(response.body);
+
+      if (result['code'] == 200) {
+        final difference = DateTime.now().difference(DateTime.parse(result['data'])).inDays;
+        if (difference <= 7) {
+          allowPostView = true;
+        }
+      }
+    } else {
+      if (await Prefs.status != null && await Prefs.status != 'true') {
+        showSignupDialog(context);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    checkStatus(context);
     WidgetsBinding.instance.addPostFrameCallback((_) => Provider.of<AuthProvider>(context, listen: false).getourstories());
-
+    // showDialog(
+    //     context: context,
+    //     builder: (context) {
+    //       return ShowSignupDialog();
+    //     });
     return Stack(
       children: [
         Container(
@@ -178,12 +209,8 @@ class _HomePageState extends State<HomePage> {
                                                     onTap: () async {
                                                       var mem = await Prefs.membership;
 
-                                                      if (mem != '0') {
-                                                        Navigator.push(
-                                                            context,
-                                                            MaterialPageRoute(
-                                                                builder: (context) =>
-                                                                    DetailScreen(response[index], false, response[index].audio, false)));
+                                                      if (mem == '1' || mem == '2' || mem == '3' || mem == '4') {
+                                                        Navigator.push(context, MaterialPageRoute(builder: (context) => DetailScreen(response[index], false, response[index].audio, false)));
                                                       } else {
                                                         print("unsubscribed");
                                                         showAlert(context);
@@ -194,15 +221,16 @@ class _HomePageState extends State<HomePage> {
                                                         Container(
                                                           height: double.infinity,
                                                           width: double.infinity,
-                                                          foregroundDecoration:
-                                                              BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.black12),
+                                                          foregroundDecoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.black12),
                                                           child: CachedNetworkImage(
                                                             fit: BoxFit.cover,
                                                             imageUrl: response[index].featuredMediaSrcUrl,
-                                                            progressIndicatorBuilder: (context, url, downloadProgress) => Container(
-                                                              height: 10,
-                                                              width: 10,
-                                                              child: CircularProgressIndicator(value: downloadProgress.progress),
+                                                            progressIndicatorBuilder: (context, url, downloadProgress) => Center(
+                                                              child: SizedBox(
+                                                                height: 10,
+                                                                width: 10,
+                                                                child: CircularProgressIndicator(value: downloadProgress.progress),
+                                                              ),
                                                             ),
                                                             errorWidget: (context, url, error) => Icon(
                                                               Icons.photo_library,
@@ -384,11 +412,20 @@ class _HomePageState extends State<HomePage> {
                                           onTap: () async {
                                             var mem = await Prefs.membership;
 
-                                            if (mem != '0') {
+                                            if (mem == '1' || mem == '2' || mem == '3' || mem == '4') {
                                               Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
-                                                  builder: (contect) => DetailScreen(user, true, audio, false),
+                                                  builder: (context) => DetailScreen(user, true, audio, false),
+                                                ),
+                                              );
+                                            } else if (allowPostView && index < 4) {
+                                              print(allowPostView);
+
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) => DetailScreen(user, true, audio, false),
                                                 ),
                                               );
                                             } else {
@@ -450,8 +487,7 @@ class _HomePageState extends State<HomePage> {
                                                               Expanded(
                                                                 child: Text(
                                                                   user.postTitle,
-                                                                  style: GoogleFonts.montserrat(
-                                                                      color: Colors.black, fontWeight: FontWeight.w600, fontSize: 14),
+                                                                  style: GoogleFonts.montserrat(color: Colors.black, fontWeight: FontWeight.w600, fontSize: 14),
                                                                 ),
                                                               ),
                                                               GestureDetector(
@@ -462,11 +498,7 @@ class _HomePageState extends State<HomePage> {
                                                                       index,
                                                                     );
 
-                                                                    CommonWidgets.buildSnackbar(
-                                                                        context,
-                                                                        user.isFavourite == "1"
-                                                                            ? 'Added in Favourite stories'
-                                                                            : 'Removed Favourite stories');
+                                                                    CommonWidgets.buildSnackbar(context, user.isFavourite == "1" ? 'Added in Favourite stories' : 'Removed Favourite stories');
                                                                     EasyLoading.dismiss();
                                                                   });
                                                                 },
@@ -506,8 +538,7 @@ class _HomePageState extends State<HomePage> {
                                                                     ),
                                                                     Text(
                                                                       DateFormat.yMMMd().format(user.postDate),
-                                                                      style: GoogleFonts.montserrat(
-                                                                          color: lightBlue, fontWeight: FontWeight.w300, fontSize: 12),
+                                                                      style: GoogleFonts.montserrat(color: lightBlue, fontWeight: FontWeight.w300, fontSize: 12),
                                                                     ),
                                                                   ],
                                                                 ),
@@ -521,8 +552,7 @@ class _HomePageState extends State<HomePage> {
                                                                     padding: const EdgeInsets.only(top: 4.0),
                                                                     child: Text(
                                                                       user.likes,
-                                                                      style: GoogleFonts.montserrat(
-                                                                          color: Color(0xff999999), fontWeight: FontWeight.w600, fontSize: 13),
+                                                                      style: GoogleFonts.montserrat(color: Color(0xff999999), fontWeight: FontWeight.w600, fontSize: 13),
                                                                     ),
                                                                   ),
                                                                   Image.asset(
@@ -538,8 +568,7 @@ class _HomePageState extends State<HomePage> {
                                                                     padding: const EdgeInsets.only(top: 4.0),
                                                                     child: Text(
                                                                       user.commentCount,
-                                                                      style: GoogleFonts.montserrat(
-                                                                          color: Color(0xff999999), fontWeight: FontWeight.w600, fontSize: 13),
+                                                                      style: GoogleFonts.montserrat(color: Color(0xff999999), fontWeight: FontWeight.w600, fontSize: 13),
                                                                     ),
                                                                   ),
                                                                   SizedBox(

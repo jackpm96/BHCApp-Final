@@ -3,11 +3,11 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>482827005790-f9ohaos3bvddb3jues4jmfsg4vq0lgk6.apps.googleusercontent.com</string>
+	<string>482827005790-69ie7nejm9optsmq9crt2vv1jshp21qo.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.482827005790-f9ohaos3bvddb3jues4jmfsg4vq0lgk6</string>
+	<string>com.googleusercontent.apps.482827005790-69ie7nejm9optsmq9crt2vv1jshp21qo</string>
 	<key>ANDROID_CLIENT_ID</key>
-	<string>482827005790-59lsirrmni8atfustmevtptlvmvjih1e.apps.googleusercontent.com</string>
+	<string>482827005790-btamg9oleluis7dprg8bcp4dsurh5igo.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
 	<string>AIzaSyCB4y77xrxWF-NNel24Z_2bX5_2LKjNd8I</string>
 	<key>GCM_SENDER_ID</key>
@@ -21,15 +21,15 @@
 	<key>STORAGE_BUCKET</key>
 	<string>my-bhc-d7078.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
-	<false/>
+	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
-	<false/>
+	<false></false>
 	<key>IS_APPINVITE_ENABLED</key>
-	<true/>
+	<true></true>
 	<key>IS_GCM_ENABLED</key>
-	<true/>
+	<true></true>
 	<key>IS_SIGNIN_ENABLED</key>
-	<true/>
+	<true></true>
 	<key>GOOGLE_APP_ID</key>
 	<string>1:482827005790:ios:db973c48ff6daa9b5669cf</string>
 </dict>

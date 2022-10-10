@@ -32,6 +32,7 @@ class _ResultViewState extends State<ResultView> {
             //   size: 25,
             // ),
             ),
+        title: Text(searchQuery.toUpperCase()),
       ),
       body: Container(
           child: SingleChildScrollView(

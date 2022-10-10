@@ -397,10 +397,12 @@ class _DetailScreenState extends State<DetailScreen> {
                                   controller: _controller,
                                   child: Padding(
                                     padding: EdgeInsets.only(bottom: 30),
-                                    child: ExpandableText(
-                                      widget.user.postContent.toString(),
-                                      trimLines: 10,
-                                      expand: widget.expand as bool,
+                                    child: InteractiveViewer(
+                                      child: ExpandableText(
+                                        widget.user.postContent.toString(),
+                                        trimLines: 10,
+                                        expand: widget.expand as bool,
+                                      ),
                                     ),
                                   ),
                                 ),
