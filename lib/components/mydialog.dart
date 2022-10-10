@@ -112,8 +112,7 @@ showAlert(BuildContext context) {
                                     if (await Prefs.id != "") {
                                       Navigator.of(context).push(
                                         MaterialPageRoute(
-                                          builder: (context) =>
-                                              Platform.isAndroid ? SubscriptionScreenFromHomeAndroid() : SubscriptionScreenFromHome(),
+                                          builder: (context) => Platform.isAndroid ? SubscriptionScreenFromHomeAndroid() : SubscriptionScreenFromHome(),
                                         ),
                                       );
                                     } else {
@@ -190,6 +189,65 @@ showAlert(BuildContext context) {
         );
       });
 }
+
+showSignupDialog(BuildContext context) {
+  showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+          child: Stack(
+            children: [
+              GestureDetector(
+                  onTap: () async {
+                    Navigator.pop(context);
+                    await Prefs.setStatus('true');
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => SignUpScreen()));
+                  },
+                  child: Image.asset('assets/images/BHC App Banner Promo.png')),
+              Positioned(
+                top: 10,
+                right: 10,
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Icon(
+                    Icons.clear,
+                    color: Colors.white,
+                    size: 30,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      });
+}
+
+// class ShowSignupDialog extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return AlertDialog(
+//       backgroundColor: Colors.black,
+//       shape: RoundedRectangleBorder(
+//         borderRadius: BorderRadius.circular(10),
+//       ),
+//       contentPadding: EdgeInsets.zero,
+//       content: Stack(
+//         children: [
+//           Image.asset('assets/images/BHC App Banner Promo.png'),
+//           Positioned(
+//               top: 10,
+//               right: 10,
+//               child: Icon(Icons.clear,color: Colors.black,)),
+//         ],
+//       ),
+//     );
+//   }
+// }
 
 showDeleteAccountAlert(BuildContext context, text, id) {
   String generateNonce([int length = 32]) {
@@ -449,8 +507,7 @@ showDeleteAccountAlert(BuildContext context, text, id) {
                                 },
                                 child: Text(
                                   "https://apps.apple.com/account/subscriptions.",
-                                  style: TextStyle(
-                                      color: Colors.blue[900], fontSize: 14, fontWeight: FontWeight.w400, decoration: TextDecoration.underline),
+                                  style: TextStyle(color: Colors.blue[900], fontSize: 14, fontWeight: FontWeight.w400, decoration: TextDecoration.underline),
                                   textAlign: TextAlign.center,
                                 ),
                               ),
