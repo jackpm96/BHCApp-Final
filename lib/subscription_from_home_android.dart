@@ -192,7 +192,7 @@ class _SubscriptionScreenFromHomeAndroidState extends State<SubscriptionScreenFr
                 ),
               ),
               SizedBox(
-                height: 20,
+                height: 5,
               ),
               Center(
                 child: Text(
@@ -208,6 +208,19 @@ class _SubscriptionScreenFromHomeAndroidState extends State<SubscriptionScreenFr
                 textAlign: TextAlign.center,
                 style: GoogleFonts.montserrat(color: white, fontSize: 13, height: 1.5, fontWeight: FontWeight.w400),
               ),
+              SizedBox(
+                height: 10,
+              ),
+              Text(
+                'February Special Offer with 50% off.\nGrab Now!',
+                textAlign: TextAlign.center,
+                style: GoogleFonts.montserrat(
+                    color: Colors.yellow,
+                    fontSize: 16,
+                    height: 1.5,
+                    fontWeight: FontWeight.w600),
+              ),
+
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
                 child: Container(

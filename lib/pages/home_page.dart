@@ -18,6 +18,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:html/parser.dart' show parse;
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:marquee/marquee.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -123,8 +124,20 @@ class _HomePageState extends State<HomePage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(
+                Container(
+                  alignment: Alignment.center,
                   height: 25,
+                  child: Marquee(
+                    text: 'February Special Offer with 50% off on all subscription packages!',
+                    style: TextStyle(color: Colors.white,fontWeight: FontWeight.w500,fontSize: 16),
+                    scrollAxis: Axis.horizontal,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    blankSpace: 40.0,
+                    velocity: 20.0,
+                    startPadding: 10.0,
+                    accelerationCurve: Curves.linear,
+                    decelerationCurve: Curves.linear,
+                  ),
                 ),
                 Consumer<AuthProvider>(
                   builder: (context, provider, child) => FutureBuilder(

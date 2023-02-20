@@ -243,13 +243,12 @@ class _SubscriptionScreenFromHomeState
                 ),
               ),
               SizedBox(
-                height: 20,
+                height: 5,
               ),
               Center(
                 child: Text(
                   '365 Days of Black History',
-                  style: GoogleFonts.montserrat(
-                      color: white, fontSize: 25, fontWeight: FontWeight.w400),
+                  style: GoogleFonts.montserrat(color: white, fontSize: 25, fontWeight: FontWeight.w400),
                 ),
               ),
               SizedBox(
@@ -258,11 +257,19 @@ class _SubscriptionScreenFromHomeState
               Text(
                 'Daily updates, unlimited stories\npersonal insights and much more',
                 textAlign: TextAlign.center,
+                style: GoogleFonts.montserrat(color: white, fontSize: 13, height: 1.5, fontWeight: FontWeight.w400),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Text(
+                'February Special Offer with 50% off.\nGrab Now!',
+                textAlign: TextAlign.center,
                 style: GoogleFonts.montserrat(
-                    color: white,
-                    fontSize: 13,
+                    color: Colors.yellow,
+                    fontSize: 16,
                     height: 1.5,
-                    fontWeight: FontWeight.w400),
+                    fontWeight: FontWeight.w600),
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
