@@ -34,8 +34,8 @@ class _SubscriptionScreenFromHomeState
   String token;
   String userID;
   List<IAPItem> iapProducts;
-  var amount = '7.99';
-  var discountedAmount = '7.99';
+  var amount = '3.99';
+  var discountedAmount = '3.99';
   String email = "";
   String userName = "";
   String membership = "";
@@ -75,8 +75,8 @@ class _SubscriptionScreenFromHomeState
     setState(() {
       iapProducts = res;
       packageSelection = "Monthly";
-      amount = '7.99';
-      discountedAmount = '7.99';
+      amount = '3.99';
+      discountedAmount = '3.99';
     });
   }
 
@@ -265,8 +265,7 @@ class _SubscriptionScreenFromHomeState
                     fontWeight: FontWeight.w400),
               ),
               Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+                padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
                 child: Container(
                   height: 150,
                   width: MediaQuery.of(context).size.width,
@@ -281,78 +280,70 @@ class _SubscriptionScreenFromHomeState
                             setState(() {
                               packageSelection = "Monthly";
                               packageSelectionMonthly = true;
-                              amount = "7.99";
+                              amount = "3.99";
                             });
                           },
                           child: Card(
-                            elevation:
-                                packageSelection.contains("Monthly") ? 15 : 0,
+                            elevation: packageSelection.contains("Monthly") ? 15 : 0,
                             child: Stack(
                               clipBehavior: Clip.none,
                               children: [
                                 Container(
                                   // width: 115,
                                   height: MediaQuery.of(context).size.height,
-                                  decoration: BoxDecoration(
-                                      color: white,
-                                      borderRadius: BorderRadius.circular(8)),
+                                  decoration: BoxDecoration(color: white, borderRadius: BorderRadius.circular(8)),
                                   child: Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       Expanded(
-                                        flex: 1,
+                                        flex: 4,
                                         child: Container(
-                                          width:
-                                              MediaQuery.of(context).size.width,
+                                          alignment: Alignment.center,
+                                          width: MediaQuery.of(context).size.width,
                                           decoration: BoxDecoration(
-                                            color: packageSelection
-                                                    .contains("Monthly")
-                                                ? Color(0xff1ABFDD)
-                                                : white,
+                                            color: packageSelection.contains("Monthly") ? Color(0xff1ABFDD) : white,
                                             borderRadius: BorderRadius.only(
                                               bottomLeft: Radius.circular(8),
                                               bottomRight: Radius.circular(8),
                                             ),
                                           ),
-                                          child: Padding(
-                                            padding: const EdgeInsets.only(
-                                                top: 18.0),
-                                            child: Text(
-                                              '1\nMONTH',
-                                              textAlign: TextAlign.center,
-                                              style: GoogleFonts.montserrat(
-                                                  color: Colors.black87,
-                                                  fontSize: 17,
-                                                  fontWeight: FontWeight.w400),
-                                            ),
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              SizedBox(
+                                                height: 5,
+                                              ),
+                                              Text(
+                                                '1\nMONTH',
+                                                textAlign: TextAlign.center,
+                                                style: GoogleFonts.montserrat(color: Colors.black87, fontSize: 17, fontWeight: FontWeight.w400),
+                                              ),
+                                            ],
                                           ),
                                         ),
                                       ),
                                       Expanded(
-                                        flex: 1,
+                                        flex: 5,
                                         child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.end,
+                                          mainAxisAlignment: MainAxisAlignment.end,
                                           children: [
                                             Text(
                                               '\$7.99',
                                               textAlign: TextAlign.center,
-                                              style: GoogleFonts.montserrat(
-                                                  color: Colors.black,
-                                                  fontSize: 25,
-                                                  fontWeight: FontWeight.w400),
+                                              style: GoogleFonts.montserrat(color: Colors.black, decoration: TextDecoration.lineThrough, fontSize: 16, fontWeight: FontWeight.w400),
+                                            ),
+                                            Text(
+                                              '\$3.99',
+                                              textAlign: TextAlign.center,
+                                              style: GoogleFonts.montserrat(color: Colors.black, fontSize: 25, fontWeight: FontWeight.w400),
                                             ),
                                             Text(
                                               '',
                                               textAlign: TextAlign.center,
-                                              style: GoogleFonts.montserrat(
-                                                  color: Colors.grey,
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.w700),
+                                              style: GoogleFonts.montserrat(color: Colors.grey, fontSize: 10, fontWeight: FontWeight.w700),
                                             ),
                                             SizedBox(
-                                              height: 10,
+                                              height: 5,
                                             ),
                                           ],
                                         ),
@@ -376,12 +367,11 @@ class _SubscriptionScreenFromHomeState
                             setState(() {
                               packageSelection = "Annually";
                               packageSelectionMonthly = false;
-                              amount = "49.99";
+                              amount = "24.99";
                             });
                           },
                           child: Card(
-                            elevation:
-                                packageSelection.contains("Annually") ? 15 : 0,
+                            elevation: packageSelection.contains("Annually") ? 15 : 0,
                             child: Stack(
                               clipBehavior: Clip.none,
                               children: [
@@ -389,23 +379,17 @@ class _SubscriptionScreenFromHomeState
                                   // width: 130,
 
                                   height: MediaQuery.of(context).size.height,
-                                  decoration: BoxDecoration(
-                                      color: white,
-                                      borderRadius: BorderRadius.circular(8)),
+                                  decoration: BoxDecoration(color: white, borderRadius: BorderRadius.circular(8)),
                                   child: Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       Expanded(
-                                        flex: 1,
+                                        flex: 4,
                                         child: Container(
-                                          width:
-                                              MediaQuery.of(context).size.width,
+                                          alignment: Alignment.center,
+                                          width: MediaQuery.of(context).size.width,
                                           decoration: BoxDecoration(
-                                            color: packageSelection
-                                                    .contains("Annually")
-                                                ? Color(0xff1ABFDD)
-                                                : white,
+                                            color: packageSelection.contains("Annually") ? Color(0xff1ABFDD) : white,
                                             borderRadius: BorderRadius.only(
                                               bottomLeft: Radius.circular(8),
                                               bottomRight: Radius.circular(8),
@@ -413,44 +397,43 @@ class _SubscriptionScreenFromHomeState
                                               // topRight: Radius.circular(8)
                                             ),
                                           ),
-                                          child: Padding(
-                                            padding: const EdgeInsets.only(
-                                                top: 18.0),
-                                            child: Text(
-                                              '12\nMONTHS',
-                                              textAlign: TextAlign.center,
-                                              style: GoogleFonts.montserrat(
-                                                  color: Colors.black87,
-                                                  fontSize: 17,
-                                                  fontWeight: FontWeight.w400),
-                                            ),
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              SizedBox(
+                                                height: 5,
+                                              ),
+                                              Text(
+                                                '12\nMONTHS',
+                                                textAlign: TextAlign.center,
+                                                style: GoogleFonts.montserrat(color: Colors.black87, fontSize: 17, fontWeight: FontWeight.w400),
+                                              ),
+                                            ],
                                           ),
                                         ),
                                       ),
                                       Expanded(
-                                        flex: 1,
+                                        flex: 5,
                                         child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.end,
+                                          mainAxisAlignment: MainAxisAlignment.end,
                                           children: [
                                             Text(
                                               '\$49.99',
                                               textAlign: TextAlign.center,
-                                              style: GoogleFonts.montserrat(
-                                                  color: Colors.black,
-                                                  fontSize: 25,
-                                                  fontWeight: FontWeight.w400),
+                                              style: GoogleFonts.montserrat(color: Colors.black, fontSize: 16, decoration: TextDecoration.lineThrough, fontWeight: FontWeight.w400),
                                             ),
                                             Text(
-                                              'Save upto 50%',
+                                              '\$24.99',
                                               textAlign: TextAlign.center,
-                                              style: GoogleFonts.montserrat(
-                                                  color: Colors.grey,
-                                                  fontSize: 10,
-                                                  fontWeight: FontWeight.w700),
+                                              style: GoogleFonts.montserrat(color: Colors.black, fontSize: 25, fontWeight: FontWeight.w400),
+                                            ),
+                                            Text(
+                                              'Save upto 75%',
+                                              textAlign: TextAlign.center,
+                                              style: GoogleFonts.montserrat(color: Colors.grey, fontSize: 10, fontWeight: FontWeight.w700),
                                             ),
                                             SizedBox(
-                                              height: 10,
+                                              height: 5,
                                             ),
                                           ],
                                         ),
@@ -466,8 +449,7 @@ class _SubscriptionScreenFromHomeState
                                       elevation: 4,
                                       color: Color(0xff0891d9),
                                       shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(8.0),
+                                        borderRadius: BorderRadius.circular(8.0),
                                       ),
                                       child: Container(
                                         height: 25,
@@ -476,10 +458,7 @@ class _SubscriptionScreenFromHomeState
                                           child: Text(
                                             'Saver',
                                             textAlign: TextAlign.center,
-                                            style: GoogleFonts.montserrat(
-                                                color: white,
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w400),
+                                            style: GoogleFonts.montserrat(color: white, fontSize: 12, fontWeight: FontWeight.w400),
                                           ),
                                         ),
                                       ),
@@ -501,7 +480,7 @@ class _SubscriptionScreenFromHomeState
                     onTap: () {
                       setState(() {
                         packageSelection = "lifeTime";
-                        amount = "299";
+                        amount = "149.99";
                         packageSelectionMonthly = false;
                       });
                     },
@@ -513,64 +492,59 @@ class _SubscriptionScreenFromHomeState
                           Container(
                             // width: 100,100
                             height: MediaQuery.of(context).size.height,
-                            decoration: BoxDecoration(
-                                color: white,
-                                borderRadius: BorderRadius.circular(8)),
+                            decoration: BoxDecoration(color: white, borderRadius: BorderRadius.circular(8)),
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Expanded(
-                                  flex: 1,
+                                  flex: 4,
                                   child: Container(
+                                    alignment: Alignment.center,
                                     width: MediaQuery.of(context).size.width,
                                     decoration: BoxDecoration(
-                                      color:
-                                          packageSelection.contains("lifeTime")
-                                              ? Color(0xff1ABFDD)
-                                              : white,
+                                      color: packageSelection.contains("lifeTime") ? Color(0xff1ABFDD) : white,
                                       borderRadius: BorderRadius.only(
                                         bottomLeft: Radius.circular(8),
                                         bottomRight: Radius.circular(8),
-                                        // topLeft: Radius.circular(8),
-                                        // topRight: Radius.circular(8)
                                       ),
                                     ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(top: 18.0),
-                                      child: Text(
-                                        'Life\nTime',
-                                        textAlign: TextAlign.center,
-                                        style: GoogleFonts.montserrat(
-                                            color: Colors.black87,
-                                            fontSize: 17,
-                                            fontWeight: FontWeight.w400),
-                                      ),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        Text(
+                                          'Life\nTime',
+                                          textAlign: TextAlign.center,
+                                          style: GoogleFonts.montserrat(color: Colors.black87, fontSize: 17, fontWeight: FontWeight.w400),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ),
                                 Expanded(
-                                  flex: 1,
+                                  flex: 5,
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
                                       Text(
-                                        '\$299',
+                                        '\$299.99',
                                         textAlign: TextAlign.center,
-                                        style: GoogleFonts.montserrat(
-                                            color: Colors.black,
-                                            fontSize: 25,
-                                            fontWeight: FontWeight.w400),
+                                        style: GoogleFonts.montserrat(color: Colors.black, decoration: TextDecoration.lineThrough, fontSize: 16, fontWeight: FontWeight.w400),
+                                      ),
+                                      Text(
+                                        '\$149.99',
+                                        textAlign: TextAlign.center,
+                                        style: GoogleFonts.montserrat(color: Colors.black, fontSize: 25, fontWeight: FontWeight.w400),
                                       ),
                                       Text(
                                         'Get Started Now!',
                                         textAlign: TextAlign.center,
-                                        style: GoogleFonts.montserrat(
-                                            color: Colors.grey,
-                                            fontSize: 10,
-                                            fontWeight: FontWeight.w700),
+                                        style: GoogleFonts.montserrat(color: Colors.grey, fontSize: 10, fontWeight: FontWeight.w700),
                                       ),
                                       SizedBox(
-                                        height: 10,
+                                        height: 5,
                                       ),
                                     ],
                                   ),
@@ -595,10 +569,7 @@ class _SubscriptionScreenFromHomeState
                                     child: Text(
                                       'Best Value',
                                       textAlign: TextAlign.center,
-                                      style: GoogleFonts.montserrat(
-                                          color: white,
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w400),
+                                      style: GoogleFonts.montserrat(color: white, fontSize: 12, fontWeight: FontWeight.w400),
                                     ),
                                   ),
                                 ),
