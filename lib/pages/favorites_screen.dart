@@ -268,7 +268,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                 child: GestureDetector(
                   onTap: () async {
                     var mem = await Prefs.membership;
-                    if (mem != '0') {
+                    if (mem == '1' || mem == '2' || mem == '3' || mem == '4') {
                       CommonWidgets.buildSnackbar(context, "subscribed");
                       Navigator.push(context, MaterialPageRoute(builder: (context) => DetailScreen(user as StoryData, false, audio, false)))
                           .then((value) => setState(() {}));

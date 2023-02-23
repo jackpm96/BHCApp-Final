@@ -1,55 +1,70 @@
-import 'dart:async';
-import 'dart:io';
+import 'dart:convert';
+import 'dart:convert' as convert;
 
 import 'package:black_history_calender/const/colors.dart';
+import 'package:black_history_calender/globals.dart';
 import 'package:black_history_calender/helper/prefs.dart';
-import 'package:black_history_calender/network_module/api_response.dart';
+import 'package:black_history_calender/pages/paymentAlert.dart';
 import 'package:black_history_calender/screens/auth/provider/auth_provider.dart';
 import 'package:black_history_calender/screens/home/home_screen.dart';
-import 'package:black_history_calender/services/payment_service.dart';
-import 'package:black_history_calender/widget/privacyPolicy.dart';
+import 'package:black_history_calender/services/auth_services.dart';
+import 'package:black_history_calender/widget/payment_not_found_dialog.dart';
 import 'package:black_history_calender/widget/snackbar_widget.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-import 'helper/push_notifications_manager.dart';
-
-class SubscriptionScreenFromHome extends StatefulWidget {
-  const SubscriptionScreenFromHome({Key key}) : super(key: key);
+class SubscriptionScreenFromHomeAndroid extends StatefulWidget {
+  const SubscriptionScreenFromHomeAndroid({Key key}) : super(key: key);
 
   @override
-  _SubscriptionScreenFromHomeState createState() =>
-      _SubscriptionScreenFromHomeState();
+  _SubscriptionScreenFromHomeAndroidState createState() => _SubscriptionScreenFromHomeAndroidState();
 }
 
-class _SubscriptionScreenFromHomeState
-    extends State<SubscriptionScreenFromHome> {
-  String packageSelection = "";
+class _SubscriptionScreenFromHomeAndroidState extends State<SubscriptionScreenFromHomeAndroid> {
+  final TextEditingController promoController = TextEditingController();
+  String packageSelection = "Monthly";
   String token;
   String userID;
-  List<IAPItem> iapProducts;
+  bool packageSelectionMonthly = true;
+  final AuthBase auth = Auth();
   var amount = '3.99';
   var discountedAmount = '3.99';
   String email = "";
   String userName = "";
   String membership = "";
-  bool packageSelectionMonthly = true;
-
-  StreamSubscription _purchaseUpdatedSubscription;
-  StreamSubscription _purchaseErrorSubscription;
-  StreamSubscription _conectionSubscription;
 
   @override
   void initState() {
     super.initState();
     initData();
-    initPlatformState();
+  }
+
+  status() async {
+    try {
+      http.Response response = await http.get(Uri.parse('https://myblackhistorycalendar.com/wp-json/wcra/v1/checkmembership/?secret_key=Pf1PZMTEum3zLBkN2ITu4KdZyHM3WKR0&user_id=$id'));
+      final responseBody = Map<String, dynamic>.from(jsonDecode(response.body));
+      if (responseBody["data"].toString() == '0') {
+        EasyLoading.dismiss();
+        paymentNotFound(context);
+      } else {
+        Prefs.setMembership(responseBody["data"].toString());
+        EasyLoading.dismiss();
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (BuildContext context) => HomeScreen(),
+          ),
+          ModalRoute.withName('/'),
+        );
+      }
+    } catch (e) {
+      print(e);
+    }
   }
 
   initData() async {
@@ -70,131 +85,66 @@ class _SubscriptionScreenFromHomeState
           userName = value;
         }));
 
-    var res = await PaymentService.instance.products;
-
     setState(() {
-      iapProducts = res;
       packageSelection = "Monthly";
       amount = '3.99';
       discountedAmount = '3.99';
     });
   }
 
-  Future update(id)async{
-    Map<String, String> body = Map<String, String>();
-    Map<String, String> header = {
-      HttpHeaders.contentTypeHeader: 'application/x-www-form-urlencoded',
-      'Authorization': 'Bearer $token'
-    };
-    var uri =
-        "https://myblackhistorycalendar.com/wp-json/pmpro/v1/change_membership_level?user_id=$userID&level_id=$id";
-    final response =
-        await http.post(Uri.parse(uri), body: body, headers: header);
+  checkPayment(context) {
+    Future.delayed(const Duration(seconds: 2), () {
+      showPaymentAlert(context, status);
+    });
   }
 
-  Future updateMembership(levelId) async {
-    Map<String, String> body = Map<String, String>();
-    Map<String, String> header = {
-      HttpHeaders.contentTypeHeader: 'application/x-www-form-urlencoded',
-      'Authorization': 'Bearer $token'
-    };
-    var uri =
-        "https://myblackhistorycalendar.com/wp-json/pmpro/v1/change_membership_level?user_id=$userID&level_id=$levelId";
-    final response =
-        await http.post(Uri.parse(uri), body: body, headers: header);
-    if (response.statusCode == 200) {
-      if (response.body == 'true') {
-        Prefs.setMembership(levelId);
-        EasyLoading.dismiss();
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(
-            builder: (BuildContext context) => HomeScreen(),
-          ),
-          ModalRoute.withName('/'),
-        );
-      }
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content:
-              Text('Purchase Error:  ${response.statusCode} ${response.body}'),
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
-    }
-  }
-
-  Future<void> initPlatformState() async {
-    await FlutterInappPurchase.instance.initialize();
+  Future<bool> checkPromo(code, id) async {
     try {
-      String msg = await FlutterInappPurchase.instance.consumeAll();
-      print('consumeAllItems: $msg');
-    } catch (err) {
-      print('consumeAllItems error: $err');
-    }
-
-    _conectionSubscription =
-        FlutterInappPurchase.connectionUpdated.listen((connected) {
-      print('connected: $connected');
-    });
-
-    _purchaseUpdatedSubscription =
-        FlutterInappPurchase.purchaseUpdated.listen((productItem) async {
-      print('purchase-updated: $productItem');
-      EasyLoading.show();
-
-      if (Platform.isIOS) {
-        if (productItem.productId != 'lifetime_subs') {
-          var receiptBody = {
-            'receipt-data': productItem.transactionReceipt,
-            'password': '3c85e4c2211343f88ff89a67cc616ef1'
-          };
-
-          var result = await FlutterInappPurchase.instance
-              .validateReceiptIos(receiptBody: receiptBody, isTest: false);
-          print("result :${result.body}");
+      EasyLoading.show(dismissOnTap: false);
+      var response = await http.post(
+        Uri.parse("https://myblackhistorycalendar.com/wp-json/wcra/v1/get_promo/?secret_key=Pf1PZMTEum3zLBkN2ITu4KdZyHM3WKR0&code=$code&level_id=$id"),
+      );
+      final body = convert.jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        EasyLoading.dismiss();
+        if (body['data'].isEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Invalid Promo Code'),
+            ),
+          );
+          return false;
+        } else {
+          setState(() {
+            amount = body['data'][0]['billing_amount'];
+            discountedAmount = body['data'][0]['initial_payment'];
+            print("discountedAmount $discountedAmount");
+          });
+          print(body['data'][0]);
+          return true;
         }
-        await FlutterInappPurchase.instance
-            .finishTransactionIOS(productItem.transactionId);
       } else {
-        var result = await FlutterInappPurchase.instance
-            .acknowledgePurchaseAndroid(productItem.purchaseToken);
-        print("result acknowledgePurchaseAndroid: ${result}");
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error validating Promo Code'),
+            behavior: SnackBarBehavior.floating,
+            margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height - 100, right: 20, left: 20),
+          ),
+        );
+        return false;
       }
-
-      if (await Prefs.membership == '0') {
-        if (Platform.isIOS) {
-          if (productItem.productId == 'monthly_subs') {
-            await updateMembership('1');
-          } else if (productItem.productId == 'yearly_subs') {
-            await updateMembership('2');
-          } else if (productItem.productId == 'lifetime_subs') {
-            await updateMembership('4');
-          }
-        }
-      }
-    });
-
-    _purchaseErrorSubscription =
-        FlutterInappPurchase.purchaseError.listen((purchaseError) {
-      print('purchase-error: $purchaseError');
+    } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Purchase Error:  ${purchaseError.message}'),
+          content: Text('Error validating Promo Code'),
           behavior: SnackBarBehavior.floating,
+          margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height - 100, right: 20, left: 20),
         ),
       );
-    });
-  }
+      print(e);
 
-  @override
-  void dispose() {
-    if (_conectionSubscription != null) {
-      _conectionSubscription.cancel();
-      _conectionSubscription = null;
+      return false;
     }
-    super.dispose();
   }
 
   @override
@@ -211,8 +161,7 @@ class _SubscriptionScreenFromHomeState
           automaticallyImplyLeading: true,
           title: Text(
             'Select a Subscription Plan',
-            style: GoogleFonts.montserrat(
-                color: white, fontSize: 22, fontWeight: FontWeight.w400),
+            style: GoogleFonts.montserrat(color: white, fontSize: 22, fontWeight: FontWeight.w400),
           ),
           centerTitle: true,
         ),
@@ -271,6 +220,7 @@ class _SubscriptionScreenFromHomeState
                     height: 1.5,
                     fontWeight: FontWeight.w600),
               ),
+
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
                 child: Container(
@@ -588,70 +538,98 @@ class _SubscriptionScreenFromHomeState
                 ),
               ),
               SizedBox(
+                height: 25,
+              ),
+              Container(
+                height: 45,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  color: Colors.white,
+                ),
+                margin: EdgeInsets.symmetric(horizontal: 40),
+                padding: EdgeInsets.symmetric(horizontal: 10),
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex: 2,
+                      child: TextField(
+                        textCapitalization: TextCapitalization.characters,
+                        controller: promoController,
+                        style: GoogleFonts.montserrat(
+                          fontSize: 18,
+                          letterSpacing: 1,
+                          fontWeight: FontWeight.w400,
+                        ),
+                        decoration: InputDecoration(
+                          contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                          enabledBorder: InputBorder.none,
+                          focusedBorder: InputBorder.none,
+                          isDense: false,
+                          hintText: "Enter Code Here...",
+                          hintStyle: GoogleFonts.montserrat(fontSize: 18, letterSpacing: 1, color: Colors.grey, fontWeight: FontWeight.w400),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                        child: Container(
+                      height: 40,
+                      decoration: BoxDecoration(border: Border(left: BorderSide(color: Colors.grey.withOpacity(0.5), width: 1))),
+                      padding: EdgeInsets.symmetric(horizontal: 2),
+                      child: Center(
+                        child: Text(
+                          'PROMO',
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.montserrat(color: Colors.grey.withOpacity(0.5), fontSize: 18, letterSpacing: 1, fontWeight: FontWeight.w400),
+                        ),
+                      ),
+                    ))
+                  ],
+                ),
+              ),
+              SizedBox(
                 height: 20,
               ),
               GestureDetector(
                 onTap: () async {
-                  if (userID == '') {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Please Sign in to your account first'),
-                        behavior: SnackBarBehavior.floating,
-                      ),
-                    );
-                  } else if (membership != '0') {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                            'Note: Please cancel your current subscription first!'),
-                        behavior: SnackBarBehavior.floating,
-                      ),
-                    );
-                  } else {
-                    EasyLoading.show();
-                    List<IAPItem> _iaps = [];
-                    String selectedItem = 'monthly_subs';
-                    _initIAPs() async {
-                      _iaps.clear();
-                      var result =
-                          await FlutterInappPurchase.instance.initialize();
-                      print("Established IAP Connection..." + result);
-                      if (Platform.isAndroid) {
-                        _iaps = await FlutterInappPurchase.instance
-                            .getSubscriptions(
-                                ["bhc_monthly_subb", "bhc_yearly_subb"]);
+                  if (promoController.text.trim() != "") {
+                    FocusScope.of(context).requestFocus(new FocusNode());
+                    if (await checkPromo(
+                      promoController.text.trim(),
+                      packageSelection.contains("lifeTime")
+                          ? 4
+                          : packageSelection.contains("Annually")
+                              ? 2
+                              : 1,
+                    )) {
+                      var url =
+                          'https://myblackhistorycalendar.com/membership-account/membership-checkout/?level=${packageSelection.contains("lifeTime") ? "4" : packageSelection.contains("Annually") ? "2" : "1"}&username=$userID&discount_code=${promoController.text.trim()}';
+                      if (membership != '0') {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Note: Please cancel your current subscription first!'),
+                            behavior: SnackBarBehavior.floating,
+                          ),
+                        );
                       } else {
-                        if (packageSelection == "lifeTime") {
-                          selectedItem = 'lifetime_subs';
-                          print("lifeTime-------------$selectedItem");
-                        } else if (packageSelection == "Annually") {
-                          selectedItem = 'yearly_subs';
-                          print("Annually-------------$selectedItem");
-                        }
-                        if (_iaps.length > 0) {
-                          _iaps.removeAt(0);
-                        }
-                        _iaps = await FlutterInappPurchase.instance
-                            .getSubscriptions([selectedItem]);
-                      }
-                      print(_iaps.length);
-                      for (var i = 0; i < _iaps.length; i++) {
-                        print(_iaps[i].title + " " + _iaps[i].price);
+                        launch(url);
+                        checkPayment(context);
                       }
                     }
-
-                    await _initIAPs();
-                    EasyLoading.dismiss();
-                    try {
-                      PaymentService.instance.buyProduct(_iaps
-                          .where((element) => element.productId == selectedItem)
-                          .first);
-                    } catch (e) {
-                      PlatformException p = e as PlatformException;
-                      print(p.code);
-                      print(p.message);
-                      print(p.details);
-                      print(e);
+                  } else {
+                    setState(() {
+                      discountedAmount = amount;
+                    });
+                    var url = 'https://myblackhistorycalendar.com/membership-account/membership-checkout/?level=${packageSelection.contains("lifeTime") ? "4" : packageSelection.contains("Annually") ? "2" : "1"}&username=$userID';
+                    if (membership == '1' || membership == '2' || membership == '3' || membership == '4') {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Note: Please cancel your current subscription first!'),
+                          behavior: SnackBarBehavior.floating,
+                        ),
+                      );
+                    } else {
+                      launch(url);
+                      checkPayment(context);
                     }
                   }
                 },
@@ -673,196 +651,11 @@ class _SubscriptionScreenFromHomeState
                         child: Text(
                           'CONTINUE',
                           textAlign: TextAlign.center,
-                          style: GoogleFonts.montserrat(
-                              color: Color(0xff1d92d0),
-                              fontSize: 18,
-                              letterSpacing: 1,
-                              fontWeight: FontWeight.w400),
+                          style: GoogleFonts.montserrat(color: Color(0xff1d92d0), fontSize: 18, letterSpacing: 1, fontWeight: FontWeight.w400),
                         ),
                       ),
                     ),
                   ),
-                ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Center(
-                child: GestureDetector(
-                  onTap: () async {
-                    if (userID == '') {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('Please sign in to your account first'),
-                          behavior: SnackBarBehavior.floating,
-                        ),
-                      );
-                    } else if (membership != '0') {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('You are already subscribed!'),
-                          behavior: SnackBarBehavior.floating,
-                        ),
-                      );
-                    } else {
-                      EasyLoading.show();
-                      try {
-                        List<PurchasedItem> purchases =
-                            await FlutterInappPurchase.instance
-                                .getAvailablePurchases();
-                        if (purchases.last.productId == 'lifetime_subs') {
-                          await Prefs.setMembership('4');
-                          await update('4');
-                          EasyLoading.dismiss();
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                  'Your lifetime subscription has been restored!'),
-                              behavior: SnackBarBehavior.floating,
-                            ),
-                          );
-                          Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                              builder: (BuildContext context) => HomeScreen(),
-                            ),
-                            ModalRoute.withName('/'),
-                          );
-                        } else if (await FlutterInappPurchase.instance
-                            .checkSubscribed(
-                                sku: 'yearly_subs',
-                                duration: Duration(days: 365),
-                                grace: Duration(days: 7))) {
-                          await Prefs.setMembership('2');
-                          await update('2');
-                          EasyLoading.dismiss();
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                  'Your yearly subscription has been restored!'),
-                              behavior: SnackBarBehavior.floating,
-                            ),
-                          );
-                          Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                              builder: (BuildContext context) => HomeScreen(),
-                            ),
-                            ModalRoute.withName('/'),
-                          );
-                        } else if (await FlutterInappPurchase.instance
-                            .checkSubscribed(
-                                sku: 'monthly_subs',
-                                duration: Duration(days: 30),
-                                grace: Duration(days: 7))) {
-                          await Prefs.setMembership('1');
-                          await update('1');
-                          EasyLoading.dismiss();
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                  'Your monthly subscription has been restored!'),
-                              behavior: SnackBarBehavior.floating,
-                            ),
-                          );
-                          Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                              builder: (BuildContext context) => HomeScreen(),
-                            ),
-                            ModalRoute.withName('/'),
-                          );
-                        } else {
-                          await Prefs.setMembership('0');
-                          EasyLoading.dismiss();
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                  "Your don't have any active subscription!"),
-                              behavior: SnackBarBehavior.floating,
-                            ),
-                          );
-                          Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                              builder: (BuildContext context) => HomeScreen(),
-                            ),
-                            ModalRoute.withName('/'),
-                          );
-                        }
-                      } catch (e) {
-                        EasyLoading.dismiss();
-                        print("error in getPurchaseHistory: $e");
-                      }
-                    }
-                  },
-                  child: Text(
-                    "RESTORE PURCHASE",
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        decoration: TextDecoration.underline),
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Container(
-                alignment: Alignment.center,
-                child: Wrap(
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  alignment: WrapAlignment.center,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => PrivacyPolicy(
-                                      url:
-                                          'https://myblackhistorycalendar.com/terms-conditions/',
-                                    )));
-                      },
-                      child: Text(
-                        "Terms & Conditions",
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            decoration: TextDecoration.underline),
-                      ),
-                    ),
-                    Text(
-                      " and ",
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w300),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => PrivacyPolicy(
-                                      url:
-                                          'https://myblackhistorycalendar.com/privacy-policy/',
-                                    )));
-                      },
-                      child: Text(
-                        "Privacy Policy.",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            decoration: TextDecoration.underline),
-                      ),
-                    ),
-                  ],
                 ),
               ),
               SizedBox(
@@ -873,5 +666,21 @@ class _SubscriptionScreenFromHomeState
         ),
       ),
     );
+  }
+
+  Future subscribePackage() async {
+    EasyLoading.show(dismissOnTap: false);
+    var response = await Provider.of<AuthProvider>(context, listen: false).makeSubscription(packageSelection, userID, token);
+
+    if (response.statusCode == 200) {
+      packageSelection.contains("yearly") ? Prefs.setMembership("Annually") : Prefs.setMembership("Monthly");
+
+      EasyLoading.dismiss();
+
+      Navigator.pop(context);
+    } else {
+      EasyLoading.dismiss();
+      CommonWidgets.buildSnackbar(context, "Something went wrong");
+    }
   }
 }

@@ -87,6 +87,10 @@ class Prefs {
   static Future setImg(String value) =>
       PreferencesHelper.setString(Const.imgurl, value);
 
+  static Future<String> get status => PreferencesHelper.getString(Const.status);
+  static Future setStatus(String value) =>
+      PreferencesHelper.setString(Const.status, value);
+
   Future<void> clear() async {
     await Future.wait(<Future>[
       setID(''),

@@ -79,7 +79,7 @@ class ListContent extends StatelessWidget {
       child: GestureDetector(
         onTap: () async {
           var mem = await Prefs.membership;
-          if (mem != '0') {
+          if (mem == '1' || mem == '2' || mem == '3' || mem == '4') {
             CommonWidgets.buildSnackbar(context, "subscribed");
             Navigator.push(context, MaterialPageRoute(builder: (context) => DetailScreen(user, false, audio, true)));
           } else {
