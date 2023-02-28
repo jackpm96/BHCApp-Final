@@ -263,7 +263,7 @@ class _SubscriptionScreenFromHomeState
                 height: 10,
               ),
               Text(
-                'February Special Offer with 50% off.\nGrab Now!',
+                'March-April Special Offer with 50% off.\nGrab Now!',
                 textAlign: TextAlign.center,
                 style: GoogleFonts.montserrat(
                     color: Colors.yellow,
